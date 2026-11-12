@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "description": "PAULINA Body Art Studio website with an Express backend for Resend or SMTP booking confirmation emails.",
-  "main": "js/server.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node js/server.js",
-    "dev": "node --watch js/server.js",
+    "start": "node server.js",
+    "dev": "node --watch server.js",
     "email:test": "node scripts/send-test-email.js"
   },
   "engines": {

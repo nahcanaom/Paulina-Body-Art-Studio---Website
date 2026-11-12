@@ -1,7 +1,8 @@
 'use strict';
 
 const path = require('node:path');
-const PROJECT_ROOT = path.resolve(__dirname, '..');
+// server.js now sits at the project root, beside the directories it serves.
+const PROJECT_ROOT = path.resolve(__dirname);
 require('dotenv').config({ path: path.join(PROJECT_ROOT, '.env'), quiet: true });
 
 const crypto = require('node:crypto');
@@ -15,7 +16,7 @@ const {
   getEmailConfig,
   getSmtpVerification,
   verifySmtpTransport
-} = require('../services/emailService');
+} = require('./services/emailService');
 const {
   saveBooking,
   getStorageMode,
@@ -26,7 +27,7 @@ const {
   updateBooking,
   deleteBooking,
   getLockedSlots
-} = require('../services/bookingStore');
+} = require('./services/bookingStore');
 const {
   listCustomRequests,
   getCustomRequest,
@@ -34,7 +35,7 @@ const {
   updateRequestStatus,
   deleteRequestStatus,
   markRequestReviewed
-} = require('../services/customRequestStore');
+} = require('./services/customRequestStore');
 const {
   getAllImagesAdmin,
   getPublishedImages,
@@ -43,7 +44,7 @@ const {
   updateImage,
   deleteImage,
   registerChangeListener
-} = require('../services/galleryStore');
+} = require('./services/galleryStore');
 const {
   getAllCatalogueAdmin,
   getPublishedCatalogue,
@@ -52,14 +53,14 @@ const {
   updateCatalogueItem,
   deleteCatalogueItem,
   registerChangeListener: registerCatalogueChangeListener
-} = require('../services/catalogueStore');
+} = require('./services/catalogueStore');
 const {
   addNotification,
   countUnread,
   deleteNotification,
   listNotifications,
   markRead
-} = require('../services/notificationStore');
+} = require('./services/notificationStore');
 
 const PORT = Number.parseInt(process.env.PORT || '3000', 10);
 const LISTEN_PORT = Number.isInteger(PORT) && PORT > 0 ? PORT : 3000;
@@ -1913,20 +1914,21 @@ app.delete('/api/admin/catalogue/:id', async (req, res) => {
 // ---------------------------------------------------------------------------
 // Static website (only public pages and asset directories are exposed)
 // ---------------------------------------------------------------------------
-const PUBLIC_ASSET_DIRECTORIES = ['assets', 'css', 'js', 'components', 'template', 'html'];
+// The browser files (CSS, page scripts, images and fonts) live in public/ so
+// Vercel can serve them from its CDN. The HTML pages, shared components and
+// templates stay at the project root and are served by this app.
+const STATIC_DIRECTORIES = {
+  assets: 'public/assets',
+  css: 'public/css',
+  js: 'public/js',
+  components: 'components',
+  template: 'template',
+  html: 'html'
+};
 
-// server.js now lives in js/ for the reorganized project. Never serve the
-// backend source through the public /js static route.
-app.use('/js', (req, res, next) => {
-  if (req.path.toLowerCase() === '/server.js') {
-    return res.status(404).type('text').send('Not found');
-  }
-  return next();
-});
-
-for (const directory of PUBLIC_ASSET_DIRECTORIES) {
+for (const [route, directory] of Object.entries(STATIC_DIRECTORIES)) {
   app.use(
-    `/${directory}`,
+    `/${route}`,
     express.static(path.join(PROJECT_ROOT, directory), {
       dotfiles: 'ignore',
       fallthrough: true
