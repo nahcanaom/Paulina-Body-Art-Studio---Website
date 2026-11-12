@@ -63,7 +63,6 @@ function htmlFiles(directory) {
     .filter((fileName) => fileName.toLowerCase().endsWith('.html'));
 }
 
-fs.rmSync(OUT_DIR, { recursive: true, force: true });
 fs.mkdirSync(OUT_DIR, { recursive: true });
 
 for (const directory of PUBLIC_DIRECTORIES) {
