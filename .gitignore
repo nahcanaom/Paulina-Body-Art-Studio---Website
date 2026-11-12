@@ -17,6 +17,7 @@ Thumbs.db
 
 # Build output
 build/
+public/
 dist/
 out/
 .next/

@@ -2137,4 +2137,8 @@ if (require.main === module) {
   process.on('SIGTERM', () => shutdown('SIGTERM'));
 }
 
+// Vercel imports this file from the project root entrypoint and expects the
+// Express app itself; `npm start` keeps using the listen block above.
+module.exports = app;
+
 module.exports = app;
