@@ -1921,7 +1921,7 @@ const STATIC_DIRECTORIES = {
   assets: 'public/assets',
   css: 'public/css',
   js: 'public/js',
-  components: 'components',
+  components: 'public/components',
   template: 'template',
   html: 'html'
 };
