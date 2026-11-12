@@ -514,5 +514,18 @@
     if (event.key === 'Escape' && modal && !modal.hidden) closeModal();
   });
 
+  if (typeof window !== 'undefined' && window.paulinaSupabase) {
+    try {
+      window.paulinaSupabase
+        .channel('admin-notifications-realtime')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'notifications' }, () => {
+          load();
+        })
+        .subscribe();
+    } catch (e) {
+      console.warn('[notifications] Realtime error:', e);
+    }
+  }
+
   load();
 })();

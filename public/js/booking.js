@@ -1169,13 +1169,41 @@ async function syncLockedTimeSlots() {
 
   const artist = bookingState.artist || '';
   try {
-    const url = `/api/bookings/locked-slots?date=${encodeURIComponent(dateStr)}&artist=${encodeURIComponent(artist)}`;
-    const res = await fetch(url);
-    if (!res.ok) return;
-    const data = await res.json();
-    const lockedTimes = Array.isArray(data.lockedSlots)
-      ? data.lockedSlots.map((t) => t.trim().toLowerCase())
-      : [];
+    let lockedTimes = null;
+
+    if (window.paulinaSupabase) {
+      try {
+        const { data, error } = await window.paulinaSupabase
+          .from('bookings')
+          .select('time, date, artist, status')
+          .eq('date', dateStr)
+          .in('status', ['confirmed', 'pending_confirmation', 'late', 'completed']);
+
+        if (!error && Array.isArray(data)) {
+          lockedTimes = data
+            .filter((b) => {
+              if (artist && b.artist) {
+                return String(b.artist).trim().toLowerCase() === String(artist).trim().toLowerCase();
+              }
+              return true;
+            })
+            .map((b) => String(b.time || '').trim().toLowerCase())
+            .filter(Boolean);
+        }
+      } catch (err) {
+        console.warn('[booking] Supabase direct slot lock check error:', err);
+      }
+    }
+
+    if (!lockedTimes) {
+      const url = `/api/bookings/locked-slots?date=${encodeURIComponent(dateStr)}&artist=${encodeURIComponent(artist)}`;
+      const res = await fetch(url);
+      if (!res.ok) return;
+      const data = await res.json();
+      lockedTimes = Array.isArray(data.lockedSlots)
+        ? data.lockedSlots.map((t) => t.trim().toLowerCase())
+        : [];
+    }
 
     const timeButtons = Array.from(document.querySelectorAll('.time-btn'));
     let currentActiveIsLocked = false;

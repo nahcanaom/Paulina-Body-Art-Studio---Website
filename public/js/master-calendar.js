@@ -20,6 +20,20 @@
  */
 
 import { createDialog } from '../components/dialog.js';
+import { supabase } from './supabase-config.js';
+
+if (supabase) {
+  try {
+    supabase
+      .channel('master-calendar-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, () => {
+        loadBookings();
+      })
+      .subscribe();
+  } catch (err) {
+    console.warn('[calendar] Realtime sync error:', err);
+  }
+}
 
 const MONTH_NAMES = [
   'January', 'February', 'March', 'April', 'May', 'June',

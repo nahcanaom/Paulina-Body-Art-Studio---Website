@@ -1,21 +1,14 @@
 'use strict';
 
-const fs = require('node:fs/promises');
-const path = require('node:path');
 const crypto = require('node:crypto');
 const { createClient } = require('@supabase/supabase-js');
 
-const PROJECT_ROOT = path.join(__dirname, '..');
-const DATA_DIR = path.join(PROJECT_ROOT, 'data');
-const LOCAL_CATALOGUE_FILE = path.join(DATA_DIR, 'catalogue.json');
-const UPLOADS_DIR = path.join(DATA_DIR, 'uploads', 'catalogue');
+const DEFAULT_SUPABASE_URL = 'https://celusvfynfnszmhjgqwj.supabase.co';
+const DEFAULT_SUPABASE_ANON_KEY = 'sb_publishable_NlHs6PG9x_HHfCDUKOlArQ_pM41Bn7g';
+const CATALOGUE_TABLE = 'jewelry_catalogue';
 
 let supabaseClient = null;
-const SUPABASE_TIMEOUT_MS = 3000;
-const SUPABASE_RETRY_AFTER_MS = 60000;
-let supabaseUnavailableUntil = 0;
 
-// SSE or event listeners for real-time synchronization
 const changeListeners = new Set();
 
 function registerChangeListener(callback) {
@@ -33,89 +26,22 @@ function notifyChangeListeners(action, data) {
   }
 }
 
-const SUPABASE_PLACEHOLDER_PATTERN =
-  /your[_-]?project[_-]?ref|your[_-]?supabase|your[_-]?service[_-]?role|placeholder|changeme|example\.(com|org)/i;
-
-function isRealSupabaseConfigured() {
-  const url = (process.env.SUPABASE_URL || '').trim();
-  const key = (process.env.SUPABASE_SERVICE_ROLE_KEY || '').trim();
-  if (!url || !key) return false;
-  if (SUPABASE_PLACEHOLDER_PATTERN.test(url) || SUPABASE_PLACEHOLDER_PATTERN.test(key)) {
-    return false;
-  }
-  try {
-    new URL(url);
-  } catch {
-    return false;
-  }
-  return true;
-}
-
 function getSupabase() {
-  if (!isRealSupabaseConfigured()) return null;
-  if (supabaseUnavailableUntil > Date.now()) return null;
+  if (supabaseClient) return supabaseClient;
 
-  if (!supabaseClient) {
-    const url = process.env.SUPABASE_URL.trim();
-    const key = process.env.SUPABASE_SERVICE_ROLE_KEY.trim();
-    supabaseClient = createClient(url, key, {
-      auth: { persistSession: false, autoRefreshToken: false }
-    });
-  }
+  const url = (process.env.SUPABASE_URL || '').trim();
+  const key = (process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || '').trim();
+
+  const finalUrl = url && !url.includes('YOUR_PROJECT_REF') ? url : DEFAULT_SUPABASE_URL;
+  const finalKey = key && !key.includes('YOUR_') && !key.includes('placeholder') ? key : DEFAULT_SUPABASE_ANON_KEY;
+
+  supabaseClient = createClient(finalUrl, finalKey, {
+    auth: { persistSession: false, autoRefreshToken: false }
+  });
+
   return supabaseClient;
 }
 
-function markSupabaseUnavailable(reason) {
-  supabaseUnavailableUntil = Date.now() + SUPABASE_RETRY_AFTER_MS;
-  console.warn(`[catalogueStore] Supabase marked unavailable for ${SUPABASE_RETRY_AFTER_MS / 1000}s: ${reason}`);
-}
-
-async function withTimeout(promise, ms, label) {
-  let timer;
-  const timeoutPromise = new Promise((_, reject) => {
-    timer = setTimeout(() => {
-      reject(new Error(`${label} timed out after ${ms}ms`));
-    }, ms);
-  });
-  try {
-    return await Promise.race([promise, timeoutPromise]);
-  } finally {
-    clearTimeout(timer);
-  }
-}
-
-// Write queue for local atomic file writes
-let writeQueue = Promise.resolve();
-function enqueue(task) {
-  const run = writeQueue.then(task, task);
-  writeQueue = run.catch(() => {});
-  return run;
-}
-
-async function readLocalCatalogue() {
-  try {
-    const raw = await fs.readFile(LOCAL_CATALOGUE_FILE, 'utf8');
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch (err) {
-    if (err.code === 'ENOENT') {
-      await fs.mkdir(DATA_DIR, { recursive: true });
-      await fs.writeFile(LOCAL_CATALOGUE_FILE, '[]\n', 'utf8');
-      return [];
-    }
-    console.warn('[catalogueStore] Error reading local catalogue file:', err.message);
-    return [];
-  }
-}
-
-async function writeLocalCatalogue(items) {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  await fs.writeFile(LOCAL_CATALOGUE_FILE, `${JSON.stringify(items, null, 2)}\n`, 'utf8');
-}
-
-/**
- * Normalise row mapping between DB (snake_case) and App (camelCase)
- */
 function normalizeItem(row) {
   if (!row) return null;
 
@@ -153,10 +79,13 @@ function normalizeItem(row) {
     sizes: parsedSizes.length > 0 ? parsedSizes : ['4mm', '3mm', '2mm'],
     activeSize: row.activeSize || row.active_size || parsedSizes[0] || '4mm',
     socialMedia: row.socialMedia || row.social_media || 'Instagram',
+    socialOrderUrl: row.socialOrderUrl || row.social_order_url || '',
     imageUrl: img,
     thumbnailUrl: thumb,
     images,
-    isPublished: row.isPublished !== undefined ? Boolean(row.isPublished) : (row.is_published !== undefined ? Boolean(row.is_published) : true),
+    isPublished: row.isPublished !== undefined
+      ? Boolean(row.isPublished)
+      : (row.is_published !== undefined ? Boolean(row.is_published) : (row.is_active !== undefined ? Boolean(row.is_active) : true)),
     displayOrder: Number(row.displayOrder ?? row.display_order ?? 0),
     createdAt: row.createdAt || row.created_at || new Date().toISOString(),
     updatedAt: row.updatedAt || row.updated_at || new Date().toISOString()
@@ -170,288 +99,203 @@ async function getAllCatalogueAdmin(filters = {}) {
   const client = getSupabase();
   let list = [];
 
-  if (client) {
-    try {
-      const query = client.from('jewelry_catalogue').select('*').order('created_at', { ascending: false });
-      const { data, error } = await withTimeout(query, SUPABASE_TIMEOUT_MS, 'Supabase catalogue fetch');
-      if (error) throw error;
-      list = (data || []).map(normalizeItem);
-    } catch (err) {
-      markSupabaseUnavailable(err?.message || 'Query failed');
-      list = (await readLocalCatalogue()).map(normalizeItem);
-    }
+  const { data, error } = await client
+    .from(CATALOGUE_TABLE)
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.warn('[catalogueStore] Supabase fetch error:', error.message);
   } else {
-    list = (await readLocalCatalogue()).map(normalizeItem);
+    list = (data || []).map(normalizeItem);
   }
 
-  // Summary counts
+  const category = (filters.category || 'all').toLowerCase();
+  const visibility = (filters.visibility || 'all').toLowerCase();
+  const search = (filters.search || '').trim().toLowerCase();
+  const sort = filters.sort || 'newest';
+
   const total = list.length;
-  const published = list.filter((i) => i.isPublished).length;
-  const draft = total - published;
-  const ear = list.filter((i) => (i.category || '').toLowerCase() === 'ear').length;
-  const facial = list.filter((i) => (i.category || '').toLowerCase() === 'facial').length;
-  const oral = list.filter((i) => (i.category || '').toLowerCase() === 'oral').length;
-  const body = list.filter((i) => (i.category || '').toLowerCase() === 'body').length;
+  const publishedCount = list.filter((i) => i.isPublished).length;
+  const hiddenCount = total - publishedCount;
 
-  let filtered = [...list];
+  let filtered = list.filter((item) => {
+    if (category !== 'all' && item.category.toLowerCase() !== category) return false;
+    if (visibility === 'published' && !item.isPublished) return false;
+    if (visibility === 'hidden' && item.isPublished) return false;
+    if (search) {
+      const matchName = item.name.toLowerCase().includes(search);
+      const matchCat = item.category.toLowerCase().includes(search);
+      const matchSub = (item.subcategory || '').toLowerCase().includes(search);
+      const matchMat = (item.material || '').toLowerCase().includes(search);
+      if (!matchName && !matchCat && !matchSub && !matchMat) return false;
+    }
+    return true;
+  });
 
-  // Category filter
-  if (filters.category && filters.category !== 'all') {
-    const cat = filters.category.toLowerCase().trim();
-    filtered = filtered.filter((i) => (i.category || '').toLowerCase().includes(cat));
-  }
-
-  // Visibility filter
-  if (filters.visibility && filters.visibility !== 'all') {
-    const isPub = filters.visibility === 'published';
-    filtered = filtered.filter((i) => i.isPublished === isPub);
-  }
-
-  // Search filter
-  if (filters.search) {
-    const term = filters.search.toLowerCase().trim();
-    filtered = filtered.filter(
-      (i) =>
-        i.name.toLowerCase().includes(term) ||
-        i.title.toLowerCase().includes(term) ||
-        i.subcategory.toLowerCase().includes(term) ||
-        i.category.toLowerCase().includes(term) ||
-        i.material.toLowerCase().includes(term)
-    );
-  }
-
-  // Sorting
-  if (filters.sort === 'oldest') {
-    filtered.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-  } else if (filters.sort === 'name' || filters.sort === 'title' || filters.sort === 'az') {
-    filtered.sort((a, b) => a.name.localeCompare(b.name));
-  } else if (filters.sort === 'za') {
-    filtered.sort((a, b) => b.name.localeCompare(a.name));
-  } else if (filters.sort === 'price-low') {
-    filtered.sort((a, b) => a.price - b.price);
-  } else if (filters.sort === 'price-high') {
-    filtered.sort((a, b) => b.price - a.price);
-  } else {
-    // Default newest first
-    filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-  }
+  filtered.sort((a, b) => {
+    if (sort === 'oldest') return new Date(a.createdAt) - new Date(b.createdAt);
+    if (sort === 'title') return a.name.localeCompare(b.name);
+    return new Date(b.createdAt) - new Date(a.createdAt);
+  });
 
   return {
     items: filtered,
-    stats: { total, published, draft, ear, facial, oral, body }
+    stats: { total, published: publishedCount, hidden: hiddenCount }
   };
 }
 
 /**
- * Get published catalogue items for user-facing website
+ * Get only published items for public catalogue page
  */
-async function getPublishedCatalogue(category) {
+async function getPublishedCatalogue(category = 'all') {
   const client = getSupabase();
-  let list = [];
-
-  if (client) {
-    try {
-      let query = client
-        .from('jewelry_catalogue')
-        .select('*')
-        .eq('is_published', true)
-        .order('display_order', { ascending: true })
-        .order('created_at', { ascending: false });
-
-      if (category && category !== 'all') {
-        query = query.ilike('category', `%${category}%`);
-      }
-      const { data, error } = await withTimeout(query, SUPABASE_TIMEOUT_MS, 'Supabase published catalogue');
-      if (error) throw error;
-      list = (data || []).map(normalizeItem);
-    } catch (err) {
-      markSupabaseUnavailable(err?.message || 'Query failed');
-      const all = await readLocalCatalogue();
-      list = all.filter((i) => i.isPublished).map(normalizeItem);
-    }
-  } else {
-    const all = await readLocalCatalogue();
-    list = all.filter((i) => i.isPublished).map(normalizeItem);
-  }
+  let query = client
+    .from(CATALOGUE_TABLE)
+    .select('*')
+    .eq('is_published', true)
+    .order('display_order', { ascending: true });
 
   if (category && category !== 'all') {
-    const cat = category.toLowerCase().trim();
-    list = list.filter((i) => (i.category || '').toLowerCase().includes(cat));
+    query = query.ilike('category', category);
   }
 
-  return list;
+  const { data, error } = await query;
+  if (error) {
+    console.warn('[catalogueStore] Published items error:', error.message);
+    return [];
+  }
+
+  return (data || []).map(normalizeItem);
 }
 
 /**
- * Get item by ID
+ * Get a single catalogue item by ID
  */
 async function getCatalogueItemById(id) {
-  if (!id) return null;
-  const items = await readLocalCatalogue();
-  const found = items.find((i) => String(i.id) === String(id));
-  return found ? normalizeItem(found) : null;
+  const client = getSupabase();
+  const { data, error } = await client
+    .from(CATALOGUE_TABLE)
+    .select('*')
+    .eq('id', id)
+    .maybeSingle();
+
+  if (error || !data) return null;
+  return normalizeItem(data);
 }
 
 /**
- * Create a new catalogue item
+ * Create a new catalogue item in Supabase
  */
-async function createCatalogueItem(payload) {
-  const name = (payload.name || payload.title || 'New Studio Work').trim();
-  const item = {
-    id: payload.id || `cat-${Date.now()}-${crypto.randomBytes(3).toString('hex')}`,
+async function createCatalogueItem(data) {
+  const client = getSupabase();
+  const id = data.id || crypto.randomUUID();
+  const name = (data.name || data.title || 'Untitled Piercing').trim();
+  const rawSizes = Array.isArray(data.sizes) ? data.sizes : ['4mm', '3mm', '2mm'];
+  const activeSize = data.activeSize || rawSizes[0] || '4mm';
+  const img = data.imageUrl || data.image || '';
+
+  const dbPayload = {
+    id,
     name,
     title: name,
-    category: payload.category || 'Ear',
-    subcategory: payload.subcategory || 'Helix',
-    material: payload.material || 'ASTM F136 Titanium',
-    price: Number(payload.price ?? 600),
-    sizes: Array.isArray(payload.sizes) && payload.sizes.length > 0 ? payload.sizes : ['4mm', '3mm', '2mm'],
-    activeSize: payload.activeSize || (Array.isArray(payload.sizes) && payload.sizes[0]) || '4mm',
-    socialMedia: payload.socialMedia || 'Instagram',
-    imageUrl: payload.imageUrl || '',
-    thumbnailUrl: payload.thumbnailUrl || payload.imageUrl || '',
-    images: Array.isArray(payload.images) && payload.images.length > 0 ? payload.images : [payload.imageUrl || ''],
-    isPublished: payload.isPublished !== undefined ? Boolean(payload.isPublished) : true,
-    displayOrder: Number(payload.displayOrder || 0),
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    category: data.category || 'Ear',
+    subcategory: data.subcategory || 'Helix',
+    material: data.material || 'ASTM F136 Titanium',
+    price: Number(data.price ?? 600),
+    sizes: rawSizes,
+    active_size: activeSize,
+    social_media: data.socialMedia || 'Instagram',
+    social_order_url: data.socialOrderUrl || '',
+    image_url: img,
+    thumbnail_url: data.thumbnailUrl || img,
+    images: Array.isArray(data.images) && data.images.length > 0 ? data.images : [img],
+    is_published: data.isPublished !== undefined ? Boolean(data.isPublished) : true,
+    is_active: data.isPublished !== undefined ? Boolean(data.isPublished) : true,
+    display_order: Number(data.displayOrder ?? 0),
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
   };
 
-  await enqueue(async () => {
-    const list = await readLocalCatalogue();
-    list.unshift(item);
-    await writeLocalCatalogue(list);
-  });
+  const { data: created, error } = await client
+    .from(CATALOGUE_TABLE)
+    .insert([dbPayload])
+    .select()
+    .single();
 
-  const client = getSupabase();
-  if (client) {
-    try {
-      await client.from('jewelry_catalogue').insert({
-        id: item.id,
-        title: item.name,
-        name: item.name,
-        category: item.category,
-        subcategory: item.subcategory,
-        material: item.material,
-        price: item.price,
-        sizes: item.sizes,
-        social_media: item.socialMedia,
-        image_url: item.imageUrl,
-        is_published: item.isPublished,
-        display_order: item.displayOrder,
-        created_at: item.createdAt,
-        updated_at: item.updatedAt
-      });
-    } catch (err) {
-      console.warn('[catalogueStore] Supabase insert failed (saved locally):', err?.message);
-    }
+  if (error) {
+    console.error('[catalogueStore] Insert to Supabase error:', error.message);
+    throw new Error(`Failed to save catalogue item to Supabase: ${error.message}`);
   }
 
-  notifyChangeListeners('create', item);
-  return item;
+  const normalized = normalizeItem(created || dbPayload);
+  notifyChangeListeners('create', normalized);
+  return normalized;
 }
 
 /**
  * Update an existing catalogue item
  */
 async function updateCatalogueItem(id, updates) {
-  let updated = null;
-
-  await enqueue(async () => {
-    const list = await readLocalCatalogue();
-    const idx = list.findIndex((i) => String(i.id) === String(id));
-    if (idx === -1) return;
-
-    const current = list[idx];
-    const newName = updates.name !== undefined ? updates.name.trim() : (updates.title !== undefined ? updates.title.trim() : current.name);
-
-    list[idx] = {
-      ...current,
-      ...updates,
-      id: current.id, // preserve ID
-      name: newName,
-      title: newName,
-      updatedAt: new Date().toISOString()
-    };
-
-    if (updates.sizes !== undefined) {
-      list[idx].sizes = Array.isArray(updates.sizes) ? updates.sizes : [updates.sizes];
-    }
-    if (updates.isPublished !== undefined) {
-      list[idx].isPublished = Boolean(updates.isPublished);
-    }
-
-    updated = normalizeItem(list[idx]);
-    await writeLocalCatalogue(list);
-  });
-
-  if (!updated) return null;
-
   const client = getSupabase();
-  if (client) {
-    try {
-      const dbPayload = { updated_at: updated.updatedAt };
-      if (updates.name !== undefined) {
-        dbPayload.title = updates.name;
-        dbPayload.name = updates.name;
-      }
-      if (updates.category !== undefined) dbPayload.category = updates.category;
-      if (updates.subcategory !== undefined) dbPayload.subcategory = updates.subcategory;
-      if (updates.material !== undefined) dbPayload.material = updates.material;
-      if (updates.price !== undefined) dbPayload.price = updates.price;
-      if (updates.sizes !== undefined) dbPayload.sizes = updates.sizes;
-      if (updates.socialMedia !== undefined) dbPayload.social_media = updates.socialMedia;
-      if (updates.imageUrl !== undefined) dbPayload.image_url = updates.imageUrl;
-      if (updates.isPublished !== undefined) dbPayload.is_published = Boolean(updates.isPublished);
-      if (updates.displayOrder !== undefined) dbPayload.display_order = Number(updates.displayOrder);
+  const dbPayload = { updated_at: new Date().toISOString() };
 
-      await client.from('jewelry_catalogue').update(dbPayload).eq('id', id);
-    } catch (err) {
-      console.warn('[catalogueStore] Supabase update failed (updated locally):', err?.message);
-    }
+  if (updates.name !== undefined || updates.title !== undefined) {
+    const val = (updates.name ?? updates.title).trim();
+    dbPayload.title = val;
+    dbPayload.name = val;
+  }
+  if (updates.category !== undefined) dbPayload.category = updates.category;
+  if (updates.subcategory !== undefined) dbPayload.subcategory = updates.subcategory;
+  if (updates.material !== undefined) dbPayload.material = updates.material;
+  if (updates.price !== undefined) dbPayload.price = Number(updates.price);
+  if (updates.sizes !== undefined) {
+    dbPayload.sizes = Array.isArray(updates.sizes) ? updates.sizes : [updates.sizes];
+  }
+  if (updates.activeSize !== undefined) dbPayload.active_size = updates.activeSize;
+  if (updates.socialMedia !== undefined) dbPayload.social_media = updates.socialMedia;
+  if (updates.socialOrderUrl !== undefined) dbPayload.social_order_url = updates.socialOrderUrl;
+  if (updates.imageUrl !== undefined) {
+    dbPayload.image_url = updates.imageUrl;
+    dbPayload.thumbnail_url = updates.thumbnailUrl || updates.imageUrl;
+    dbPayload.images = [updates.imageUrl];
+  }
+  if (updates.isPublished !== undefined) {
+    dbPayload.is_published = Boolean(updates.isPublished);
+    dbPayload.is_active = Boolean(updates.isPublished);
+  }
+  if (updates.displayOrder !== undefined) dbPayload.display_order = Number(updates.displayOrder);
+
+  const { data: updated, error } = await client
+    .from(CATALOGUE_TABLE)
+    .update(dbPayload)
+    .eq('id', id)
+    .select()
+    .maybeSingle();
+
+  if (error) {
+    console.error(`[catalogueStore] Supabase update failed for ${id}:`, error.message);
+    throw new Error(`Failed to update catalogue item: ${error.message}`);
   }
 
-  notifyChangeListeners('update', updated);
-  return updated;
+  const normalized = normalizeItem(updated || { id, ...dbPayload });
+  notifyChangeListeners('update', normalized);
+  return normalized;
 }
 
 /**
- * Delete a catalogue item and backing file
+ * Delete a catalogue item
  */
 async function deleteCatalogueItem(id) {
-  let deletedItem = null;
-
-  await enqueue(async () => {
-    const list = await readLocalCatalogue();
-    const idx = list.findIndex((i) => String(i.id) === String(id));
-    if (idx === -1) return;
-
-    deletedItem = list.splice(idx, 1)[0];
-    await writeLocalCatalogue(list);
-  });
-
-  if (!deletedItem) return false;
-
-  // Clean up uploaded image file if stored locally in catalogue uploads
-  if (deletedItem.imageUrl && deletedItem.imageUrl.startsWith('/uploads/catalogue/')) {
-    const filename = path.basename(deletedItem.imageUrl);
-    const filePath = path.join(UPLOADS_DIR, filename);
-    try {
-      await fs.unlink(filePath);
-    } catch (err) {
-      if (err.code !== 'ENOENT') {
-        console.warn('[catalogueStore] Could not unlink file:', filePath, err.message);
-      }
-    }
-  }
-
   const client = getSupabase();
-  if (client) {
-    try {
-      await client.from('jewelry_catalogue').delete().eq('id', id);
-    } catch (err) {
-      console.warn('[catalogueStore] Supabase delete failed:', err?.message);
-    }
+  const { error } = await client
+    .from(CATALOGUE_TABLE)
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    console.error(`[catalogueStore] Supabase delete failed for ${id}:`, error.message);
+    return false;
   }
 
   notifyChangeListeners('delete', { id });
@@ -467,4 +311,3 @@ module.exports = {
   deleteCatalogueItem,
   registerChangeListener
 };
-

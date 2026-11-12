@@ -8,6 +8,23 @@ require('dotenv').config({ path: path.join(PROJECT_ROOT, '.env'), quiet: true })
 const crypto = require('node:crypto');
 const fs = require('node:fs');
 const express = require('express');
+const { createClient } = require('@supabase/supabase-js');
+
+const DEFAULT_SUPABASE_URL = 'https://celusvfynfnszmhjgqwj.supabase.co';
+const DEFAULT_SUPABASE_ANON_KEY = 'sb_publishable_NlHs6PG9x_HHfCDUKOlArQ_pM41Bn7g';
+let serverSupabase = null;
+
+function getSupabaseServer() {
+  if (serverSupabase) return serverSupabase;
+  const url = (process.env.SUPABASE_URL || '').trim();
+  const key = (process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || '').trim();
+  const finalUrl = url && !url.includes('YOUR_PROJECT_REF') ? url : DEFAULT_SUPABASE_URL;
+  const finalKey = key && !key.includes('YOUR_') && !key.includes('placeholder') ? key : DEFAULT_SUPABASE_ANON_KEY;
+  serverSupabase = createClient(finalUrl, finalKey, {
+    auth: { persistSession: false, autoRefreshToken: false }
+  });
+  return serverSupabase;
+}
 
 const {
   sendBookingConfirmation,
@@ -265,13 +282,12 @@ function generateBookingReference() {
 }
 
 /**
- * Saves the reference picture sent by the Custom Tattoo form. The browser
- * already downscaled it, so the payload stays small; anything that is not a
- * plain image data URL is ignored rather than trusted.
+ * Saves the reference picture sent by the Custom Tattoo form to Supabase Storage.
  */
 async function persistReferenceImage(reference, dataUrl, originalName = '') {
   const raw = typeof dataUrl === 'string' ? dataUrl.trim() : '';
   if (!raw) return '';
+  if (/^https?:\/\//i.test(raw)) return raw;
 
   const match = REFERENCE_DATA_URL_PATTERN.exec(raw);
   if (!match) {
@@ -280,7 +296,6 @@ async function persistReferenceImage(reference, dataUrl, originalName = '') {
   }
 
   const buffer = Buffer.from(match[2].replace(/\s+/g, ''), 'base64');
-
   if (!buffer.length || buffer.length > MAX_REFERENCE_BYTES) {
     console.warn(`[booking] Ignored a reference image with size ${buffer.length} for ${reference}.`);
     return '';
@@ -288,26 +303,31 @@ async function persistReferenceImage(reference, dataUrl, originalName = '') {
 
   const extension = match[1].toLowerCase() === 'jpeg' ? 'jpg' : match[1].toLowerCase();
   const fileName = `${reference}-reference.${extension}`;
+  const storagePath = `references/${fileName}`;
+  const contentType = `image/${extension === 'jpg' ? 'jpeg' : extension}`;
 
-  await fs.promises.mkdir(REFERENCE_DIR, { recursive: true });
-  await fs.promises.writeFile(path.join(REFERENCE_DIR, fileName), buffer);
-
-  console.log(
-    `[booking] Stored reference picture ${fileName} (${buffer.length} bytes) for ${
-      originalName || 'the customer'
-    }.`
-  );
-
-  return fileName;
+  try {
+    const supa = getSupabaseServer();
+    await supa.storage.from('custom-requests').upload(storagePath, buffer, {
+      contentType,
+      upsert: true
+    });
+    const { data } = supa.storage.from('custom-requests').getPublicUrl(storagePath);
+    console.log(`[booking] Stored reference picture in Supabase Storage for ${reference}: ${data.publicUrl}`);
+    return data.publicUrl;
+  } catch (error) {
+    console.warn(`[booking] Storage upload failed for reference ${reference}:`, error.message);
+    return '';
+  }
 }
 
 /**
- * Saves the payment proof sent with a booking. Same rules as the reference
- * picture: only plain image data URLs inside the size limit are accepted.
+ * Saves the payment proof sent with a booking to Supabase Storage.
  */
 async function persistReceiptImage(reference, dataUrl, originalName = '') {
   const raw = typeof dataUrl === 'string' ? dataUrl.trim() : '';
   if (!raw) return '';
+  if (/^https?:\/\//i.test(raw)) return raw;
 
   const match = RECEIPT_DATA_URL_PATTERN.exec(raw);
   if (!match) {
@@ -316,7 +336,6 @@ async function persistReceiptImage(reference, dataUrl, originalName = '') {
   }
 
   const buffer = Buffer.from(match[2].replace(/\s+/g, ''), 'base64');
-
   if (!buffer.length || buffer.length > MAX_REFERENCE_BYTES) {
     console.warn(`[booking] Ignored a payment receipt with size ${buffer.length} for ${reference}.`);
     return '';
@@ -324,32 +343,38 @@ async function persistReceiptImage(reference, dataUrl, originalName = '') {
 
   const extension = match[1].toLowerCase() === 'jpeg' ? 'jpg' : match[1].toLowerCase();
   const fileName = `${reference}-receipt.${extension}`;
+  const storagePath = `receipts/${fileName}`;
+  const contentType = `image/${extension === 'jpg' ? 'jpeg' : extension}`;
 
-  await fs.promises.mkdir(RECEIPT_DIR, { recursive: true });
-  await fs.promises.writeFile(path.join(RECEIPT_DIR, fileName), buffer);
-
-  console.log(
-    `[booking] Stored payment receipt ${fileName} (${buffer.length} bytes) for ${
-      originalName || reference
-    }.`
-  );
-
-  return fileName;
+  try {
+    const supa = getSupabaseServer();
+    await supa.storage.from('custom-requests').upload(storagePath, buffer, {
+      contentType,
+      upsert: true
+    });
+    const { data } = supa.storage.from('custom-requests').getPublicUrl(storagePath);
+    console.log(`[booking] Stored payment receipt in Supabase Storage for ${reference}: ${data.publicUrl}`);
+    return data.publicUrl;
+  } catch (error) {
+    console.warn(`[booking] Storage upload failed for receipt ${reference}:`, error.message);
+    return '';
+  }
 }
 
-// Absolute URLs so the admin page can show the picture even when it is served
-// from a different local port (Live Server) than this API.
+// URLs for admin viewing: if already a full Supabase HTTPS URL, return directly.
 function withReferenceUrls(req, request) {
   const origin = `${req.protocol}://${req.get('host')}`;
 
   return {
     ...request,
-    referenceUrls: (request.referenceFiles || []).map(
-      (fileName) => `${origin}/api/references/${encodeURIComponent(fileName)}`
-    ),
-    receiptUrls: (request.receiptFiles || []).map(
-      (fileName) => `${origin}/api/receipts/${encodeURIComponent(fileName)}`
-    )
+    referenceUrls: (request.referenceFiles || []).map((file) => {
+      if (/^https?:\/\//i.test(file)) return file;
+      return `${origin}/api/references/${encodeURIComponent(file)}`;
+    }),
+    receiptUrls: (request.receiptFiles || []).map((file) => {
+      if (/^https?:\/\//i.test(file)) return file;
+      return `${origin}/api/receipts/${encodeURIComponent(file)}`;
+    })
   };
 }
 
@@ -1086,12 +1111,13 @@ app.get('/api/references/:fileName', (req, res) => {
   }
 
   const filePath = path.join(REFERENCE_DIR, fileName);
+  if (fs.existsSync(filePath)) {
+    return res.sendFile(filePath, { headers: { 'Cache-Control': 'private, max-age=600' } });
+  }
 
-  return res.sendFile(filePath, { headers: { 'Cache-Control': 'private, max-age=600' } }, (error) => {
-    if (error && !res.headersSent) {
-      res.status(404).json({ success: false, error: 'Reference picture not found.' });
-    }
-  });
+  const supa = getSupabaseServer();
+  const { data } = supa.storage.from('custom-requests').getPublicUrl(`references/${fileName}`);
+  return res.redirect(302, data.publicUrl);
 });
 
 app.get('/api/receipts/:fileName', (req, res) => {
@@ -1101,15 +1127,14 @@ app.get('/api/receipts/:fileName', (req, res) => {
     return res.status(404).json({ success: false, error: 'Payment receipt not found.' });
   }
 
-  return res.sendFile(
-    path.join(RECEIPT_DIR, fileName),
-    { headers: { 'Cache-Control': 'private, max-age=600' } },
-    (error) => {
-      if (error && !res.headersSent) {
-        res.status(404).json({ success: false, error: 'Payment receipt not found.' });
-      }
-    }
-  );
+  const filePath = path.join(RECEIPT_DIR, fileName);
+  if (fs.existsSync(filePath)) {
+    return res.sendFile(filePath, { headers: { 'Cache-Control': 'private, max-age=600' } });
+  }
+
+  const supa = getSupabaseServer();
+  const { data } = supa.storage.from('custom-requests').getPublicUrl(`receipts/${fileName}`);
+  return res.redirect(302, data.publicUrl);
 });
 
 app.get('/api/custom-requests', async (req, res) => {
@@ -1383,26 +1408,9 @@ app.delete('/api/custom-requests/:reference', async (req, res) => {
 // Gallery Management API & Real-Time Synchronization
 // ---------------------------------------------------------------------------
 const multer = require('multer');
-const GALLERY_UPLOAD_DIR = path.join(PROJECT_ROOT, 'data', 'uploads', 'gallery');
-
-const galleryStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    fs.mkdirSync(GALLERY_UPLOAD_DIR, { recursive: true });
-    cb(null, GALLERY_UPLOAD_DIR);
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase() || '.png';
-    const safeBase = path
-      .basename(file.originalname, ext)
-      .replace(/[^a-zA-Z0-9_-]/g, '_')
-      .slice(0, 30);
-    const unique = `${Date.now()}-${crypto.randomBytes(3).toString('hex')}`;
-    cb(null, `${safeBase || 'work'}-${unique}${ext}`);
-  }
-});
 
 const galleryUpload = multer({
-  storage: galleryStorage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
   fileFilter: (req, file, cb) => {
     const allowed = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
@@ -1494,7 +1502,23 @@ app.post('/api/admin/gallery/upload', (req, res) => {
     }
 
     try {
-      const relativeUrl = `/uploads/gallery/${req.file.filename}`;
+      const ext = (path.extname(req.file.originalname) || '.png').toLowerCase();
+      const safeBase = path.basename(req.file.originalname, ext).replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 30);
+      const storagePath = `gallery/${safeBase || 'work'}-${Date.now()}${ext}`;
+
+      const supa = getSupabaseServer();
+      const { error: uploadError } = await supa.storage.from('studio-gallery').upload(storagePath, req.file.buffer, {
+        contentType: req.file.mimetype || 'image/png',
+        upsert: true
+      });
+      if (uploadError) {
+        console.error('[gallery] Storage upload failed:', uploadError.message);
+        return res.status(500).json({ success: false, error: 'Failed to upload work to storage.' });
+      }
+
+      const { data: urlData } = supa.storage.from('studio-gallery').getPublicUrl(storagePath);
+      const publicUrl = urlData.publicUrl;
+
       const title = (req.body.title || path.parse(req.file.originalname).name || 'New Studio Work').trim();
       const category = req.body.category || 'Face';
       const subcategory = req.body.subcategory || 'Face tattoos';
@@ -1507,8 +1531,8 @@ app.post('/api/admin/gallery/upload', (req, res) => {
         category,
         subcategory,
         bodyPart,
-        imageUrl: relativeUrl,
-        thumbnailUrl: relativeUrl,
+        imageUrl: publicUrl,
+        thumbnailUrl: publicUrl,
         altText,
         isPublished,
         displayOrder: Number(req.body.displayOrder) || 0
@@ -1517,9 +1541,6 @@ app.post('/api/admin/gallery/upload', (req, res) => {
       return res.status(201).json({ success: true, image: created });
     } catch (error) {
       console.error('[gallery] Upload processing failed:', error.message);
-      // Multer already wrote the file; do not leave an unreferenced upload
-      // behind when the metadata write fails.
-      fs.promises.unlink(req.file.path).catch(() => {});
       return res.status(500).json({ success: false, error: 'Failed to save uploaded work.' });
     }
   });
@@ -1538,20 +1559,32 @@ app.post('/api/admin/gallery/:id/change-image', (req, res) => {
 
     try {
       const id = req.params.id;
-      const relativeUrl = `/uploads/gallery/${req.file.filename}`;
+      const ext = (path.extname(req.file.originalname) || '.png').toLowerCase();
+      const safeBase = path.basename(req.file.originalname, ext).replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 30);
+      const storagePath = `gallery/${safeBase || 'work'}-${Date.now()}${ext}`;
+
+      const supa = getSupabaseServer();
+      const { error: uploadError } = await supa.storage.from('studio-gallery').upload(storagePath, req.file.buffer, {
+        contentType: req.file.mimetype || 'image/png',
+        upsert: true
+      });
+      if (uploadError) {
+        return res.status(500).json({ success: false, error: 'Failed to upload replacement image to storage.' });
+      }
+
+      const { data: urlData } = supa.storage.from('studio-gallery').getPublicUrl(storagePath);
+      const publicUrl = urlData.publicUrl;
+
       const updated = await updateImage(id, {
-        imageUrl: relativeUrl,
-        thumbnailUrl: relativeUrl
+        imageUrl: publicUrl,
+        thumbnailUrl: publicUrl
       });
       if (!updated) {
-        // The replacement file has no owning record; remove it.
-        fs.promises.unlink(req.file.path).catch(() => {});
         return res.status(404).json({ success: false, error: 'Image not found.' });
       }
       return res.json({ success: true, image: updated });
     } catch (error) {
       console.error('[gallery] Replace image failed:', error.message);
-      fs.promises.unlink(req.file.path).catch(() => {});
       return res.status(500).json({ success: false, error: 'Failed to replace image.' });
     }
   });
@@ -1614,26 +1647,8 @@ app.delete('/api/admin/gallery/:id', async (req, res) => {
 // ---------------------------------------------------------------------------
 // Catalogue Management API & Real-Time Synchronization
 // ---------------------------------------------------------------------------
-const CATALOGUE_UPLOAD_DIR = path.join(PROJECT_ROOT, 'data', 'uploads', 'catalogue');
-
-const catalogueStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    fs.mkdirSync(CATALOGUE_UPLOAD_DIR, { recursive: true });
-    cb(null, CATALOGUE_UPLOAD_DIR);
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase() || '.png';
-    const safeBase = path
-      .basename(file.originalname, ext)
-      .replace(/[^a-zA-Z0-9_-]/g, '_')
-      .slice(0, 30);
-    const unique = `${Date.now()}-${crypto.randomBytes(3).toString('hex')}`;
-    cb(null, `${safeBase || 'catalogue'}-${unique}${ext}`);
-  }
-});
-
 const catalogueUpload = multer({
-  storage: catalogueStorage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
   fileFilter: (req, file, cb) => {
     const allowed = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
@@ -1781,7 +1796,23 @@ app.post('/api/admin/catalogue/upload', (req, res) => {
     }
 
     try {
-      const relativeUrl = `/uploads/catalogue/${req.file.filename}`;
+      const ext = (path.extname(req.file.originalname) || '.png').toLowerCase();
+      const safeBase = path.basename(req.file.originalname, ext).replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 30);
+      const storagePath = `items/${safeBase || 'item'}-${Date.now()}${ext}`;
+
+      const supa = getSupabaseServer();
+      const { error: uploadError } = await supa.storage.from('jewelry-catalog').upload(storagePath, req.file.buffer, {
+        contentType: req.file.mimetype || 'image/png',
+        upsert: true
+      });
+      if (uploadError) {
+        console.error('[catalogue] Storage upload failed:', uploadError.message);
+        return res.status(500).json({ success: false, error: 'Failed to upload catalogue image to storage.' });
+      }
+
+      const { data: urlData } = supa.storage.from('jewelry-catalog').getPublicUrl(storagePath);
+      const publicUrl = urlData.publicUrl;
+
       const name = (req.body.name || req.body.title || path.parse(req.file.originalname).name || 'New Studio Work').trim();
       const category = req.body.category || 'Ear';
       const subcategory = req.body.subcategory || 'Helix';
@@ -1807,9 +1838,9 @@ app.post('/api/admin/catalogue/upload', (req, res) => {
         sizes,
         activeSize,
         socialMedia,
-        imageUrl: relativeUrl,
-        thumbnailUrl: relativeUrl,
-        images: [relativeUrl],
+        imageUrl: publicUrl,
+        thumbnailUrl: publicUrl,
+        images: [publicUrl],
         isPublished
       });
 
@@ -1834,10 +1865,25 @@ app.post('/api/admin/catalogue/:id/change-image', (req, res) => {
 
     try {
       const id = req.params.id;
-      const relativeUrl = `/uploads/catalogue/${req.file.filename}`;
+      const ext = (path.extname(req.file.originalname) || '.png').toLowerCase();
+      const safeBase = path.basename(req.file.originalname, ext).replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 30);
+      const storagePath = `items/${safeBase || 'item'}-${Date.now()}${ext}`;
+
+      const supa = getSupabaseServer();
+      const { error: uploadError } = await supa.storage.from('jewelry-catalog').upload(storagePath, req.file.buffer, {
+        contentType: req.file.mimetype || 'image/png',
+        upsert: true
+      });
+      if (uploadError) {
+        return res.status(500).json({ success: false, error: 'Failed to upload replacement catalogue image.' });
+      }
+
+      const { data: urlData } = supa.storage.from('jewelry-catalog').getPublicUrl(storagePath);
+      const publicUrl = urlData.publicUrl;
+
       const updated = await updateCatalogueItem(id, {
-        imageUrl: relativeUrl,
-        thumbnailUrl: relativeUrl
+        imageUrl: publicUrl,
+        thumbnailUrl: publicUrl
       });
       if (!updated) {
         return res.status(404).json({ success: false, error: 'Catalogue item not found.' });

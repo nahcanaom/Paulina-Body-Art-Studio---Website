@@ -690,9 +690,25 @@
   }
 
   /**
-   * Real-Time Server Sent Events
+   * Real-Time Synchronization (Supabase Realtime + SSE fallback)
    */
   function initRealtime() {
+    if (typeof window !== 'undefined' && window.paulinaSupabase) {
+      try {
+        window.paulinaSupabase
+          .channel('admin-catalogue-realtime')
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'jewelry_catalogue' }, () => {
+            fetchCatalogue();
+          })
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'catalogue_items' }, () => {
+            fetchCatalogue();
+          })
+          .subscribe();
+      } catch (err) {
+        console.warn('[admin-catalogue] Supabase Realtime subscription notice:', err);
+      }
+    }
+
     try {
       const evtSource = new EventSource(SSE_ENDPOINT);
 

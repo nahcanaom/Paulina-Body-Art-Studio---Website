@@ -1,583 +1,306 @@
 'use strict';
 
-const fs = require('node:fs/promises');
-const path = require('node:path');
-
-const PROJECT_ROOT = path.join(__dirname, '..');
-const DATA_DIR = path.join(PROJECT_ROOT, 'data');
-const LOCAL_BOOKINGS_FILE = path.join(DATA_DIR, 'bookings.json');
-
 const { createClient } = require('@supabase/supabase-js');
 
+const DEFAULT_SUPABASE_URL = 'https://celusvfynfnszmhjgqwj.supabase.co';
+const DEFAULT_SUPABASE_ANON_KEY = 'sb_publishable_NlHs6PG9x_HHfCDUKOlArQ_pM41Bn7g';
+const BOOKINGS_TABLE = 'bookings';
+
 let supabaseClient = null;
-const SUPABASE_TIMEOUT_MS = 3000;
-// When Supabase is unreachable, skip it for a while instead of making every
-// admin request wait for the same failed connection before using the local file.
-const SUPABASE_RETRY_AFTER_MS = 60000;
-let supabaseUnavailableUntil = 0;
 
-// Catches the sample values that ship with .env.example (in any casing) so a
-// placeholder project never puts the store into a mode that stalls on a host
-// that does not exist.
-const SUPABASE_PLACEHOLDER_PATTERN =
-  /your[_-]?project[_-]?ref|your[_-]?supabase|your[_-]?service[_-]?role|placeholder|changeme|example\.(com|org)/i;
-
-function isRealSupabaseConfigured() {
-  const url = (process.env.SUPABASE_URL || '').trim();
-  const key = (process.env.SUPABASE_SERVICE_ROLE_KEY || '').trim();
-  if (!url || !key) return false;
-  if (SUPABASE_PLACEHOLDER_PATTERN.test(url) || SUPABASE_PLACEHOLDER_PATTERN.test(key)) {
-    return false;
-  }
-
-  try {
-    new URL(url);
-  } catch {
-    return false;
-  }
-
-  return true;
-}
-
-function getBookingsTable() {
-  return (
-    process.env.SUPABASE_BOOKINGS_TABLE ||
-    process.env.FIRESTORE_BOOKINGS_COLLECTION ||
-    'bookings'
-  ).trim();
-}
-
-/**
- * Lazily create the Supabase server client using the service_role key.
- * Falls back to null when credentials are placeholder or missing (local-json path taken below).
- */
 function getSupabase() {
-  if (!isRealSupabaseConfigured()) return null;
-  if (supabaseUnavailableUntil > Date.now()) return null;
+  if (supabaseClient) return supabaseClient;
 
-  if (!supabaseClient) {
-    const url = process.env.SUPABASE_URL;
-    const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    supabaseClient = createClient(url, key);
-  }
+  const url = (process.env.SUPABASE_URL || '').trim();
+  const key = (process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || '').trim();
+
+  const finalUrl = url && !url.includes('YOUR_PROJECT_REF') ? url : DEFAULT_SUPABASE_URL;
+  const finalKey = key && !key.includes('YOUR_') && !key.includes('placeholder') ? key : DEFAULT_SUPABASE_ANON_KEY;
+
+  supabaseClient = createClient(finalUrl, finalKey, {
+    auth: { persistSession: false, autoRefreshToken: false }
+  });
+
   return supabaseClient;
 }
 
-/** Stops retrying a store that just failed so admin pages stay responsive. */
-function markSupabaseUnavailable() {
-  supabaseUnavailableUntil = Date.now() + SUPABASE_RETRY_AFTER_MS;
-}
-
-/**
- * The Supabase client retries an unreachable host a few times before giving
- * up, which made the admin page sit on a loading state for seven seconds.
- * Racing the query keeps the local-file fallback instant.
- */
-function withTimeout(promise, ms) {
-  return new Promise((resolve, reject) => {
-    const timer = setTimeout(() => reject(new Error('Supabase request timed out.')), ms);
-
-    promise.then(
-      (value) => {
-        clearTimeout(timer);
-        resolve(value);
-      },
-      (error) => {
-        clearTimeout(timer);
-        reject(error);
-      }
-    );
-  });
-}
-
-let localWriteQueue = Promise.resolve();
-
-/**
- * Runs local file writes one at a time so two bookings saved at the same
- * moment cannot overwrite each other's record.
- */
-function enqueueLocalTask(task) {
-  const run = localWriteQueue.then(task, task);
-  localWriteQueue = run.catch(() => {});
-  return run;
-}
-
-function enqueueLocalWrite(booking) {
-  return enqueueLocalTask(async () => {
-    const bookings = await readLocalBookings();
-    bookings.push({ ...normalizeBookingRecord(booking), createdAt: new Date().toISOString() });
-    await writeLocalBookings(bookings);
-  });
-}
-
-function enqueueLocalUpdate(reference, patch) {
-  return enqueueLocalTask(async () => {
-    const bookings = await readLocalBookings();
-    const index = bookings.findIndex((record) => record.reference === reference);
-
-    if (index === -1) return false;
-
-    bookings[index] = {
-      ...bookings[index],
-      ...patch,
-      updatedAt: new Date().toISOString()
-    };
-    await writeLocalBookings(bookings);
-    return true;
-  });
-}
-
-function enqueueLocalDelete(reference) {
-  return enqueueLocalTask(async () => {
-    const bookings = await readLocalBookings();
-    const index = bookings.findIndex((record) => record.reference === reference);
-    if (index === -1) return false;
-    bookings.splice(index, 1);
-    await writeLocalBookings(bookings);
-    return true;
-  });
-}
-
-async function writeLocalBookings(bookings) {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  await fs.writeFile(
-    LOCAL_BOOKINGS_FILE,
-    `${JSON.stringify(bookings, null, 2)}\n`,
-    'utf8'
-  );
-}
-
 function getStorageMode() {
-  if (isRealSupabaseConfigured()) return 'supabase';
-  return 'local-json';
+  return 'supabase';
 }
-
-// Booking data can come from the browser form, the local JSON file, or a
-// Supabase row with snake_case columns. Normalize every source to the same
-// camelCase shape before the rest of the server (and the email service) uses it.
-const NESTED_RECORD_KEYS = [
-  'booking',
-  'bookingData',
-  'appointment',
-  'request',
-  'details',
-  'data',
-  'payload',
-  'customer',
-  'client',
-  'contact'
-];
-
-const RECORD_EMAIL_KEYS = [
-  'email',
-  'customerEmail',
-  'customer_email',
-  'clientEmail',
-  'client_email',
-  'emailAddress',
-  'email_address',
-  'recipientEmail',
-  'recipient_email',
-  'contactEmail',
-  'contact_email'
-];
-const RECORD_REFERENCE_KEYS = [
-  'reference',
-  'referenceCode',
-  'reference_code',
-  'referenceId',
-  'reference_id',
-  'bookingReference',
-  'booking_reference',
-  'bookingId',
-  'booking_id',
-  'id'
-];
-const RECORD_NAME_KEYS = [
-  'fullName',
-  'full_name',
-  'customerName',
-  'customer_name',
-  'clientName',
-  'client_name',
-  'guestName',
-  'guest_name',
-  'name'
-];
-const RECORD_PHONE_KEYS = [
-  'phone',
-  'phoneNumber',
-  'phone_number',
-  'contactNumber',
-  'contact_number',
-  'mobile',
-  'mobileNumber',
-  'mobile_number'
-];
-const RECORD_SERVICE_KEYS = [
-  'service',
-  'serviceName',
-  'service_name',
-  'serviceType',
-  'service_type',
-  'appointmentType',
-  'appointment_type'
-];
-const RECORD_DATE_KEYS = [
-  'date',
-  'scheduledDate',
-  'scheduled_date',
-  'appointmentDate',
-  'appointment_date',
-  'bookingDate',
-  'booking_date'
-];
-const RECORD_TIME_KEYS = [
-  'time',
-  'scheduledTime',
-  'scheduled_time',
-  'appointmentTime',
-  'appointment_time',
-  'bookingTime',
-  'booking_time',
-  'slot'
-];
 
 function recordText(value) {
   let candidate = value;
   if (Array.isArray(candidate)) candidate = candidate[0];
-
   if (candidate && typeof candidate === 'object') {
     if ('email' in candidate) return recordText(candidate.email);
     if ('address' in candidate) return recordText(candidate.address);
     if ('value' in candidate) return recordText(candidate.value);
     return '';
   }
-
   if (typeof candidate !== 'string' && typeof candidate !== 'number') return '';
   return String(candidate).trim();
 }
 
-function getRecordSources(record) {
-  const root = record && typeof record === 'object' && !Array.isArray(record) ? record : {};
-  const sources = [];
+function normalizeBookingRecord(raw) {
+  if (!raw || typeof raw !== 'object') return {};
 
-  const add = (value) => {
-    if (value && typeof value === 'object' && !Array.isArray(value) && !sources.includes(value)) {
-      sources.push(value);
-    }
+  const record = { ...raw };
+
+  return {
+    id: record.id || undefined,
+    reference: recordText(record.reference || record.reference_code || record.referenceCode || record.id),
+    fullName: recordText(record.full_name || record.fullName || record.customerName || record.customer_name || record.name),
+    email: recordText(record.email || record.customerEmail || record.customer_email || record.clientEmail),
+    phone: recordText(record.phone || record.phone_number || record.phoneNumber || record.mobile),
+    serviceType: recordText(record.service_type || record.serviceType || record.appointmentType),
+    service: recordText(record.service || record.service_name || record.serviceName),
+    artist: recordText(record.artist || record.artist_name || record.artistName) || 'Paulina Vampire',
+    date: recordText(record.date || record.scheduledDate || record.scheduled_date || record.bookingDate),
+    time: recordText(record.time || record.scheduledTime || record.scheduled_time || record.slot),
+    duration: recordText(record.duration) || '1 hour',
+    endTime: recordText(record.end_time || record.endTime),
+    status: recordText(record.status || 'pending_confirmation').toLowerCase(),
+    attendanceStatus: recordText(record.attendance_status || record.attendanceStatus),
+    depositAmount: typeof record.deposit_amount === 'number' ? record.deposit_amount : (typeof record.depositAmount === 'number' ? record.depositAmount : 500),
+    deposit: recordText(record.deposit) || '₱500',
+    depositStatus: recordText(record.deposit_status || record.depositStatus || 'paid'),
+    paymentMethod: recordText(record.payment_method || record.paymentMethod || 'Gcash'),
+    receiptFileName: recordText(record.receipt_file_name || record.receiptFileName),
+    receiptUrl: recordText(record.receipt_url || record.receiptUrl),
+    notes: recordText(record.notes || record.customerNotes || record.specialRequests),
+    placement: recordText(record.placement || record.body_placement || record.bodyPlacement),
+    tattooSize: recordText(record.tattoo_size || record.tattooSize || record.targetSize),
+    tattooFormType: recordText(record.tattoo_form_type || record.tattooFormType),
+    tattooStyle: recordText(record.tattoo_style || record.tattooStyle || record.style),
+    clientRequestId: recordText(record.client_request_id || record.clientRequestId),
+    emailSent: Boolean(record.email_sent !== undefined ? record.email_sent : record.emailSent),
+    emailError: record.email_error || record.emailError || null,
+    emailProvider: record.email_provider || record.emailProvider || null,
+    source: recordText(record.source) || 'website',
+    createdAt: record.created_at || record.createdAt || new Date().toISOString(),
+    updatedAt: record.updated_at || record.updatedAt || new Date().toISOString()
   };
-
-  add(root);
-  for (const key of NESTED_RECORD_KEYS) add(root[key]);
-  for (const key of ['data', 'payload', 'booking', 'bookingData', 'request', 'appointment']) {
-    const wrapper = root[key];
-    if (!wrapper || typeof wrapper !== 'object') continue;
-    for (const nestedKey of NESTED_RECORD_KEYS) add(wrapper[nestedKey]);
-  }
-
-  return sources;
 }
 
-function pickRecordField(sources, keys) {
-  for (const source of sources) {
-    for (const key of keys) {
-      if (!(key in source)) continue;
-      const value = recordText(source[key]);
-      if (value) return value;
-    }
-  }
-  return '';
-}
-
-function pickRecordBoolean(sources, keys) {
-  for (const source of sources) {
-    for (const key of keys) {
-      if (!(key in source)) continue;
-      const value = source[key];
-      if (value === true || value === 'true' || value === 1 || value === '1') return true;
-      if (value === false || value === 'false' || value === 0 || value === '0') return false;
-    }
-  }
-  return undefined;
-}
-
-function normalizeBookingRecord(record) {
-  if (!record || typeof record !== 'object' || Array.isArray(record)) return record;
-
-  const sources = getRecordSources(record);
-  const normalized = { ...record };
-  const set = (key, value) => {
-    if (value !== undefined && value !== null && value !== '') normalized[key] = value;
+function toDbBooking(normalized) {
+  return {
+    reference: normalized.reference,
+    full_name: normalized.fullName || '',
+    email: normalized.email || '',
+    phone: normalized.phone || '',
+    service_type: normalized.serviceType || '',
+    service: normalized.service || '',
+    artist: normalized.artist || 'Paulina Vampire',
+    date: normalized.date || '',
+    time: normalized.time || '',
+    duration: normalized.duration || '1 hour',
+    end_time: normalized.endTime || '',
+    status: normalized.status || 'pending_confirmation',
+    attendance_status: normalized.attendanceStatus || '',
+    deposit_amount: normalized.depositAmount || 500,
+    deposit: normalized.deposit || '₱500',
+    deposit_status: normalized.depositStatus || 'paid',
+    payment_method: normalized.paymentMethod || 'Gcash',
+    receipt_file_name: normalized.receiptFileName || '',
+    receipt_url: normalized.receiptUrl || '',
+    notes: normalized.notes || '',
+    placement: normalized.placement || '',
+    tattoo_size: normalized.tattooSize || '',
+    tattoo_form_type: normalized.tattooFormType || '',
+    tattoo_style: normalized.tattooStyle || '',
+    client_request_id: normalized.clientRequestId || '',
+    email_sent: Boolean(normalized.emailSent),
+    email_error: normalized.emailError || '',
+    email_provider: normalized.emailProvider || '',
+    source: normalized.source || 'website',
+    created_at: normalized.createdAt || new Date().toISOString(),
+    updated_at: new Date().toISOString()
   };
-
-  const email = pickRecordField(sources, RECORD_EMAIL_KEYS).toLowerCase();
-  set('email', email);
-  set('reference', pickRecordField(sources, RECORD_REFERENCE_KEYS));
-  set('fullName', pickRecordField(sources, RECORD_NAME_KEYS));
-  set('phone', pickRecordField(sources, RECORD_PHONE_KEYS));
-  set('service', pickRecordField(sources, RECORD_SERVICE_KEYS));
-  set('serviceType', pickRecordField(sources, ['serviceType', 'service_type', 'appointmentType', 'appointment_type']));
-  set('date', pickRecordField(sources, RECORD_DATE_KEYS));
-  set('time', pickRecordField(sources, RECORD_TIME_KEYS));
-  set('artist', pickRecordField(sources, ['artist', 'artistName', 'artist_name', 'assignedArtist', 'assigned_artist']));
-  set('notes', pickRecordField(sources, ['notes', 'note', 'message', 'specialRequests', 'special_requests']));
-  set('paymentMethod', pickRecordField(sources, ['paymentMethod', 'payment_method', 'depositMethod', 'deposit_method']));
-  set('placement', pickRecordField(sources, ['placement', 'bodyPlacement', 'body_placement', 'tattooPlacement', 'tattoo_placement']));
-  set('tattooSize', pickRecordField(sources, ['tattooSize', 'tattoo_size', 'targetSize', 'target_size', 'size']));
-  set('tattooStyle', pickRecordField(sources, ['tattooStyle', 'tattoo_style', 'style', 'designStyle', 'design_style']));
-  set('clientRequestId', pickRecordField(sources, ['clientRequestId', 'client_request_id']));
-  set('emailError', pickRecordField(sources, ['emailError', 'email_error']));
-  set('emailProvider', pickRecordField(sources, ['emailProvider', 'email_provider']));
-  set('createdAt', pickRecordField(sources, ['createdAt', 'created_at']));
-
-  const emailSent = pickRecordBoolean(sources, ['emailSent', 'email_sent']);
-  if (emailSent !== undefined) normalized.emailSent = emailSent;
-
-  return normalized;
 }
 
-async function readLocalBookings() {
-  try {
-    const contents = await fs.readFile(LOCAL_BOOKINGS_FILE, 'utf8');
-    const parsed = JSON.parse(contents);
-    return Array.isArray(parsed) ? parsed.map(normalizeBookingRecord) : [];
-  } catch (error) {
-    // A missing file is normal on first run. A malformed file is replaced so
-    // one bad manual edit cannot block future bookings.
-    if (error.code === 'ENOENT' || error instanceof SyntaxError) return [];
-    throw error;
-  }
+function toDbBookingPatch(patch = {}) {
+  const dbPatch = { updated_at: new Date().toISOString() };
+  if (patch.reference !== undefined) dbPatch.reference = patch.reference;
+  if (patch.fullName !== undefined || patch.full_name !== undefined) dbPatch.full_name = patch.fullName ?? patch.full_name;
+  if (patch.email !== undefined) dbPatch.email = patch.email;
+  if (patch.phone !== undefined) dbPatch.phone = patch.phone;
+  if (patch.serviceType !== undefined || patch.service_type !== undefined) dbPatch.service_type = patch.serviceType ?? patch.service_type;
+  if (patch.service !== undefined) dbPatch.service = patch.service;
+  if (patch.artist !== undefined) dbPatch.artist = patch.artist;
+  if (patch.date !== undefined) dbPatch.date = patch.date;
+  if (patch.time !== undefined) dbPatch.time = patch.time;
+  if (patch.duration !== undefined) dbPatch.duration = patch.duration;
+  if (patch.endTime !== undefined || patch.end_time !== undefined) dbPatch.end_time = patch.endTime ?? patch.end_time;
+  if (patch.status !== undefined) dbPatch.status = String(patch.status).toLowerCase();
+  if (patch.attendanceStatus !== undefined || patch.attendance_status !== undefined) dbPatch.attendance_status = patch.attendanceStatus ?? patch.attendance_status;
+  if (patch.depositAmount !== undefined || patch.deposit_amount !== undefined) dbPatch.deposit_amount = patch.depositAmount ?? patch.deposit_amount;
+  if (patch.deposit !== undefined) dbPatch.deposit = patch.deposit;
+  if (patch.depositStatus !== undefined || patch.deposit_status !== undefined) dbPatch.deposit_status = patch.depositStatus ?? patch.deposit_status;
+  if (patch.paymentMethod !== undefined || patch.payment_method !== undefined) dbPatch.payment_method = patch.paymentMethod ?? patch.payment_method;
+  if (patch.receiptFileName !== undefined || patch.receipt_file_name !== undefined) dbPatch.receipt_file_name = patch.receiptFileName ?? patch.receipt_file_name;
+  if (patch.receiptUrl !== undefined || patch.receipt_url !== undefined) dbPatch.receipt_url = patch.receiptUrl ?? patch.receipt_url;
+  if (patch.notes !== undefined) dbPatch.notes = patch.notes;
+  if (patch.placement !== undefined) dbPatch.placement = patch.placement;
+  if (patch.tattooSize !== undefined || patch.tattoo_size !== undefined) dbPatch.tattoo_size = patch.tattooSize ?? patch.tattoo_size;
+  if (patch.emailSent !== undefined || patch.email_sent !== undefined) dbPatch.email_sent = Boolean(patch.emailSent ?? patch.email_sent);
+  if (patch.emailError !== undefined || patch.email_error !== undefined) dbPatch.email_error = patch.emailError ?? patch.email_error;
+  if (patch.emailProvider !== undefined || patch.email_provider !== undefined) dbPatch.email_provider = patch.emailProvider ?? patch.email_provider;
+  return dbPatch;
 }
 
 /**
- * Persists a booking to Supabase. Falls back to local-json when credentials
- * are not configured.
+ * Persists a booking directly to Supabase PostgreSQL bookings table.
  */
 async function saveBooking(booking) {
   const record = normalizeBookingRecord(booking);
-  const supa = getSupabase();
+  const client = getSupabase();
+  const dbRecord = toDbBooking(record);
 
-  if (supa) {
-    const collectionName = getBookingsTable();
-    try {
-      const { data, error } = await withTimeout(
-        supa
-          .from(collectionName)
-          .insert({ ...record, status: record.status || 'pending_confirmation', source: 'website' })
-          .select(),
-        SUPABASE_TIMEOUT_MS
-      );
+  const { data, error } = await client
+    .from(BOOKINGS_TABLE)
+    .upsert(dbRecord, { onConflict: 'reference' })
+    .select();
 
-      if (error) throw new Error(error.message);
-
-      return {
-        type: 'supabase',
-        collection: collectionName,
-        id: data?.[0]?.reference || data?.[0]?.id || record.reference
-      };
-    } catch (err) {
-      // A write must never hold the booking response hostage: fall through to
-      // the local file and stop retrying this store for a minute.
-      markSupabaseUnavailable();
-      console.error('[booking] Could not save to Supabase, using local file:', err.message);
-    }
+  if (error) {
+    console.error('[bookingStore] Supabase saveBooking error:', error.message);
+    throw new Error(`Failed to save booking to Supabase: ${error.message}`);
   }
 
-  await enqueueLocalWrite(record);
-
   return {
-    type: 'local-json',
-    file: path.relative(PROJECT_ROOT, LOCAL_BOOKINGS_FILE)
+    type: 'supabase',
+    collection: BOOKINGS_TABLE,
+    id: data?.[0]?.reference || record.reference
   };
 }
 
 /**
- * Finds a booking by the browser-generated idempotency token. This lets the
- * booking page recover a confirmed booking after a refresh or a lost response.
+ * Finds a booking by clientRequestId for deduplication.
  */
 async function findBookingByClientRequestId(clientRequestId) {
   const token = String(clientRequestId || '').trim();
   if (!token) return null;
 
-  const supa = getSupabase();
+  const client = getSupabase();
+  const { data, error } = await client
+    .from(BOOKINGS_TABLE)
+    .select('*')
+    .eq('client_request_id', token)
+    .limit(1)
+    .maybeSingle();
 
-  if (supa) {
-    const collectionName = getBookingsTable();
-    try {
-      const { data, error } = await withTimeout(
-        supa
-          .from(collectionName)
-          .select('*')
-          .eq('clientRequestId', token)
-          .limit(1)
-          .single(),
-        SUPABASE_TIMEOUT_MS
-      );
-
-      if (error || !data) return null;
-
-      // Preserve an explicit reference column; only fall back to row id.
-      return normalizeBookingRecord(data);
-    } catch (err) {
-      markSupabaseUnavailable();
-      console.error('[booking] Could not look up Supabase booking, using local file:', err.message);
-    }
-  }
-
-  const bookings = await readLocalBookings();
-  const record = [...bookings].reverse().find((item) => item.clientRequestId === token);
-  return record || null;
+  if (error || !data) return null;
+  return normalizeBookingRecord(data);
 }
 
 /**
- * Records the email delivery outcome without changing the booking status.
+ * Updates booking email delivery outcome in Supabase.
  */
 async function updateBookingDelivery(reference, delivery) {
   if (!reference) return false;
+  const client = getSupabase();
 
-  const supa = getSupabase();
   const patch = {
-    emailSent: Boolean(delivery?.emailSent),
-    emailError: delivery?.emailError || null,
-    emailProvider: delivery?.emailProvider || null
+    email_sent: Boolean(delivery?.emailSent),
+    email_error: delivery?.emailError || '',
+    email_provider: delivery?.emailProvider || '',
+    updated_at: new Date().toISOString()
   };
 
-  if (supa) {
-    const collectionName = getBookingsTable();
+  const { error } = await client
+    .from(BOOKINGS_TABLE)
+    .update(patch)
+    .eq('reference', reference);
 
-    try {
-      const { error } = await withTimeout(
-        supa.from(collectionName).update(patch).eq('reference', reference),
-        SUPABASE_TIMEOUT_MS
-      );
-
-      if (error) {
-        console.error(`[booking] Could not update email delivery for ${reference}:`, error.message);
-        return false;
-      }
-      return true;
-    } catch (err) {
-      markSupabaseUnavailable();
-      console.error('[booking] Supabase update error:', err.message);
-      return false;
-    }
+  if (error) {
+    console.error(`[bookingStore] Failed to update delivery for ${reference}:`, error.message);
+    return false;
   }
-
-  return enqueueLocalUpdate(reference, patch);
+  return true;
 }
 
 /**
- * Reads every stored booking, whichever storage mode is configured. Used by the
- * admin Custom Requests page to find requests submitted with the Custom Tattoo
- * Booking Form.
+ * Reads all bookings from live Supabase PostgreSQL.
  */
 async function readAllBookings() {
-  const supa = getSupabase();
+  const client = getSupabase();
+  const { data, error } = await client
+    .from(BOOKINGS_TABLE)
+    .select('*')
+    .order('created_at', { ascending: false });
 
-  if (supa) {
-    const collectionName = getBookingsTable();
-
-    try {
-      const { data, error } = await withTimeout(
-        supa.from(collectionName).select('*'),
-        SUPABASE_TIMEOUT_MS
-      );
-
-      if (error) throw error;
-
-      return Array.isArray(data) ? data.map(normalizeBookingRecord) : [];
-    } catch (error) {
-      markSupabaseUnavailable();
-      // Match saveBooking(): when the hosted store is unreachable, keep the
-      // admin page working from the local bookings file.
-      console.warn('[booking] Could not read Supabase bookings, using local file:', error.message);
-    }
+  if (error) {
+    console.error('[bookingStore] Failed to read bookings from Supabase:', error.message);
+    return [];
   }
 
-  return readLocalBookings();
+  return Array.isArray(data) ? data.map(normalizeBookingRecord) : [];
 }
 
 /**
- * Updates an existing booking record.
+ * Updates a booking by its reference code in Supabase.
  */
 async function updateBooking(reference, patch) {
   if (!reference) return false;
-  const supa = getSupabase();
+  const client = getSupabase();
+  const dbPatch = toDbBookingPatch(patch);
 
-  if (supa) {
-    const collectionName = getBookingsTable();
-    try {
-      const { error } = await withTimeout(
-        supa
-          .from(collectionName)
-          .update({ ...patch, updatedAt: new Date().toISOString() })
-          .eq('reference', reference),
-        SUPABASE_TIMEOUT_MS
-      );
+  const { error } = await client
+    .from(BOOKINGS_TABLE)
+    .update(dbPatch)
+    .eq('reference', reference);
 
-      if (!error) {
-        await enqueueLocalUpdate(reference, patch);
-        return true;
-      }
-      console.warn(`[booking] Could not update Supabase for ${reference}:`, error.message);
-    } catch (err) {
-      markSupabaseUnavailable();
-      console.warn('[booking] Supabase update error:', err.message);
-    }
+  if (error) {
+    console.error(`[bookingStore] Failed to update booking ${reference}:`, error.message);
+    return false;
   }
-
-  return enqueueLocalUpdate(reference, patch);
+  return true;
 }
 
 /**
- * Deletes a booking record.
+ * Permanently deletes a booking in Supabase.
  */
 async function deleteBooking(reference) {
   if (!reference) return false;
-  const supa = getSupabase();
+  const client = getSupabase();
 
-  if (supa) {
-    const collectionName = getBookingsTable();
-    try {
-      const { error } = await withTimeout(
-        supa.from(collectionName).delete().eq('reference', reference),
-        SUPABASE_TIMEOUT_MS
-      );
+  const { error } = await client
+    .from(BOOKINGS_TABLE)
+    .delete()
+    .eq('reference', reference);
 
-      if (!error) {
-        await enqueueLocalDelete(reference);
-        return true;
-      }
-      console.warn(`[booking] Could not delete Supabase booking ${reference}:`, error.message);
-    } catch (err) {
-      markSupabaseUnavailable();
-      console.warn('[booking] Supabase delete error:', err.message);
-    }
+  if (error) {
+    console.error(`[bookingStore] Failed to delete booking ${reference}:`, error.message);
+    return false;
   }
-
-  return enqueueLocalDelete(reference);
+  return true;
 }
 
 /**
- * Returns an array of booked timeslots for a given date and optional artist.
- * Used by the public booking interface for slot locking.
+ * Returns locked time slots for a specific date and artist directly from Supabase.
  */
-async function getLockedSlots(date, artist = null) {
-  const bookings = await readAllBookings();
-  const normalizedDate = String(date || '').trim().toLowerCase();
+async function getLockedSlots(date, artist = '') {
+  const normalizedDate = String(date || '').trim();
+  if (!normalizedDate) return [];
 
-  return bookings
+  const client = getSupabase();
+  let query = client
+    .from(BOOKINGS_TABLE)
+    .select('time, date, artist, status')
+    .eq('date', normalizedDate)
+    .in('status', ['confirmed', 'pending_confirmation', 'late', 'completed']);
+
+  const { data, error } = await query;
+  if (error) {
+    console.warn('[bookingStore] Could not fetch locked slots from Supabase:', error.message);
+    return [];
+  }
+
+  return (data || [])
     .filter((b) => {
-      const bDate = String(b.date || '').trim().toLowerCase();
-      if (!bDate || bDate !== normalizedDate) return false;
-      if (artist && b.artist && String(b.artist).trim().toLowerCase() !== String(artist).trim().toLowerCase()) {
-        return false;
+      if (artist && b.artist) {
+        return String(b.artist).trim().toLowerCase() === String(artist).trim().toLowerCase();
       }
-      const st = String(b.status || '').toLowerCase();
-      // Locked statuses: confirmed, pending_confirmation, late, completed
-      // Cancelled slots are released.
-      return st === 'confirmed' || st === 'pending_confirmation' || st === 'late' || st === 'completed';
+      return true;
     })
     .map((b) => String(b.time || '').trim())
     .filter(Boolean);

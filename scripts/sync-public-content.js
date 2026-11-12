@@ -1,11 +1,14 @@
 /**
- * One-off content synchronisation for the admin "Edit Website" tables.
+ * [DEPRECATED] Static build-time snapshot script.
+ * 
+ * In production (Vercel + Supabase), the admin portal and public website query
+ * live Supabase PostgreSQL and Supabase Storage in real time. This script is
+ * retained solely for manual historical re-seeding if ever required.
  *
- * The public pages were authored first. This script copies their wording and
- * image metadata into Supabase so the dashboard mirrors what visitors already
- * see, then seeds the artist profile that was previously static markup.
- *
- * Run with:  node scripts/sync-public-content.js
+ * Live data synchronisation is handled directly via:
+ *   - docs/migrations/full_production_sync.sql
+ *   - services/*.js
+ *   - public/js/site-content.js & storageService.js
  */
 import 'dotenv/config';
 import { createClient } from '@supabase/supabase-js';

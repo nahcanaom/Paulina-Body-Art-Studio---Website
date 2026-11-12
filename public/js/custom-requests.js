@@ -4,6 +4,23 @@
 
 import { createDialog } from '../components/dialog.js';
 import { confirmNotice, showNotice } from './notice.js';
+import { supabase } from './supabase-config.js';
+
+if (supabase) {
+  try {
+    supabase
+      .channel('admin-custom-requests')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'custom_requests' }, () => {
+        loadRequests();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, () => {
+        loadRequests();
+      })
+      .subscribe();
+  } catch (err) {
+    console.warn('[custom-requests] Realtime sync error:', err);
+  }
+}
 
 const REQUESTS_PATH = '/api/custom-requests';
 const API_TIMEOUT_MS = 8000;

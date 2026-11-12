@@ -129,15 +129,38 @@
     if (showSkeleton) renderLoadingSkeletons();
 
     try {
-      const res = await fetch(API_ENDPOINT, { cache: 'no-store' });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
+      let images = null;
+
+      if (typeof window !== 'undefined' && window.paulinaSupabase) {
+        try {
+          const { data, error } = await window.paulinaSupabase
+            .from('gallery_images')
+            .select('*')
+            .eq('is_published', true)
+            .order('display_order', { ascending: true });
+
+          if (!error && Array.isArray(data)) {
+            images = data;
+          }
+        } catch (err) {
+          console.warn('[gallery] Supabase direct query notice:', err);
+        }
+      }
+
+      if (!images) {
+        const res = await fetch(API_ENDPOINT, { cache: 'no-store' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        if (data.success && Array.isArray(data.images)) {
+          images = data.images;
+        }
+      }
 
       // Ignore a response that a newer refresh has already superseded.
       if (requestId !== refreshRequestId) return;
 
-      if (data.success && Array.isArray(data.images)) {
-        publishedWorks = data.images;
+      if (Array.isArray(images)) {
+        publishedWorks = images;
         renderActiveCategory();
         syncOpenModal();
       }

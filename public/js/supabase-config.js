@@ -3,16 +3,30 @@ import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 const DEFAULT_SUPABASE_CONFIG = {
   url: "https://celusvfynfnszmhjgqwj.supabase.co",
-  // PASTE YOUR FULL UNTRUNCATED PUBLISHABLE KEY HERE
   anonKey: "sb_publishable_NlHs6PG9x_HHfCDUKOlArQ_pM41Bn7g", 
   tables: {
     profiles: "profiles",
     publicProfiles: "public_profiles",
     reviews: "reviews",
-    bookings: "bookings"
+    bookings: "bookings",
+    customRequests: "custom_requests",
+    catalogue: "catalogue_items",
+    jewelryCatalogue: "jewelry_catalogue",
+    gallery: "gallery_items",
+    galleryImages: "gallery_images",
+    siteSettings: "site_settings",
+    siteContent: "site_content",
+    siteImages: "site_images",
+    artists: "artist_profiles",
+    faqs: "faqs",
+    notifications: "notifications"
   },
   storage: {
-    profilePicturesBucket: "profile_pictures"
+    profilePicturesBucket: "profile_pictures",
+    catalogueBucket: "jewelry-catalog",
+    galleryBucket: "studio-gallery",
+    siteImagesBucket: "site-images",
+    customRequestsBucket: "custom-requests"
   },
   redirects: {
     authCallbackPath: "auth-callback.html",
@@ -68,3 +82,7 @@ export function isSupabaseConfigured(config = supabaseConfig) {
 }
 
 export const supabase = createClient(supabaseConfig.url, supabaseConfig.anonKey, supabaseConfig.options);
+
+if (typeof window !== "undefined") {
+  window.paulinaSupabase = supabase;
+}

@@ -95,6 +95,7 @@ function init() {
   setupAppointmentMenuEvents();
   initChart();
   renderDashboard();
+  loadRevenueFromSupabase();
   refreshBookings();
   startAutoRefresh();
 }
@@ -191,6 +192,23 @@ function startAutoRefresh() {
  * a dropped stream.
  */
 function initBookingsRealtime() {
+  if (typeof window !== 'undefined' && window.paulinaSupabase) {
+    try {
+      window.paulinaSupabase
+        .channel('dashboard-realtime')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, () => {
+          window.clearTimeout(realtimeRefreshTimer);
+          realtimeRefreshTimer = window.setTimeout(refreshBookings, 250);
+        })
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'site_settings' }, () => {
+          loadRevenueFromSupabase();
+        })
+        .subscribe();
+    } catch (err) {
+      console.warn('[dashboard] Supabase realtime subscription notice:', err);
+    }
+  }
+
   if (typeof EventSource !== 'function') return;
 
   try {
@@ -459,26 +477,66 @@ function escapeHtml(value) {
 }
 
 /* ==========================================================================
-   REVENUE — manually editable, stored per month
+   REVENUE — live synced with Supabase site_settings, stored per month
    ========================================================================== */
+let revenueCache = {};
+
 function revenueStorageKey(date) {
-  return `${REVENUE_STORAGE_PREFIX}.${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
 }
 
-function readStoredRevenue(key) {
+async function loadRevenueFromSupabase() {
   try {
-    const raw = window.localStorage.getItem(key);
-    return raw == null ? 0 : parseMoney(raw);
-  } catch {
-    return 0;
+    if (window.paulinaSupabase) {
+      const { data } = await window.paulinaSupabase
+        .from('site_settings')
+        .select('value')
+        .eq('key', 'admin_revenue')
+        .maybeSingle();
+
+      if (data?.value?.monthly && typeof data.value.monthly === 'object') {
+        revenueCache = { ...data.value.monthly };
+        const currentKey = dashboardState.revenueMonthKey || revenueStorageKey(new Date());
+        if (revenueCache[currentKey] !== undefined) {
+          dashboardState.manualRevenue = parseMoney(revenueCache[currentKey]);
+          const metrics = computeDashboardMetrics(dashboardState.bookings, new Date());
+          renderKPIs(metrics);
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('[dashboard] Could not load revenue from Supabase:', err);
   }
 }
 
-function writeStoredRevenue(key, value) {
+function readStoredRevenue(key) {
+  if (revenueCache && revenueCache[key] !== undefined) {
+    return parseMoney(revenueCache[key]);
+  }
+  return 0;
+}
+
+async function writeStoredRevenue(key, value) {
+  revenueCache[key] = value;
   try {
-    window.localStorage.setItem(key, String(value));
-  } catch {
-    // Private browsing or a full storage quota should never block the UI.
+    if (window.paulinaSupabase) {
+      const { data } = await window.paulinaSupabase
+        .from('site_settings')
+        .select('value')
+        .eq('key', 'admin_revenue')
+        .maybeSingle();
+
+      const current = data?.value || { monthly: {} };
+      const monthly = { ...(current.monthly || {}), [key]: value };
+
+      await window.paulinaSupabase.from('site_settings').upsert({
+        key: 'admin_revenue',
+        value: { ...current, monthly },
+        updated_at: new Date().toISOString()
+      });
+    }
+  } catch (err) {
+    console.warn('[dashboard] Could not persist revenue to Supabase:', err);
   }
 }
 
