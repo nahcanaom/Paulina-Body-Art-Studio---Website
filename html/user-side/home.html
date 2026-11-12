@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PAULINA Body Art Studio | Home</title>
+  <link rel="icon" type="image/png" href="../../assets/logos/favicon_white.png">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+  
+  <!-- External CSS Stylesheets -->
+  <link rel="stylesheet" href="../../css/header_and_footer.css">
+  <link rel="stylesheet" href="../../css/home.css">
+  <link rel="stylesheet" href="../../css/reviews.css">
+  <link rel="stylesheet" href="../../css/notices.css">
+</head>
+<body>
+  <div class="page-content">
+
+  <!-- Navigation Bar -->
+  <nav class="navbar" aria-label="Main navigation">
+    <a href="#hero" class="brand-logo" aria-label="PAULINA Body Art Studio home">
+      <img src="../../assets/logos/logo_2.png" alt="PAULINA Body Art Studio Logo">
+    </a>
+
+    <a href="account_settings.html" class="mobile-account-link" aria-label="Account settings" title="Account settings">
+      <i class="ph ph-user-circle" aria-hidden="true"></i>
+    </a>
+
+    <button class="nav-toggle" type="button" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+      <div class="nav-links" id="navMenu">
+        <a href="#hero" class="active">HOME</a>
+        <a href="gallery.html">GALLERY</a>
+        <a href="catalogue.html">CATALOGUE</a>
+        <a href="aftercare.html">AFTERCARE</a>
+        <a href="artist.html">ARTIST</a>
+        <a href="faqs.html">FAQs</a>
+        <a href="booking.html">BOOKING</a>
+        <a href="sign-in.html" class="nav-account" title="account" aria-label="account">Account</a>
+      </div>
+        <div class="nav-icons">
+      <a href="sign-in.html" class="account-trigger" title="account" aria-label="account" aria-expanded="false">
+        <i class="ph ph-user-circle account-icon-ph" aria-hidden="true"></i>
+      </a>
+      <div class="account-dropdown" id="accountDropdown">
+        <a href="sign-in.html" class="account-dropdown-item account-logout-btn" data-logout-btn role="button">Log out</a>
+        <div class="account-dropdown-divider"></div>
+        <a href="account_settings.html" class="account-dropdown-item account-settings-link" data-settings-link>Settings</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero" id="hero">
+    <div class="hero-left">
+      <div class="sub-tagline">Piercing <span>&amp;</span> Tattoo Studio</div>
+      <h1 class="hero-title">
+        <span>INK</span>
+        <span class="colored">PIERCE</span>
+        <span>EXPRESS</span>
+      </h1>
+      <p class="hero-description">
+        “Fearfully and wonderfully made.”
+        <span>— Psalm 139:14</span>
+      </p>
+
+      <div class="btn-grid">
+        <button class="exp-btn" id="exploreBtn">EXPLORE SERVICES</button>
+        <button class="book-btn" id="bookNowBtn">BOOK AN APPOINTMENT</button>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="promo-carousel" role="region" aria-label="Promotions" aria-roledescription="carousel">
+        <div class="promo-stage">
+          <div class="promo-slide" data-modal-type="promo" data-title="December Piercing Promotion" data-position="active" role="button" tabindex="0" aria-roledescription="slide" aria-label="Open December piercing promotion">
+            <img src="../../assets/images/promo_card1.png" alt="December piercing promotion">
+          </div>
+          <div class="promo-slide" data-modal-type="promo" data-title="Walk-ins and Same-Day Bookings" data-position="right" role="button" tabindex="0" aria-roledescription="slide" aria-label="Open walk-ins and same-day bookings promotion">
+            <img src="../../assets/images/promo_card2.png" alt="Walk-ins and same-day bookings promotion">
+          </div>
+          <div class="promo-slide" data-modal-type="promo" data-title="Tattoo Studio Promotion" data-position="left" role="button" tabindex="0" aria-roledescription="slide" aria-label="Open tattoo studio promotion">
+            <img src="../../assets/images/promo_card3.png" alt="Tattoo studio promotion">
+          </div>
+        </div>
+        <button class="promo-arrow promo-previous" type="button" aria-label="Previous promotion">
+          <i class="ph ph-caret-left" aria-hidden="true"></i>
+        </button>
+        <button class="promo-arrow promo-next" type="button" aria-label="Next promotion">
+          <i class="ph ph-caret-right" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Piercing Price List Section -->
+  <section class="piercing-pricelist">
+    <div class="section-florals" aria-hidden="true">
+      <img class="section-flower floral-size-small floral-center-top floral-bg1" src="../../assets/images/flower_bg1.png" alt="">
+      <img class="section-flower floral-size-large floral-left-bottom floral-bg2" src="../../assets/images/flower_bg2.png" alt="">
+    </div>
+    <div class="pricelist-container" data-modal-type="pricelist" data-title="Piercing Price List" role="button" tabindex="0" aria-label="Enlarge piercing price list">
+      <img src="../../assets/images/pricelist.png" alt="Piercing service prices" data-site-image="pricelist">
+      </div>
+  </section>
+
+  <!-- Studio Policies Section -->
+  <section class="section" id="policies">
+    <div class="section-florals" aria-hidden="true">
+      <img class="section-flower floral-size-medium floral-right-top floral-bg2" src="../../assets/images/flower_bg2.png" alt="">
+      <img class="section-flower floral-size-small floral-center-bottom floral-bg1" src="../../assets/images/flower_bg1.png" alt="">
+    </div>
+    <h2 class="section-title">Studio Policies</h2>
+    <div class="policy-accordion">
+      <div class="accordion-item">
+        <button class="accordion-header">
+          <span>Appointment &amp; Walk-ins</span>
+          <i class="ph ph-caret-down accordion-icon"></i>
+        </button>
+        <div class="accordion-content">
+          <div class="accordion-body">
+            <ul>
+              <li>Booking an appointment is highly recommended to guarantee your preferred schedule. Limited walk-in slots may be available and are posted daily on our Instagram Stories. We encourage clients to message us first to confirm availability.</li>
+              <li>A P500 reservation deposit is required to secure your appointment. This amount will be deducted from your total service cost during your visit. If any balance remains unused, it will be returned.</li>
+              <li>Appointments without a deposit will not be confirmed. Please note that the deposit is non-refundable in case of cancellation or no-show.</li>
+              <li>You may reschedule your appointment once, provided the request is made at least 48 hours before your scheduled time.</li>
+              <li>Clients under 15 years of age must be accompanied by a parent or legal guardian, or present a signed consent letter along with valid IDs.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-header">
+          <span>Late Arrival Policy</span>
+          <i class="ph ph-caret-down accordion-icon"></i>
+        </button>
+        <div class="accordion-content">
+          <div class="accordion-body">
+            <ul>
+              <li>Clients arriving 15 minutes late will be required to pay a P500 late fee. Arriving 20 minutes late or more will result in forfeiture of the appointment and will be treated as a no-show.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-header">
+          <span>Payment</span>
+          <i class="ph ph-caret-down accordion-icon"></i>
+        </button>
+        <div class="accordion-content">
+          <div class="accordion-body">
+            <ul>
+              <li>Cashless payments are preferred.</li>
+              <li>Accepted methods: GCash, GoTyme, Maya, or bank transfer.</li>
+              <li>If paying in cash, please bring the exact amount.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-header">
+          <span>Important Reminders</span>
+          <i class="ph ph-caret-down accordion-icon"></i>
+        </button>
+        <div class="accordion-content">
+          <div class="accordion-body">
+            <p class="policy-subheading">Before your Appointment</p>
+            <ul>
+              <li>Eat a meal before your appointment.</li>
+              <li>Avoid caffeine, alcohol, and pre-workout supplements beforehand.</li>
+              <li>Do not take blood-thinning medications before your appointment.</li>
+              <li>Come well-rested and hydrated.</li>
+              <li>Avoid applying makeup or skincare products near the piercing area.</li>
+              <li>Wear clothing that won't interfere with the piercing area.</li>
+              <li>Companions are welcome but are not allowed inside the piercing room. Please observe silence during piercing sessions.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-header">
+          <span>Health and Safety</span>
+          <i class="ph ph-caret-down accordion-icon"></i>
+        </button>
+        <div class="accordion-content">
+          <div class="accordion-body">
+            <ul>
+              <li>For your safety, please postpone your appointment if you are pregnant, breastfeeding, feeling unwell, or recovering from any recent medical condition. Do not proceed if you have any active irritation, infection, or wounds near the piercing area, or if you have upcoming procedures or activities that may interfere with healing. Clients are required to disclose any relevant health information prior to booking to ensure a safe and appropriate service.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-header">
+          <span>Parking</span>
+          <i class="ph ph-caret-down accordion-icon"></i>
+        </button>
+        <div class="accordion-content">
+          <div class="accordion-body">
+            <ul>
+              <li>Parking is available on-site, but it is on a first come, first served basis as managed by the building administration.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Our Studio Section -->
+  <section class="section" id="studio">
+    <div class="section-florals" aria-hidden="true">
+      <img class="section-flower floral-size-small floral-center-top floral-bg1" src="../../assets/images/flower_bg1.png" alt="">
+      <img class="section-flower floral-size-large floral-right-bottom floral-bg2" src="../../assets/images/flower_bg2.png" alt="">
+    </div>
+    <h2 class="section-title">OUR STUDIO</h2>
+    <div class="image-grid studio-grid" data-site-images="home-studio">
+      <div class="zoom-card" data-modal-type="studio" data-title="Lounge &amp; Reception Area" data-img="../../assets/images/stud_1.png" data-desc="Relax in our atmospheric, sterile, and modern reception area while discussing your tattoo and piercing concepts with our friendly staff." role="button" tabindex="0" aria-label="Enlarge Lounge and Reception Area photo">
+        <img src="../../assets/images/stud_1.png" alt="Studio Reception Area">
+      </div>
+
+      <div class="zoom-card" data-modal-type="studio" data-title="Main Tattoo Station" data-img="../../assets/images/stud_2.png" data-desc="Equipped with top-tier ergonomic hydraulic chairs, shadowless LED surgical lighting, and fully sanitized workstation surfaces for maximum comfort and safety." role="button" tabindex="0" aria-label="Enlarge Main Tattoo Station photo">
+        <img src="../../assets/images/stud_2.png" alt="Main Tattoo Station">
+      </div>
+
+      <div class="zoom-card" data-modal-type="studio" data-title="Private Piercing Suite" data-img="../../assets/images/stud_3.png" data-desc="A clean, private room dedicated entirely to body piercings, jewelry fitting, and detailed aftercare instructions in total privacy." role="button" tabindex="0" aria-label="Enlarge Private Piercing Suite photo">
+        <img src="../../assets/images/stud_3.png" alt="Private Piercing Suite">
+      </div>
+    </div>
+  </section>
+
+  <!-- Meet the Artists Section -->
+  <section class="section" id="artists">
+    <div class="section-florals" aria-hidden="true">
+      <img class="section-flower floral-size-large floral-left-top floral-bg2" src="../../assets/images/flower_bg2.png" alt="">
+      <img class="section-flower floral-size-medium floral-center-bottom floral-bg1" src="../../assets/images/flower_bg1.png" alt="">
+    </div>
+    <h2 class="section-title">MEET THE ARTIST</h2>
+    <div class="artists-grid" data-site-images="home-artists">
+      <div class="artist-card" data-modal-type="artist" role="button" tabindex="0" aria-label="Enlarge artist portrait">
+        <div class="artist-image">
+          <img src="../../assets/images/mspau.png" alt="Lead Artist Paulina">
+        </div>
+      </div>
+      <div class="artist-card" data-modal-type="artist" role="button" tabindex="0" aria-label="Enlarge artist portrait">
+        <div class="artist-image">
+          <img src="../../assets/images/mspau2.png" alt="Lead Artist Paulina">
+        </div>
+      </div>
+    </div>
+    <div class="artist-section-name">
+      <h3>Paulina</h3>
+    </div>
+    <div class="btn-container">
+      <a href="artist.html" class="btn">MORE DETAILS</a>
+    </div>
+  </section>
+
+  <!-- Best Services Section -->
+  <section class="section" id="services">
+    <div class="section-florals" aria-hidden="true">
+      <img class="section-flower floral-size-small floral-center-top floral-bg1" src="../../assets/images/flower_bg1.png" alt="">
+      <img class="section-flower floral-size-large floral-right-middle floral-bg2" src="../../assets/images/flower_bg2.png" alt="">
+    </div>
+    <h2 class="section-title">BEST SERVICES</h2>
+    <div class="image-grid services-grid" data-site-images="home-services">
+      <div class="zoom-card" data-modal-type="service" data-title="Precision Body Piercing"  data-desc="Professional ear, facial, and body piercings using implant-grade titanium, gold, and nickel-free jewelry with sterile single-use equipment." role="button" tabindex="0" aria-label="Enlarge Precision Body Piercing photo">
+        <div class="service-image">
+          <img src="../../assets/images/service1.png" alt="Ear Piercing Detail">
+        </div>
+        <p class="service-label">cross</p>
+      </div>
+
+      <div class="zoom-card" data-modal-type="service" data-title="Fine-Line &amp; Ornamental Tattoos" data-desc="Detailed fine-line work, intricate geometric patterns, delicate lace work, and custom arm/leg sleeves designed tailored to your body contours." role="button" tabindex="0" aria-label="Enlarge Fine-Line and Ornamental Tattoo photo">
+        <div class="service-image">
+          <img src="../../assets/images/service2.png" alt="Fine Line Tattoo">
+        </div>
+        <p class="service-label">curated</p>
+      </div>
+
+      <div class="zoom-card" data-modal-type="service" data-title="Torso &amp; Delicate Body Art" data-desc="Subtle placement art, sternum tattoos, micro-realism, and custom delicate ink executed with minimal pain and fast healing protocols." role="button" tabindex="0" aria-label="Enlarge Torso and Delicate Body Art photo">
+        <div class="service-image">
+          <img src="../../assets/images/service3.png" alt="Body Ink Placement">
+        </div>
+        <p class="service-label">navel</p>
+      </div>
+    </div>
+    <div class="btn-container">
+      <a href="booking.html" class="btn">BOOK YOUR EXPERIENCE</a>
+    </div>
+  </section>
+
+  <!-- Reviews & Testimonials Section -->
+  <section class="section" id="reviews">
+    <div class="section-florals" aria-hidden="true">
+      <img class="section-flower floral-size-medium floral-left-middle floral-bg2" src="../../assets/images/flower_bg2.png" alt="">
+      <img class="section-flower floral-size-large floral-center-bottom floral-bg1" src="../../assets/images/flower_bg1.png" alt="">
+    </div>
+
+    <div class="reviews-header">
+      <h2 class="section-title">REVIEWS &amp; TESTIMONIALS</h2>
+      <div class="reviews-header-meta">
+        <a class="reviews-see-more" href="reviews.html">See more reviews <span aria-hidden="true">&rsaquo;</span></a>
+      </div>
+    </div>
+
+    <p class="reviews-note" id="homeReviewsStatus" role="status" aria-live="polite"></p>
+
+    <div class="review-carousel" id="homeReviewsCarousel" aria-roledescription="carousel" aria-label="Client reviews">
+      <div class="review-carousel-viewport" data-carousel-viewport tabindex="0">
+        <div class="review-carousel-track" id="homeReviewsGrid"></div>
+      </div>
+    </div>
+
+    <div class="btn-container">
+      <a href="reviews.html" class="btn" id="shareExperienceBtn">SHARE YOUR EXPERIENCE</a>
+    </div>
+  </section>
+
+  <!-- Visit Us In The Studio Section -->
+  <section class="section" id="visit">
+    <div class="section-florals" aria-hidden="true">
+      <img class="section-flower floral-size-small floral-center-middle floral-bg1" src="../../assets/images/flower_bg1.png" alt="">
+      <img class="section-flower floral-size-large floral-right-bottom floral-bg2" src="../../assets/images/flower_bg2.png" alt="">
+    </div>
+    <div class="visit-header">
+      <h2 class="visit-title">VISIT US</h2>
+      <a class="maps-link" href="https://www.google.com/maps/search/?api=1&amp;query=Paulina%20Body%20Art%20Studio%2C%20P3R6%2BWCW%2C%20Ilang-ilang%2C%20Novaliches%2C%20Caloocan%2C%20Metro%20Manila%2C%20Philippines" target="_blank" rel="noopener noreferrer">
+        Open in Google Maps <i class="ph ph-link"></i>
+      </a>
+    </div>
+    
+    <div class="map-container">
+      <iframe 
+        title="Paulina Body Art Studio Map Location"
+        src="https://www.google.com/maps?q=Paulina%20Body%20Art%20Studio%2C%20P3R6%2BWCW%2C%20Ilang-ilang%2C%20Novaliches%2C%20Caloocan%2C%20Metro%20Manila%2C%20Philippines&amp;output=embed"
+        allowfullscreen="" 
+        loading="lazy" 
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+
+    <div class="location-info">
+      <p class="location-address">Paulina Body Art Studio, P3R6+WCW, Ilang-ilang, Novaliches, Caloocan, Metro Manila</p>
+      <p class="location-note">
+        When arriving look for the 3J L31 - A Bldg. red building . Our shop located on the 2nd floor, and the stairs<br>
+        are on the right side. Parking is available on a first-come, first-served basis.
+      </p>
+    </div>
+    
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="section-florals" aria-hidden="true">
+      <img class="section-flower floral-size-medium floral-center-top floral-bg1" src="../../assets/images/flower_bg1.png" alt="">
+      <img class="section-flower floral-size-small floral-left-bottom floral-bg2" src="../../assets/images/flower_bg2.png" alt="">
+    </div>
+    <hr class="visit-separator">
+    <div class="footer-top-logo">
+      <img src="../../assets/logos/logo_2.png" alt="Paulina Body Art Studio Logo">
+    </div>
+    
+    <div class="footer-layout">
+      <a class="footer-mark" href="#hero" aria-label="Return to home">
+        <img src="../../assets/logos/logomark_1.png" alt="Paulina Body Art Studio mark">
+      </a>
+
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <div>
+          <a href="#hero">Home</a>
+          <a href="gallery.html">Gallery</a>
+          <a href="catalogue.html">Catalogue</a>
+        </div>
+        <div>
+          <a href="artist.html">Artist</a>
+          <a href="aftercare.html">Aftercare</a>
+          <a href="faqs.html">FAQs</a>
+        </div>
+      </nav>
+
+      <div class="footer-contact">
+        <div class="footer-contact-details">
+          <a href="https://www.google.com/maps/search/?api=1&amp;query=Paulina%20Body%20Art%20Studio%2C%20P3R6%2BWCW%2C%20Ilang-ilang%2C%20Novaliches%2C%20Caloocan%2C%20Metro%20Manila%2C%20Philippines" target="_blank" rel="noreferrer" title="Google Maps" aria-label="Google Maps">
+            <i class="ph-fill ph-map-pin accent-icon"></i>
+            <span>Paulina Body Art Studio, P3R6+WCW, Ilang-ilang, Novaliches, Caloocan, Metro Manila</span>
+          </a>
+          <a href="mailto:paulinabodyart@gmail.com">
+            <i class="ph ph-envelope-simple"></i>
+            <span>paulinabodyart@gmail.com</span>
+          </a>
+          <a href="tel:+639517417630">
+            <i class="ph-fill ph-phone"></i>
+            <span>0951 741 7630</span>
+          </a>
+        </div>
+        <div class="social-links">
+          <a href="https://www.instagram.com/paulinabodyart/" target="_blank" rel="noreferrer" title="Instagram" aria-label="Instagram"><i class="ph-fill ph-instagram-logo"></i></a>
+          <a href="https://www.facebook.com/PaulinaBodyArtStudio" target="_blank" rel="noreferrer" title="Facebook" aria-label="Facebook"><i class="ph-fill ph-facebook-logo"></i></a>
+          <a href="https://www.tiktok.com/@paulinabodyart" target="_blank" rel="noreferrer" title="TikTok" aria-label="TikTok"><i class="ph-fill ph-tiktok-logo"></i></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modal Overlay (Backdrop Blur + Popups) -->
+  <div class="modal-overlay" id="modalOverlay">
+
+    <!-- Image Preview Modal -->
+    <!-- Photo zoom is the shared gallery-style viewer (js/photo-viewer.js),
+         so this overlay only holds the review detail and share boxes. -->
+
+    <!-- Review Detail Modal -->
+    <div class="modal-box" id="testimonialModal">
+      <button class="modal-close" id="testimonialModalClose" type="button" aria-label="Close review">&times;</button>
+      <div class="modal-header">
+        <img src="" alt="User Avatar" id="testiModalAvatar">
+        <div>
+          <h3 id="testiModalName">Client Name</h3>
+          <div class="stars" id="testiModalStars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <small id="testiModalDate" style="opacity: 0.7;">2 weeks ago</small>
+        </div>
+      </div>
+      <hr>
+      <img src="" id="testiModalAttachedPhoto" style="display: none; width: 100%; border-radius: 8px; margin-bottom: 15px;" alt="">
+      <p id="testiModalText" style="line-height: 1.6; font-size: 1.05rem;"></p>
+    </div>
+
+    <!-- Share Experience Modal (signed-in review composer) -->
+    <div class="modal-box" id="shareExperienceModal" role="dialog" aria-modal="true" aria-labelledby="shareExperienceTitle">
+      <button class="modal-close" id="shareModalClose" type="button" aria-label="Close review form">&times;</button>
+      <h3 class="review-composer-title" id="shareExperienceTitle">Share your experience</h3>
+
+      <div class="review-composer" data-review-composer>
+        <div class="review-composer-identity">
+          <img class="review-composer-avatar" data-reviewer-avatar src="" alt="">
+          <div class="review-composer-identity-text">
+            <span>Reviewing as</span>
+            <strong data-reviewer-name>Loading your account&hellip;</strong>
+          </div>
+        </div>
+
+        <p class="review-composer-auth" data-review-auth hidden>
+          Please <a href="sign-in.html" data-review-signin>sign in</a> to share your experience.
+          Your account name and profile photo will appear with your review.
+        </p>
+
+        <div class="review-composer-form" data-review-form hidden>
+          <button type="button" class="review-photo-picker" data-review-photo-box>
+            <span data-review-photo-text>Attach a photo (optional)</span>
+          </button>
+          <input type="file" accept="image/*" data-review-photo-input hidden>
+
+          <div class="review-rating">
+            <span class="review-rating-label">Rate your experience</span>
+            <div class="review-stars-input" data-review-stars role="group" aria-label="Star rating">
+                <button type="button" data-review-star="1" aria-label="1 star" aria-pressed="false">&#9733;</button>
+                <button type="button" data-review-star="2" aria-label="2 stars" aria-pressed="false">&#9733;</button>
+                <button type="button" data-review-star="3" aria-label="3 stars" aria-pressed="false">&#9733;</button>
+                <button type="button" data-review-star="4" aria-label="4 stars" aria-pressed="false">&#9733;</button>
+                <button type="button" data-review-star="5" aria-label="5 stars" aria-pressed="false">&#9733;</button>
+            </div>
+          </div>
+
+          <label class="review-field-label" for="homeReviewBody">Your review</label>
+          <textarea class="review-composer-textarea" id="homeReviewBody" data-review-body rows="6"
+                    maxlength="2000" placeholder="Share your experience..."></textarea>
+          <span class="review-character-count" data-review-count>0/2000</span>
+
+          <p class="review-composer-status" data-review-status role="status" aria-live="polite"></p>
+
+          <button class="btn review-composer-submit" type="button" data-review-submit>POST REVIEW</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- External JavaScript Files -->
+  <script src="../../js/api-base.js"></script>
+  <script src="../../js/header_and_footer.js"></script>
+  <script type="module" src="../../js/site-content.js"></script>
+  <script type="module" src="../../js/reviews-home.js"></script>
+  <script src="../../js/home.js"></script>
+</body>
+</html>

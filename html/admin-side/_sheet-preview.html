@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mobile sheet preview</title>
+  <link rel="icon" type="image/png" href="../../assets/logos/favicon_white.png">
+  <style>
+    html, body { margin: 0; background: #1b080d; }
+    #stage { width: 390px; height: 844px; border: 0; display: block; background: #fff; }
+  </style>
+</head>
+<body>
+  <iframe id="stage" title="Mobile admin preview"></iframe>
+  <script>
+    const page = new URLSearchParams(location.search).get('page') || 'master-calendar';
+    document.getElementById('stage').src = `./${page}.html`;
+  </script>
+</body>
+</html>

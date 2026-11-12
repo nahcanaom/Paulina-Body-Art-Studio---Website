@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  PAULINA BODY ART STUDIO — BACKEND TRANSACTIONAL SHELL
+  ============================================================================
+  This is the reference shell that services/emailService.js renders inline for
+  every transactional email (booking confirmation, custom-request decision, and
+  any future deposit receipt / cancellation / reschedule notice).
+
+  It is a reference file, not a runtime template: emailService builds the same
+  markup as a JavaScript template literal with its BRAND / SERIF / SANS tokens.
+  When adding a new email type, copy this structure and swap the {{PLACEHOLDERS}}
+  so every message keeps the exact same luxury aesthetic.
+
+    {{SUBJECT}}               plain text, also used for <title>
+    {{PREHEADER}}             hidden preview text
+    {{BADGE}}                 short uppercase status, e.g. "Booking confirmed"
+    {{HEADING}}               serif headline
+    {{INTRO}}                 one or two body paragraphs
+    {{CALLOUT_TITLE}}         blush callout eyebrow
+    {{CALLOUT_BODY}}          blush callout copy
+    {{DETAIL_ROWS}}           <tr> pairs of .detail-label / .detail-value
+    {{CTA_LABEL}} {{CTA_URL}} wine CTA button
+    {{STUDIO_SUPPORT_EMAIL}}  support address (env STUDIO_SUPPORT_EMAIL)
+    {{YEAR}}                  current year
+-->
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="x-apple-disable-message-reformatting">
+  <meta name="color-scheme" content="light only">
+  <title>{{SUBJECT}}</title>
+  <style>
+    @media only screen and (max-width: 600px) {
+      .email-shell { padding: 26px 12px 24px !important; }
+      .email-card { padding: 28px 20px !important; }
+      .email-title { font-size: 26px !important; line-height: 1.25 !important; }
+      .email-button a { display: block !important; }
+      .detail-label, .detail-value {
+        display: block !important; width: 100% !important; text-align: left !important;
+        padding: 0 !important; border-bottom: 0 !important;
+      }
+      .detail-label { padding-top: 12px !important; }
+      .detail-value { padding-bottom: 12px !important; border-bottom: 1px solid #E7DCD3 !important; }
+      .email-footer { padding-left: 4px !important; padding-right: 4px !important; }
+    }
+  </style>
+</head>
+<body style="margin:0;padding:0;width:100%;background-color:#331418;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
+  <div style="display:none;max-height:0;max-width:0;overflow:hidden;opacity:0;color:transparent;font-size:1px;line-height:1px;">{{PREHEADER}}</div>
+
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#331418" style="width:100%;background-color:#331418;">
+    <tr>
+      <td class="email-shell" align="center" style="padding:34px 14px 30px;">
+
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:620px;">
+
+          <tr>
+            <td align="center" style="padding:0 8px 26px;">
+              <img src="{{LOGO_URL}}" width="320" alt="PAULINA BODY ART STUDIO" style="display:block;width:320px;max-width:82%;height:auto;margin:0 auto;border:0;color:#FAF6F0;font-family:Georgia, 'Times New Roman', serif;font-size:22px;letter-spacing:0.28em;">
+              <div style="width:44px;height:2px;margin:18px auto 0;background-color:#80151A;font-size:0;line-height:0;">&nbsp;</div>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="email-card" bgcolor="#FAF6F0" style="padding:38px 34px 34px;background-color:#FAF6F0;border-radius:14px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+
+                <tr>
+                  <td style="padding:0 0 18px;">
+                    <span style="display:inline-block;padding:8px 14px;background-color:#F6D0D6;border-radius:999px;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:10px;font-weight:700;line-height:1.2;letter-spacing:0.18em;text-transform:uppercase;color:#80151A;">{{BADGE}}</span>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:0 0 16px;">
+                    <h1 class="email-title" style="margin:0;font-family:Georgia, 'Times New Roman', serif;font-size:32px;font-weight:400;line-height:1.25;color:#331418;">{{HEADING}}</h1>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:0 0 22px;">
+                    <p style="margin:0;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:16px;line-height:1.7;color:#4A3B3C;">{{INTRO}}</p>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:0 0 8px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                      {{DETAIL_ROWS}}
+                    </table>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:24px 0 0;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#F6D0D6" style="background-color:#F6D0D6;border-left:5px solid #80151A;border-radius:10px;">
+                      <tr>
+                        <td style="padding:20px 22px;">
+                          <p style="margin:0 0 8px;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:10px;font-weight:700;line-height:1.4;letter-spacing:0.16em;text-transform:uppercase;color:#80151A;">{{CALLOUT_TITLE}}</p>
+                          <p style="margin:0;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:14px;line-height:1.65;color:#331418;">{{CALLOUT_BODY}}</p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:26px 0 0;">
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" class="email-button">
+                      <tr>
+                        <td align="center" bgcolor="#80151A" style="border-radius:4px;">
+                          <a href="{{CTA_URL}}" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:14px 28px;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:11px;font-weight:700;line-height:1.2;letter-spacing:0.16em;text-transform:uppercase;color:#FAF6F0;text-decoration:none;">{{CTA_LABEL}}</a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:26px 0 0;">
+                    <p style="margin:0;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:1.7;color:#7C6A6C;">Questions? Email the studio at <a href="mailto:{{STUDIO_SUPPORT_EMAIL}}" style="color:#80151A;text-decoration:underline;">{{STUDIO_SUPPORT_EMAIL}}</a> and we will help right away.</p>
+                  </td>
+                </tr>
+
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="email-footer" align="center" style="padding:26px 16px 0;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:11px;line-height:1.8;color:#F6D0D6;">
+              <p style="margin:0 0 6px;color:#F6D0D6;">PAULINA &mdash; Body Art Studio &middot; Caloocan, Metro Manila</p>
+              <p style="margin:0 0 6px;">P3R6+WCW, Ilang-ilang, Novaliches, Caloocan, Metro Manila</p>
+              <p style="margin:0 0 6px;"><a href="mailto:{{STUDIO_SUPPORT_EMAIL}}" style="color:#F6D0D6;text-decoration:none;">{{STUDIO_SUPPORT_EMAIL}}</a> &middot; <a href="tel:+639517417630" style="color:#F6D0D6;text-decoration:none;">0951 741 7630</a></p>
+              <p style="margin:0;color:rgba(246,208,214,0.72);">You received this transactional email because of an appointment or account action with the studio. &copy; {{YEAR}} PAULINA Body Art Studio.</p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

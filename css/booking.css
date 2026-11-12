@@ -1,0 +1,1994 @@
+/* ==========================================================================
+   PAULINA BODY ART STUDIO — BOOKING PAGE STYLESHEET
+   ==========================================================================
+   Variable names are derived from class and ID names found in this stylesheet,
+   following the naming convention used in css/header_and_footer.css.
+   ========================================================================== */
+
+:root {
+  --canvas-bg: #331418;
+  --form-card-bg: #FAF6F0;
+  --booking-card-text: #331418;
+  --tab-bar-bg: rgba(120, 45, 52, 0.28);
+  --tab-bar-border: rgba(255, 255, 255, 0.1);
+  --tab-btn-color: #FAF6F0;
+  --tab-btn-color-inactive: rgba(246, 242, 240, 0.85);
+  --tab-btn-active-bg: #600A12;
+  --tab-btn-active-color: #FFFFFF;
+  --input-field-bg: #F8E8E5;
+  --input-field-color: #600A12;
+  --input-field-border: rgba(96, 10, 18, 0.3);
+  --input-field-focus: #600A12;
+  --input-field-error: #F6D0D6;
+  --country-code-bg: #600A12;
+  --country-code-color: #FAF6F0;
+  --field-error-color: #600A12;
+  --day-bg: transparent;
+  --day-active-bg: #600A12;
+  --day-active-color: #FFFFFF;
+  --time-btn-color: #FFFFFF;
+  --time-btn-bg: #600A12;
+  --time-btn-border: #600A12;
+  --time-btn-active-bg: #3E040A;
+  --time-btn-active-color: #FFFFFF;
+  --qr-overlay-bg: rgba(17, 17, 17, 0.85);
+  --qr-overlay-border: rgba(246, 208, 214, 0.3);
+  --qr-card-bg: #600A12;
+  --qr-card-color: #FAF6F0;
+  --check-icon-bg: #600A12;
+  --check-icon-color: #FAF6F0;
+  --confirm-title-color: #600A12;
+  --notice-pink-bg: #F6D0D6;
+  --notice-pink-color: #600A12;
+  --btn-primary-bg: #600A12;
+  --btn-primary-color: #FFFFFF;
+  --btn-primary-hover-bg: #3E040A;
+  --btn-secondary-bg: #FAF6F0;
+  --btn-secondary-color: #600A12;
+  --btn-secondary-border: #600A12;
+  --upload-dropzone-border: rgba(96, 10, 18, 0.3);
+  --upload-dropzone-bg: #F8E8E5;
+  --upload-dropzone-hover-border: #600A12;
+  --font-heading: 'Tan Pearl', Georgia, serif;
+  --font-general: 'Footlight MT Pro', Georgia, serif;
+  --font-accent: 'Couture', sans-serif;
+  --font-size-sm: 0.75rem;
+  --font-size-md: 0.85rem;
+  --font-size-lg: 1rem;
+  --field-gap: 0.8rem;
+  --line-height: 1.6;
+  --details-card-bg: #E2DCDA;
+  --details-card-text: #4C1116;
+  --details-input-bg: #F8DFE2;
+  --details-input-color: #4C1116;
+  --details-input-placeholder: #9C5A60;
+  --details-input-border: #7A343B;
+}
+
+/* Floral page backdrop (matches the shared brand background used across pages) */
+body {
+  background-image: url('../assets/images/background.png');
+  background-repeat: no-repeat;
+  background-position: top center;
+  background-size: 100% auto;
+}
+
+/* ==========================================================================
+   2. MAIN CONTENT & CONTAINER CONSTRAINTS
+   ========================================================================== */
+.main-content {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 5rem 1.5rem 0;
+}
+
+.booking-card-container {
+  background-color: transparent;
+  border-radius: 0;
+  padding: 0;
+  color: var(--booking-card-text);
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+/* ==========================================================================
+   3. HEADING GROUP & SUBTITLE
+   ========================================================================== */
+.heading-group {
+  text-align: center;
+  margin-bottom: 2.45rem;
+  padding: 0 1rem;
+}
+
+.page-title {
+  font-family: var(--font-heading);
+  font-size: 2.4rem;
+  font-weight: 400;
+  color: var(--form-card-bg);
+  margin-bottom: 0.5rem;
+}
+
+.page-subtitle {
+  font-size: 0.95rem;
+  max-width: 640px;
+  margin: 0 auto;
+  opacity: 0.9;
+  line-height: 1.5;
+  color: var(--form-card-bg);
+}
+
+/* Published booking guidance from the admin dashboards. Hidden automatically
+   while no policies have been published. */
+.booking-info-panel {
+  max-width: 720px;
+  margin: 1.35rem auto 0;
+  padding: 1rem 1.35rem;
+  text-align: left;
+  color: var(--form-card-bg);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+}
+
+.booking-info-title {
+  margin: 0 0 0.55rem;
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+}
+
+.booking-policy-list {
+  margin: 0;
+  padding-left: 1.15rem;
+  display: grid;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.booking-policy-list strong {
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   4. TAB NAVIGATION
+   ========================================================================== */
+.tab-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+  max-width: 720px;
+  margin-bottom: 37px;
+  background-color: var(--tab-bar-bg);
+  border: 1px solid rgba(246, 208, 214, 0.28);
+  padding: 4px;
+  border-radius: 8px;
+}
+
+.tab-btn {
+  flex: 1;
+  height: 30px;
+  text-align: center;
+  padding: 0 12px;
+  border: none;
+  background: transparent;
+  font-family: var(--font-general);
+  font-size: 0.85rem;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  color: var(--tab-btn-color-inactive);
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.tab-btn.active {
+  background-color: #8A1119;
+  color: var(--tab-btn-active-color);
+  font-weight: 700;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+.tab-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  background: transparent;
+  color: var(--tab-btn-color-inactive);
+}
+
+.tab-btn:disabled:hover {
+  background: transparent;
+  color: var(--tab-btn-color-inactive);
+}
+
+.tab-btn.review-ready {
+  opacity: 1;
+  cursor: pointer;
+}
+
+/* Once a booking is confirmed, make the Review tab clearly clickable. */
+.tab-btn.review-ready:not(.active) {
+  background-color: rgba(138, 17, 25, 0.42);
+  color: var(--tab-btn-color);
+  box-shadow: inset 0 0 0 1px rgba(246, 208, 214, 0.5);
+}
+
+.tab-btn.review-ready:not(.active):hover {
+  background-color: #8A1119;
+  color: var(--tab-btn-active-color);
+}
+
+.tab-btn.review-ready:focus-visible {
+  outline: 2px solid var(--form-card-bg);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   5. TAB PANEL VISIBILITY
+   ========================================================================== */
+.tab-content {
+  display: none;
+  width: 100%;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* ==========================================================================
+   6. LAYOUT STRUCTURES
+   ========================================================================== */
+.two-col-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  max-width: 850px;
+  width: 100%;
+}
+
+.datetime-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ==========================================================================
+   7. FORM FIELD STYLES
+   ========================================================================== */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-bottom: var(--field-gap);
+}
+
+
+.form-group label {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--country-code-bg);
+  font-family: var(--font-general);
+}
+
+.input-field {
+  padding: 0.65rem;
+  border: 1px solid var(--input-field-border);
+  background-color: var(--input-field-bg);
+  border-radius: 4px;
+  font-family: var(--font-general);
+  font-size: var(--font-size-md);
+  color: var(--input-field-color);
+  transition: border-color 0.2s ease, outline 0.2s ease;
+}
+
+.input-field:focus {
+  outline: 2px solid var(--input-field-focus);
+}
+
+.input-field.error {
+  border-color: var(--input-field-error);
+  outline: 2px solid var(--input-field-error);
+}
+
+.textarea-field {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.field-note {
+  font-size: 0.65rem;
+  color: #7A343B;
+  margin-top: 0.25rem;
+  opacity: 0.9;
+}
+
+/* ==========================================================================
+   8. PHONE INPUT GROUP
+   ========================================================================== */
+.phone-input-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.country-code {
+  font-family: var(--font-general);
+  font-size: var(--font-size-md);
+  background-color: var(--country-code-bg);
+  padding: 0.65rem;
+  color: var(--country-code-color);
+  border: 1px solid var(--input-field-border);
+  border-right: none;
+  border-radius: 4px 0 0 4px;
+  min-width: 60px;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   9. FIELD ERROR STYLES
+   ========================================================================== */
+.field-error {
+  color: var(--field-error-color);
+  font-size: 0.9rem;
+  margin-top: 0.3rem;
+  display: none;
+}
+
+.field-error.show {
+  display: block;
+}
+
+/* ==========================================================================
+   10. IMAGE SIDE
+   ========================================================================== */
+.form-side {
+  background-color: var(--details-card-bg);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: var(--field-gap);
+}
+
+.image-side {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.image-side img {
+  width: 100%;
+  max-width: 400px;
+  height: 100%;
+  min-height: 350px;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  border: none;
+  outline: none;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* Remove default border from images */
+img {
+  border: none;
+  outline: none;
+}
+/* ==========================================================================
+   11. STEP TITLES & SECTION DESCRIPTIONS
+   ========================================================================== */
+.form-side h3 {
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  color: var(--tab-btn-active-bg);
+  margin-bottom: 0.5rem;
+}
+
+.form-side p {
+  font-family: var(--font-general);
+  font-size: 0.9rem;
+  color: var(--booking-card-text);
+  margin-bottom: 1rem;
+}
+
+/* ==========================================================================
+   12. DATE & TIME SELECTION
+   ========================================================================== */
+.calendar-box {
+  background: var(--form-card-bg);
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.calendar-header {
+  font-weight: 600;
+  font-size: var(--font-size-md);
+  color: var(--tab-btn-active-bg);
+  margin-bottom: 0.8rem;
+  text-align: center;
+  font-family: var(--font-heading);
+}
+
+.selected-date-status {
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  color: var(--tab-btn-active-bg);
+  text-align: center;
+  margin-bottom: 0.5rem;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+}
+
+.selected-date-status.error {
+  color: var(--input-field-error);
+  background: transparent;
+  border: none;
+}
+
+.calendar-month-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 0.8rem;
+}
+
+.calendar-month-nav span {
+  font-weight: 600;
+  font-size: var(--font-size-md);
+  color: var(--tab-btn-active-bg);
+  font-family: var(--font-heading);
+}
+
+.cal-nav-btn {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0.2rem 0.5rem;
+  color: var(--tab-btn-active-bg);
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  line-height: 1;
+}
+
+.cal-nav-btn:hover {
+  color: var(--btn-primary-hover-bg);
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  text-align: center;
+  font-size: var(--font-size-sm);
+}
+
+.day-name {
+  font-weight: 600;
+  padding-bottom: 4px;
+  color: var(--tab-btn-active-bg);
+  font-family: var(--font-general);
+}
+
+.day {
+  padding: 8px 0;
+  background: transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: var(--font-general);
+  font-weight: 500;
+}
+
+.day.empty {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.day.active-day {
+  background: var(--day-active-bg);
+  color: var(--day-active-color);
+  font-weight: 700;
+}
+
+.day:not(.empty):hover {
+  background: rgba(96, 10, 18, 0.1);
+  color: var(--tab-btn-active-bg);
+}
+
+.time-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.time-buttons-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  max-height: 320px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.time-buttons-grid::-webkit-scrollbar {
+  width: 4px;
+}
+
+.time-buttons-grid::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.time-buttons-grid::-webkit-scrollbar-thumb {
+  background: rgba(96, 10, 18, 0.3);
+  border-radius: 2px;
+}
+
+.time-btn {
+  padding: 12px 0;
+  border: none;
+  background: var(--time-btn-bg);
+  color: var(--time-btn-color);
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.time-btn.active-time {
+  background: var(--time-btn-active-bg);
+  color: var(--time-btn-active-color);
+  box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #600A12;
+}
+
+.time-btn:hover {
+  background: var(--btn-primary-hover-bg);
+  transform: translateY(-1px);
+}
+
+.time-btn:disabled,
+.time-btn.is-locked {
+  background: rgba(42, 16, 21, 0.12) !important;
+  color: rgba(42, 16, 21, 0.35) !important;
+  border-color: rgba(42, 16, 21, 0.15) !important;
+  cursor: not-allowed !important;
+  text-decoration: line-through;
+  opacity: 0.50 !important;
+  transform: none !important;
+  pointer-events: none !important;
+}
+
+/* ==========================================================================
+   13. PAYMENT SECTION & QR CODE
+   ========================================================================== */
+.qr-side {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 0;
+  height: 100%;
+}
+
+.qr-side img.stud-bg {
+  width: 100%;
+  max-width: 400px;
+  height: 100%;
+  min-height: 350px;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  border: none;
+  outline: none;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.qr-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  background: var(--qr-overlay-bg);
+  border: 2px solid var(--qr-overlay-border);
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+}
+
+.qr-card {
+  background: var(--qr-card-bg);
+  color: var(--qr-card-color);
+  padding: 1.2rem;
+  border-radius: 8px;
+  text-align: center;
+  width: 100%;
+  max-width: 240px;
+  position: relative;
+  z-index: 1;
+}
+
+.qr-header {
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 0.8rem;
+  letter-spacing: 1px;
+}
+
+.qr-image {
+  display: block;
+  width: 100%;
+  max-width: 210px;
+  height: auto;
+  margin: 0 auto;
+  border-radius: 6px;
+}
+
+.qr-name {
+  font-size: 0.65rem;
+  opacity: 0.8;
+}
+
+.qr-number {
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+/* ==========================================================================
+   14. CONFIRMATION SCREEN
+   ========================================================================== */
+#step-review {
+  width: 100%;
+}
+
+.confirm-box {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 3rem 3.5rem 2.5rem;
+  text-align: center;
+  background-color: var(--details-card-bg);
+  color: var(--details-card-text);
+  border-radius: 12px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+}
+
+.check-icon {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: var(--notice-pink-bg);
+  color: var(--details-card-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.1rem;
+  line-height: 1;
+}
+
+.check-icon svg {
+  width: 48%;
+  height: 48%;
+}
+
+.confirm-title {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 4.2vw, 2.25rem);
+  font-weight: 400;
+  line-height: 1.1;
+  margin-bottom: 0.6rem;
+  color: var(--details-card-text);
+}
+
+.confirm-subtitle {
+  font-size: 0.85rem;
+  color: var(--details-card-text);
+  opacity: 0.9;
+  margin: 0 auto 1.9rem;
+  max-width: 470px;
+  line-height: 1.5;
+}
+
+.summary-list {
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  max-width: 440px;
+  margin: 0 auto 1.9rem;
+  text-align: left;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1.5rem;
+  font-size: 0.82rem;
+  line-height: 1.65;
+  padding: 0;
+  border-bottom: none;
+}
+
+.summary-row strong {
+  font-weight: 400;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.notice-pink {
+  background: var(--notice-pink-bg);
+  padding: 1.15rem 1.35rem;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  color: var(--notice-pink-color);
+  max-width: 440px;
+  margin: 0 auto 1.9rem;
+  line-height: 1.55;
+  text-align: left;
+}
+
+.notice-pink p {
+  margin: 0;
+}
+
+.notice-pink p + p {
+  margin-top: 0.45rem;
+}
+
+.notice-pink .reference-note {
+  margin-top: 0.7rem;
+  font-size: 0.68rem;
+  opacity: 0.85;
+}
+
+/* ==========================================================================
+   15. BUTTON STYLES
+   ========================================================================== */
+.btn-primary {
+  width: 100%;
+  padding: 14px 0;
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-color);
+  border: none;
+  border-radius: 6px;
+  font-family: var(--font-general);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: var(--btn-primary-hover-bg);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: var(--btn-secondary-bg);
+  color: var(--btn-secondary-color);
+  border: 1px solid var(--btn-secondary-border);
+  border-radius: 6px;
+  font-family: var(--font-general);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background-color: rgba(96, 10, 18, 0.05);
+}
+
+.btn-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 0.9rem;
+  max-width: 440px;
+  margin: 0 auto;
+}
+
+.confirm-actions .btn-secondary,
+.confirm-actions .btn-primary {
+  flex: 1;
+  width: auto;
+  padding: 0.8rem 1rem;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.confirm-actions .btn-primary:hover {
+  transform: none;
+}
+
+/* ==========================================================================
+   16. SERVICE-SPECIFIC FIELDS (conditionally shown)
+   ========================================================================== */
+.service-fields {
+  margin-bottom: 1rem;
+}
+
+.service-fields.hidden {
+  display: none;
+}
+
+/* Hidden field utility (for service-specific field toggling) */
+.hidden-field {
+  display: none !important;
+}
+
+/* ==========================================================================
+   16b. TATTOO BOOKING FORM TYPE SELECTOR
+   ========================================================================== */
+.tattoo-form-type-selector {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.3rem;
+}
+
+.tattoo-form-type-btn {
+  flex: 1;
+  padding: 0.55rem 0.75rem;
+  background-color: var(--details-input-bg);
+  color: var(--details-card-text);
+  border: 1px solid var(--details-input-border);
+  border-radius: 4px;
+  font-family: var(--font-general);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tattoo-form-type-btn.active {
+  background-color: #600A12;
+  color: #FFF8F4;
+  border-color: #4C070E;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+.tattoo-form-type-btn:hover:not(.active) {
+  background-color: rgba(96, 10, 18, 0.06);
+}
+
+/* ==========================================================================
+   17. FILE UPLOAD ZONE
+   ========================================================================== */
+.upload-dropzone {
+  border: 2px dashed var(--upload-dropzone-border);
+  border-radius: 6px;
+  padding: 1.25rem;
+  background-color: var(--upload-dropzone-bg);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.upload-dropzone:hover {
+  border-color: var(--upload-dropzone-hover-border);
+}
+
+
+/* ==========================================================================
+   19. YOUR DETAILS TAB — REFINED FORM DESIGN
+   ========================================================================== */
+#step-details .two-col-layout {
+  grid-template-columns: 1.09fr 1fr;
+  gap: 20px;
+  max-width: none;
+  align-items: stretch;
+}
+
+#step-details .form-side {
+  background-color: var(--details-card-bg);
+  color: var(--details-card-text);
+  border-radius: 10px;
+  padding: 20px 24px 15px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+  gap: 0;
+}
+
+#step-details .form-group {
+  gap: 0.2rem;
+  margin-bottom: 0.72rem;
+}
+
+#step-details .form-group label {
+  color: var(--details-card-text);
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.005em;
+}
+
+#step-details .input-field {
+  width: 100%;
+  height: 1.9rem;
+  min-height: 1.9rem;
+  padding: 0 0.58rem;
+  border: 1px solid var(--details-input-border);
+  border-radius: 3px;
+  background-color: var(--details-input-bg);
+  color: var(--details-input-color);
+  font-size: 0.8rem;
+  line-height: 1.2;
+}
+
+#step-details .input-field::placeholder {
+  color: var(--details-input-placeholder);
+  opacity: 1;
+}
+
+#step-details .input-field:focus {
+  outline: 2px solid #80151A;
+  outline-offset: 1px;
+}
+
+#step-details .input-field.error {
+  border-color: #80151A;
+  outline: 2px solid #80151A;
+  outline-offset: 1px;
+}
+
+#step-details select.input-field {
+  -webkit-appearance: none;
+  appearance: none;
+  padding-right: 1.6rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0h10L5 6z' fill='%234C1116'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.6rem center;
+  background-size: 9px 5px;
+  cursor: pointer;
+}
+
+#step-details .phone-input-group {
+  gap: 0.45rem;
+  align-items: center;
+}
+
+#step-details .country-code {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.35rem;
+  min-width: 2.35rem;
+  height: 1.9rem;
+  padding: 0;
+  border: 1px solid var(--country-code-bg);
+  border-radius: 3px;
+  background-color: var(--country-code-bg);
+  color: var(--country-code-color);
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+#step-details .phone-input-group .input-field {
+  flex: 1;
+  min-width: 0;
+}
+
+#step-details .field-error {
+  margin: 0.15rem 0 0;
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+
+#step-details .form-side .btn-primary {
+  margin-top: auto;
+  height: 1.95rem;
+  padding: 0 1rem;
+  border-radius: 4px;
+  background-color: #650A12;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+}
+
+#step-details .form-side .btn-primary:hover {
+  background-color: #4C070E;
+  transform: none;
+}
+
+#step-details .image-side {
+  align-items: stretch;
+  height: 100%;
+}
+
+#step-details .image-side img {
+  display: block;
+  width: 100%;
+  max-width: none;
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 332 / 693;
+  object-fit: cover;
+  object-position: 62% center;
+  border-radius: 10px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+}
+
+/* ==========================================================================
+   20. DATE & TIME TAB — UNIFIED CALENDAR CARD
+   ========================================================================== */
+.datetime-card {
+  display: grid;
+  grid-template-columns: 1.61fr 1fr;
+  grid-template-rows: minmax(0, 1fr) 86px;
+  grid-template-areas:
+    "calendar time"
+    "actions actions";
+  width: 100%;
+  height: 480px;
+  overflow: hidden;
+  background-color: var(--details-card-bg);
+  color: var(--details-card-text);
+  border-radius: 8px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+}
+
+.datetime-card .calendar-pane {
+  grid-area: calendar;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 23px 26px 0;
+  overflow: hidden;
+  border-right: 1px solid rgba(76, 17, 22, 0.28);
+}
+
+.datetime-card .time-pane {
+  grid-area: time;
+  min-width: 0;
+  padding: 44px 24px 0 58px;
+  overflow: hidden;
+}
+
+.datetime-card .datetime-actions {
+  grid-area: actions;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 24px 0 28px;
+  border-top: 1px solid rgba(76, 17, 22, 0.28);
+}
+
+/* Booking status line */
+.datetime-card .selected-date-status {
+  margin: 0 0 22px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  font-family: var(--font-general);
+  font-size: 0.78rem;
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--details-card-text);
+  text-align: left;
+}
+
+.datetime-card .selected-date-status.error {
+  color: #8A1119;
+  background: transparent;
+  border: 0;
+}
+
+/* Month navigation */
+.datetime-card .calendar-month-nav {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 285px;
+  margin: 0 auto 30px;
+  gap: 0;
+}
+
+.datetime-card .calendar-month-nav span {
+  flex: 1;
+  text-align: center;
+  font-family: var(--font-general);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  color: var(--details-card-text);
+}
+
+.datetime-card .cal-nav-btn {
+  padding: 0 0.25rem;
+  border: 0;
+  background: transparent;
+  color: var(--details-card-text);
+  font-size: 1.35rem;
+  font-weight: 400;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.datetime-card .cal-nav-btn:hover {
+  color: #8A1119;
+}
+
+/* Calendar grid */
+.datetime-card .calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: auto;
+  grid-auto-rows: 38px;
+  align-content: start;
+  gap: 2px;
+  width: 100%;
+  max-width: 350px;
+  margin: 0 auto;
+  text-align: center;
+  font-size: 0.82rem;
+}
+
+.datetime-card .day-name {
+  padding: 0 0 12px;
+  font-family: var(--font-general);
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--details-card-text);
+}
+
+.datetime-card .day {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  overflow: hidden;
+  background: transparent;
+  border-radius: 5px;
+  color: var(--details-card-text);
+  font-family: var(--font-general);
+  font-size: 0.82rem;
+  font-weight: 400;
+  line-height: 1.2;
+  cursor: pointer;
+}
+
+.datetime-card .day.empty {
+  opacity: 0;
+  cursor: default;
+}
+
+.datetime-card .day.active-day {
+  background-color: #420D12;
+  color: #F6E7DC;
+  font-weight: 400;
+}
+
+.datetime-card .day.active-day:hover {
+  background-color: #420D12;
+  color: #F6E7DC;
+}
+
+.datetime-card .day:not(.empty):not(.active-day):hover {
+  background: rgba(76, 17, 22, 0.12);
+  color: var(--details-card-text);
+}
+
+/* Time slots */
+.datetime-card .time-buttons-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 21px;
+  height: 100%;
+  max-height: none;
+  padding-right: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.datetime-card .time-buttons-grid::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.datetime-card .time-btn {
+  flex: 0 0 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 3px;
+  background-color: #8A1219;
+  color: #F8EDE6;
+  font-family: var(--font-general);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.datetime-card .time-btn.active-time {
+  background-color: #3C1518;
+  color: #F8EDE6;
+  box-shadow: none;
+}
+
+.datetime-card .time-btn:hover {
+  background-color: #700D14;
+  transform: none;
+}
+
+.datetime-card .time-btn.active-time:hover {
+  background-color: #3C1518;
+}
+
+/* Bottom action bar */
+.datetime-card .datetime-actions .btn-secondary {
+  width: 96px;
+  height: 31px;
+  padding: 0;
+  border: 1px solid #650A12;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--details-card-text);
+  font-family: var(--font-general);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.datetime-card .datetime-actions .btn-secondary:hover {
+  background-color: rgba(101, 10, 18, 0.08);
+}
+
+.datetime-card .datetime-actions .btn-primary {
+  width: 244px;
+  height: 31px;
+  margin: 0;
+  padding: 0 14px;
+  border-radius: 4px;
+  background-color: #650A12;
+  color: #FFF8F4;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.datetime-card .datetime-actions .btn-primary:hover {
+  background-color: #4C070E;
+  transform: none;
+}
+
+/* ==========================================================================
+   21. PAYMENT TAB — REFINED DESIGN
+   ========================================================================== */
+#step-payment {
+  margin-top: -31px;
+  --input-field-error: #8A1119;
+}
+
+#step-payment .two-col-layout {
+  grid-template-columns: 1.1fr 1fr;
+  gap: 24px;
+  max-width: none;
+  align-items: stretch;
+  min-height: 650px;
+}
+
+#step-payment .form-side {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 38px 24px 22px;
+  background-color: var(--details-card-bg);
+  color: var(--details-card-text);
+  border-radius: 8px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+}
+
+#step-payment .form-group {
+  gap: 0.3rem;
+  margin-bottom: 1.15rem;
+}
+
+#step-payment .form-group label {
+  color: var(--details-card-text);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+}
+
+#step-payment .input-field {
+  width: 100%;
+  height: 1.9rem;
+  min-height: 1.9rem;
+  padding: 0 0.6rem;
+  border: 1px solid var(--details-input-border);
+  border-radius: 3px;
+  background-color: var(--details-input-bg);
+  color: var(--details-input-color);
+  font-size: 0.82rem;
+  line-height: 1.2;
+}
+
+#step-payment .input-field::placeholder {
+  color: var(--details-input-placeholder);
+  opacity: 1;
+}
+
+#step-payment .input-field:focus {
+  outline: 2px solid #80151A;
+  outline-offset: 1px;
+}
+
+#step-payment .input-field.error {
+  border-color: #80151A;
+  outline: 2px solid #80151A;
+  outline-offset: 1px;
+}
+
+#step-payment select.input-field {
+  -webkit-appearance: none;
+  appearance: none;
+  padding-right: 1.6rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0h10L5 6z' fill='%234C1116'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.6rem center;
+  background-size: 9px 5px;
+  cursor: pointer;
+}
+
+#step-payment .textarea-field {
+  height: 4.35rem;
+  min-height: 4.35rem;
+  padding: 0.45rem 0.6rem;
+  resize: none;
+}
+
+#step-payment .field-note {
+  margin-top: 0.18rem;
+  font-size: 0.46rem;
+  line-height: 1.35;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--details-card-text);
+  opacity: 0.9;
+}
+
+/* On phones the payment card is full width, so the note no longer needs to
+   be microscopic to fit; 0.46rem rendered at ~7px and was unreadable. */
+@media (max-width: 620px) {
+  #step-payment .field-note {
+    font-size: 0.72rem;
+    line-height: 1.5;
+  }
+
+  .field-note {
+    font-size: 0.72rem;
+  }
+}
+
+#step-payment .upload-dropzone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60px;
+  padding: 0.5rem;
+  border: 1px solid var(--details-input-border);
+  border-radius: 3px;
+  background-color: var(--details-input-bg);
+  color: var(--details-input-placeholder);
+  font-size: 0.8rem;
+  line-height: 1.3;
+  text-align: center;
+}
+
+#step-payment .upload-dropzone:hover {
+  border-color: #80151A;
+}
+
+#step-payment .upload-dropzone.receipt-upload {
+  min-height: 100px;
+}
+
+#step-payment .field-error {
+  margin: 0.15rem 0 0;
+  font-size: 0.7rem;
+  line-height: 1.3;
+}
+
+#step-payment .btn-group {
+  margin-top: auto;
+  padding-top: 1.6rem;
+  gap: 5px;
+}
+
+#step-payment .btn-group .btn-primary,
+#step-payment .btn-group .btn-secondary {
+  flex: 1;
+  width: auto;
+  height: 1.8rem;
+  padding: 0;
+  border-radius: 3px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+#step-payment .btn-group .btn-secondary {
+  border: 1px solid var(--details-input-border);
+  background-color: var(--details-input-bg);
+  color: var(--details-card-text);
+}
+
+#step-payment .btn-group .btn-secondary:hover {
+  background-color: #F3D3D8;
+}
+
+#step-payment .btn-group .btn-primary {
+  border: 1px solid #650A12;
+  background-color: #650A12;
+  color: #FFF8F4;
+  box-shadow: none;
+}
+
+#step-payment .btn-group .btn-primary:hover {
+  background-color: #4C070E;
+  transform: none;
+}
+
+/* Studio photo and GCash panel */
+#step-payment .qr-side {
+  align-items: stretch;
+  height: 100%;
+}
+
+#step-payment .qr-side img.stud-bg {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  min-height: 0;
+  aspect-ratio: auto;
+  object-fit: cover;
+  object-position: 62% center;
+  border-radius: 8px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+}
+
+#step-payment .qr-overlay {
+  width: 266px;
+  max-width: 82%;
+  padding: 18px 20px 14px;
+  border: 0;
+  border-radius: 10px;
+  background: rgba(22, 8, 10, 0.8);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(1.5px);
+}
+
+#step-payment .qr-card {
+  width: 100%;
+  max-width: none;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+#step-payment .qr-header {
+  margin-bottom: 10px;
+  font-family: var(--font-general);
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  color: #FFFFFF;
+}
+
+#step-payment .qr-image {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+  border-radius: 8px;
+}
+
+#step-payment .qr-name {
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #FFFFFF;
+  opacity: 1;
+}
+
+#step-payment .qr-number {
+  margin-top: 2px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+/* ==========================================================================
+   22. RESPONSIVENESS
+   ========================================================================== */
+@media (max-width: 980px) {
+  .main-content {
+    padding: 3rem 1rem 0;
+  }
+
+  .booking-card-container {
+    flex-direction: column;
+  }
+
+  .two-col-layout,
+  .datetime-layout {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  #step-details .two-col-layout {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  #step-details .form-side {
+    min-height: 0;
+  }
+
+  #step-details .form-side .btn-primary {
+    margin-top: 1rem;
+  }
+
+  #step-details .image-side img {
+    height: clamp(280px, 55vw, 460px);
+    aspect-ratio: auto;
+  }
+
+  .datetime-card {
+    height: auto;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    grid-template-areas:
+      "calendar"
+      "time"
+      "actions";
+  }
+
+  .datetime-card .calendar-pane {
+    padding: 20px 20px 16px;
+    border-right: 0;
+    border-bottom: 1px solid rgba(76, 17, 22, 0.28);
+  }
+
+  .datetime-card .time-pane {
+    padding: 20px;
+    max-height: 340px;
+    overflow-y: auto;
+  }
+
+  .datetime-card .time-buttons-grid {
+    height: auto;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .datetime-card .time-btn {
+    flex-basis: 44px;
+  }
+
+  .datetime-card .datetime-actions {
+    height: 74px;
+    padding: 0 20px;
+    align-items: center;
+  }
+
+  #step-payment .two-col-layout {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    min-height: 0;
+  }
+
+  #step-payment .form-side {
+    padding: 24px 20px 20px;
+  }
+
+  #step-payment .qr-side {
+    height: 480px;
+  }
+
+  #step-payment .qr-overlay {
+    width: 280px;
+    max-width: 80%;
+  }
+
+  .tab-bar {
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+
+  .tab-btn {
+    flex: 1 1 auto;
+    min-width: 120px;
+  }
+
+  .time-buttons-grid {
+    max-height: 200px;
+  }
+
+  .confirm-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .summary-list,
+  .notice-pink {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .confirm-box {
+    padding: 2rem 1.5rem 1.75rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .datetime-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .time-buttons-grid {
+    max-height: 200px;
+  }
+}
+
+@media (max-width: 620px) {
+  .booking-card-container {
+    padding: 0;
+  }
+
+  .page-title {
+    font-size: 2rem;
+  }
+
+  .tab-btn {
+    font-size: 0.75rem;
+    height: 28px;
+    padding: 0 8px;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    font-size: 0.7rem;
+  }
+
+  .main-content {
+    padding: 2rem 0.75rem 0;
+  }
+
+  #step-details .form-side {
+    padding: 18px 16px 20px;
+  }
+
+  .datetime-card .calendar-pane {
+    padding: 18px 16px 14px;
+  }
+
+  .datetime-card .selected-date-status {
+    margin-bottom: 18px;
+  }
+
+  .datetime-card .calendar-month-nav {
+    max-width: 100%;
+    margin-bottom: 22px;
+  }
+
+  .datetime-card .calendar-grid {
+    max-width: 100%;
+  }
+
+  .datetime-card .day-name {
+    padding-bottom: 14px;
+  }
+
+  .datetime-card .time-pane {
+    padding: 18px 22px;
+    max-height: 320px;
+  }
+
+  .datetime-card .datetime-actions {
+    height: auto;
+    padding: 14px 16px;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .datetime-card .datetime-actions .btn-secondary,
+  .datetime-card .datetime-actions .btn-primary {
+    width: 100%;
+  }
+
+  #step-payment .form-side {
+    padding: 20px 16px;
+  }
+
+  #step-payment .qr-side {
+    height: 420px;
+  }
+
+  #step-payment .qr-overlay {
+    width: 250px;
+    padding: 16px 16px 14px;
+  }
+
+  #step-payment .qr-header {
+    font-size: 1.7rem;
+  }
+
+  #step-payment .btn-group {
+    padding-top: 1.1rem;
+  }
+
+  #step-payment .btn-group .btn-secondary,
+  #step-payment .btn-group .btn-primary {
+    height: 2rem;
+  }
+
+  .confirm-box {
+    padding: 1.75rem 1.25rem 1.5rem;
+  }
+
+  .check-icon {
+    width: 72px;
+    height: 72px;
+    font-size: 2.2rem;
+  }
+
+  .confirm-title {
+    font-size: 2.1rem;
+  }
+
+  .confirm-subtitle {
+    font-size: 0.8rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+/* ==========================================================================
+   23. SMALL-SCREEN REFINEMENTS
+   ========================================================================== */
+@media (max-width: 620px) {
+  .page-title {
+    font-size: clamp(1.8rem, 9vw, 2.2rem);
+    line-height: 1.1;
+  }
+
+  .page-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .tab-bar {
+    gap: 4px;
+    padding: 5px;
+  }
+
+  .tab-btn {
+    flex: 1 1 calc(50% - 4px);
+    min-width: 0;
+    height: auto;
+    min-height: 44px;
+    padding: 8px 6px;
+    font-size: 0.8rem;
+    line-height: 1.15;
+    white-space: normal;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    min-height: 44px;
+    font-size: 0.8rem;
+  }
+
+  .main-content {
+    padding-top: 1.5rem;
+  }
+}
+/* ==========================================================================
+   DEPOSIT QR CODE — SAVE BUTTON, MOBILE TRIGGER & MODAL
+   Desktop keeps the inline QR card. Below 768px the inline studio photo and
+   QR panel are removed, the QR opens in a dialog only when a payment method
+   is chosen, and the image can be saved to the device.
+   ========================================================================== */
+
+.qr-download-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px 16px;
+  border: 1px solid #f6d0d6;
+  border-radius: 8px;
+  background: #80151a;
+  color: #faf6f0;
+  font-family: var(--font-general);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.qr-download-btn:hover,
+.qr-download-btn:focus-visible {
+  background: #4c070e;
+  transform: translateY(-1px);
+}
+
+.qr-download-btn i {
+  font-size: 1.05rem;
+}
+
+.qr-mobile-trigger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 10px;
+  padding: 11px 16px;
+  border: 1px dashed #80151a;
+  border-radius: 8px;
+  background: #f6d0d6;
+  color: #331418;
+  font-family: var(--font-general);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.qr-modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(23, 7, 9, 0.82);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+}
+
+.qr-modal-overlay.active {
+  display: flex;
+}
+
+.qr-modal {
+  position: relative;
+  width: 100%;
+  max-width: 340px;
+  max-height: 88vh;
+  overflow-y: auto;
+  padding: 24px 20px 20px;
+  border-radius: 16px;
+  border: 1px solid rgba(246, 208, 214, 0.45);
+  background: #331418;
+  color: #f6f2f0;
+  text-align: center;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+}
+
+.qr-modal-close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #f6d0d6;
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.qr-modal-close:hover,
+.qr-modal-close:focus-visible {
+  color: #fff;
+  background: rgba(246, 208, 214, 0.16);
+}
+
+.qr-modal-eyebrow {
+  display: inline-block;
+  margin-bottom: 6px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: #f6d0d6;
+  color: #331418;
+  font-family: var(--font-general);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.qr-modal-title {
+  margin: 0 0 14px;
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: #f6f2f0;
+}
+
+.qr-modal-media {
+  padding: 10px;
+  border-radius: 12px;
+  background: #faf6f0;
+}
+
+.qr-modal-media img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.qr-modal-instructions {
+  margin: 14px 0 0;
+  font-family: var(--font-general);
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: rgba(246, 242, 240, 0.86);
+  text-align: left;
+}
+
+.qr-download-btn--modal {
+  margin-top: 16px;
+}
+
+@media (max-width: 768px) {
+  /* Keep the booking form clean and focused on phones. */
+  #step-details .image-side,
+  #step-payment .qr-side {
+    display: none !important;
+  }
+
+  #step-payment .two-col-layout,
+  #step-details .two-col-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .qr-mobile-trigger {
+    display: inline-flex;
+  }
+}

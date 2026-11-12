@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paulina Body Art Studio - Booking</title>
+  <link rel="icon" type="image/png" href="../../assets/logos/favicon_white.png">
+
+  <!-- Typography & Icons -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+
+  <!-- Booking Styles -->
+  <link rel="stylesheet" href="../../css/custom-requests.css?v=7">
+  <link rel="stylesheet" href="../../css/notices.css">
+  <link rel="stylesheet" href="../../css/notifications.css">
+  <link rel="stylesheet" href="../../css/admin-nav.css">
+</head>
+<body>
+
+  <!-- TOP HEADER -->
+  <header class="top-header">
+    <a href="dashboard.html" class="brand-logo" aria-label="Paulina Body Art Studio">
+      <img src="../../assets/logos/logo_2.png" alt="Paulina Body Art Studio">
+    </a>
+
+    <div class="header-titles">
+      <h1>Booking</h1>
+      <p>Get a quick snap of your studio&rsquo;s performance - bookings, payments - all in one place.</p>
+    </div>
+
+        <div class="header-actions">
+      <a class="header-btn notification-btn" id="notificationsBtn" href="notifications.html" title="Notifications" aria-label="Notifications">
+        <i class="ph ph-bell" aria-hidden="true"></i>
+        <span class="notification-badge" id="notificationBadge" data-notification-badge hidden>0</span>
+      </a>
+      <a class="header-btn avatar-icon" href="account-settings.html" title="Account settings" aria-label="Account settings">
+        <i class="ph ph-user-circle" aria-hidden="true"></i>
+      </a>
+    </div>
+  </header>
+
+  <!-- MAIN DASHBOARD WRAPPER -->
+  <div class="dashboard-container">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar">
+      <nav class="nav-group" aria-label="Admin sections">
+        <a class="nav-item" href="dashboard.html">
+          <i class="ph ph-squares-four" aria-hidden="true"></i>
+          <span>Dashboard</span>
+        </a>
+        <a class="nav-item active" href="custom-requests.html" aria-current="page">
+          <i class="ph ph-chat-circle-dots" aria-hidden="true"></i>
+          <span>Booking</span>
+        </a>
+        <a class="nav-item" href="master-calendar.html">
+          <i class="ph ph-calendar-blank" aria-hidden="true"></i>
+          <span>Master Calendar</span>
+        </a>
+
+        <div class="nav-dropdown">
+          <div class="nav-dropdown-row">
+            <a class="nav-item nav-dropdown-link" href="admin-editweb.html#home">
+              <i class="ph ph-pencil-simple-line" aria-hidden="true"></i>
+              <span>Edit Website</span>
+            </a>
+            <button type="button" class="nav-dropdown-toggle" aria-expanded="false"
+                    aria-controls="editWebsiteMenu" aria-label="Toggle Edit Website sections">
+              <i class="ph ph-caret-down" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <div class="nav-dropdown-menu" id="editWebsiteMenu" role="menu" aria-label="Edit website sections">
+            <a role="menuitem" href="admin-editweb.html#home">
+              <i class="ph ph-house-line" aria-hidden="true"></i>
+              <span>Home Page</span>
+            </a>
+            <a role="menuitem" href="admin-editweb.html#gallery">
+              <i class="ph ph-image" aria-hidden="true"></i>
+              <span>Gallery</span>
+            </a>
+            <a role="menuitem" href="admin-editweb.html#catalogue">
+              <i class="ph ph-book-open" aria-hidden="true"></i>
+              <span>Catalogue</span>
+            </a>
+            <a role="menuitem" href="admin-editweb.html#artist">
+              <i class="ph ph-user-circle" aria-hidden="true"></i>
+              <span>Artists</span>
+            </a>
+            <a role="menuitem" href="admin-editweb.html#faqs">
+              <i class="ph ph-question" aria-hidden="true"></i>
+              <span>FAQs</span>
+            </a>
+            <a role="menuitem" href="admin-editweb.html#aftercare">
+              <i class="ph ph-first-aid-kit" aria-hidden="true"></i>
+              <span>Aftercare</span>
+            </a>
+            <a role="menuitem" href="admin-editweb.html#booking">
+              <i class="ph ph-calendar-check" aria-hidden="true"></i>
+              <span>Booking Info</span>
+            </a>
+          </div>
+        </div>
+      </nav>
+
+      <div class="signout-btn">
+        <a class="nav-item" href="../user-side/sign-in.html">
+          <i class="ph ph-sign-out" aria-hidden="true"></i>
+          <span>Sign Out</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- CENTER: REQUEST LIST -->
+    <main class="requests-column">
+      <div class="requests-card">
+        <div class="request-tabs" role="tablist" aria-label="Booking requests">
+          <button type="button" class="request-tab active" id="tabNeedsReview" role="tab"
+                  aria-selected="true" aria-controls="requestList" data-tab="needs-review">
+            Needs Review (<span id="needsReviewCount">0</span>)
+          </button>
+          <button type="button" class="request-tab" id="tabAll" role="tab"
+                  aria-selected="false" aria-controls="requestList" data-tab="all">
+            All (<span id="allCount">0</span>)
+          </button>
+        </div>
+
+        <div class="request-list" id="requestList" role="tabpanel" aria-live="polite">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </main>
+
+    <!-- RIGHT: REQUEST DETAIL -->
+    <section class="request-detail" id="requestDetailSheet" data-sheet="requestDetailSheet" aria-label="Booking details">
+      <span class="sheet-grip" data-sheet-grip aria-hidden="true"></span>
+      <button type="button" class="sheet-close" data-sheet-close aria-label="Close booking details">
+        <i class="ph ph-x" aria-hidden="true"></i>
+      </button>
+
+      <!-- Empty state -->
+      <div class="detail-empty" id="detailEmptyState">
+        <i class="ph ph-chat-circle-dots" aria-hidden="true"></i>
+        <p>Select a request to view its details</p>
+      </div>
+
+      <!-- Request detail (hidden until a request is selected) -->
+      <article class="detail-card hidden" id="detailCard" aria-live="polite">
+        <h2 class="detail-name" id="detailName">Client name</h2>
+
+        <p class="detail-phone" id="detailPhone">+63 000 000 0000</p>
+        <p class="detail-email" id="detailEmail">client@example.com</p>
+
+        <div class="detail-notes">
+          <h3>Notes</h3>
+          <p id="detailNotes">Request notes.</p>
+        </div>
+
+        <div class="detail-meta-grid">
+          <div class="detail-meta-box">
+            <h3>Target Size</h3>
+            <p id="detailSize">3&rdquo; x 3&rdquo;</p>
+          </div>
+          <div class="detail-meta-box">
+            <h3>Body Placement</h3>
+            <p id="detailPlacement">Right outer forearm</p>
+          </div>
+        </div>
+
+        <!-- Only the Custom Tattoo form collects a reference picture. -->
+        <div class="detail-references" id="detailReferencesSection">
+          <h3 class="detail-section-title">Client References</h3>
+          <div class="reference-row" id="detailReferences">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Payment proof uploaded on the booking form's payment step. -->
+        <div class="detail-references hidden" id="detailReceiptSection">
+          <h3 class="detail-section-title">Payment Proof</h3>
+          <div class="reference-row" id="detailReceipt">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <h3 class="detail-section-title">Customer Slot</h3>
+        <div class="slot-row">
+          <span class="slot-pill">
+            <i class="ph ph-clock" aria-hidden="true"></i>
+            <span id="detailTime">12:30 pm - 2:30 pm</span>
+          </span>
+          <span class="slot-pill">
+            <i class="ph ph-calendar-blank" aria-hidden="true"></i>
+            <span id="detailDate">November 12, 2026</span>
+          </span>
+        </div>
+
+        <p class="detail-feedback hidden" id="detailFeedback" role="status"></p>
+
+        <div class="detail-actions" id="detailActions">
+          <button type="button" class="detail-btn detail-btn-decline" id="btnDeclineRequest">
+            <span>Decline</span>
+          </button>
+          <button type="button" class="detail-btn detail-btn-accept" id="btnAcceptRequest">
+            <span>Accept</span>
+          </button>
+        </div>
+      </article>
+
+    </section>
+
+  </div>
+
+  <div class="sheet-backdrop" data-sheet-backdrop="requestDetailSheet" aria-hidden="true"></div>
+
+  <!-- DECLINE REASON DIALOG -->
+  <div class="dialog-overlay" id="declineDialog" aria-hidden="true">
+    <div class="dialog-box" role="dialog" aria-modal="true" aria-labelledby="declineDialogTitle">
+      <h2 class="dialog-title" id="declineDialogTitle">Decline request</h2>
+      <p class="dialog-text">
+        Let <strong id="declineClientName">the client</strong> know why this custom tattoo request can&rsquo;t
+        move forward. The reason is included in the email we send.
+      </p>
+
+      <label class="dialog-label" for="declineReason">Reason for declining</label>
+      <textarea class="dialog-textarea" id="declineReason" rows="4"
+                placeholder="Enter the reason for the rejection"></textarea>
+      <p class="dialog-error" id="declineError" role="alert"></p>
+
+      <div class="dialog-actions">
+        <button type="button" class="dialog-btn dialog-btn-secondary" data-dialog-close>Cancel</button>
+        <button type="button" class="dialog-btn dialog-btn-primary" id="btnConfirmDecline">
+          Decline &amp; notify client
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- REFERENCE PICTURE LIGHTBOX -->
+  <div class="dialog-overlay lightbox-overlay" id="referenceLightbox" aria-hidden="true">
+    <figure class="lightbox" role="dialog" aria-modal="true" aria-label="Client reference picture">
+      <img class="lightbox-image" id="referenceLightboxImage" alt="Client reference picture" />
+      <figcaption class="lightbox-caption">
+        <span id="referenceLightboxName"></span>
+        <button type="button" class="dialog-btn dialog-btn-secondary" data-dialog-close>Close</button>
+      </figcaption>
+    </figure>
+  </div>
+
+  <!-- Booking Scripts -->
+  <script src="../../js/admin-nav.js"></script>
+  <script src="../../js/admin-sheet.js"></script>
+  <script src="../../js/api-base.js"></script>
+  <script src="../../js/admin-notifications.js"></script>
+  <script type="module" src="../../js/custom-requests.js?v=9"></script>
+</body>
+</html>

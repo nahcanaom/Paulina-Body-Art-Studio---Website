@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paulina Body Art Studio - Notifications</title>
+  <link rel="icon" type="image/png" href="../../assets/logos/favicon_white.png">
+
+  <!-- Typography & Icons -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+
+  <!-- Admin styles -->
+  <link rel="stylesheet" href="../../css/admin-style.css">
+  <link rel="stylesheet" href="../../css/notices.css">
+  <link rel="stylesheet" href="../../css/notifications.css">
+  <link rel="stylesheet" href="../../css/admin-nav.css">
+</head>
+<body>
+
+  <!-- TOP HEADER -->
+  <header class="top-header">
+    <a href="dashboard.html" class="brand-logo" aria-label="Paulina Body Art Studio">
+      <img src="../../assets/logos/logo_2.png" alt="Paulina Body Art Studio">
+    </a>
+
+    <div class="header-titles">
+      <h1>Notifications</h1>
+      <p>New bookings and reviews, as they reach the studio.</p>
+    </div>
+
+    <div class="header-actions">
+      <a class="header-btn notification-btn" id="notificationsBtn" href="notifications.html" title="Notifications" aria-label="Notifications">
+        <i class="ph ph-bell" aria-hidden="true"></i>
+        <span class="notification-badge" id="notificationBadge" data-notification-badge hidden>0</span>
+      </a>
+      <a class="header-btn avatar-icon" href="account-settings.html" title="Account settings" aria-label="Account settings">
+        <i class="ph ph-user-circle" aria-hidden="true"></i>
+      </a>
+    </div>
+  </header>
+
+  <!-- MAIN DASHBOARD WRAPPER -->
+  <div class="dashboard-container notifications-layout">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar">
+      <nav class="nav-group" aria-label="Admin sections">
+        <a class="nav-item" href="dashboard.html">
+          <i class="ph ph-squares-four" aria-hidden="true"></i>
+          <span>Dashboard</span>
+        </a>
+        <a class="nav-item" href="custom-requests.html">
+          <i class="ph ph-chat-circle-dots" aria-hidden="true"></i>
+          <span>Booking</span>
+        </a>
+        <a class="nav-item" href="master-calendar.html">
+          <i class="ph ph-calendar-blank" aria-hidden="true"></i>
+          <span>Master Calendar</span>
+        </a>
+        <div class="nav-dropdown">
+          <div class="nav-dropdown-row">
+            <a class="nav-item nav-dropdown-link" href="admin-editweb.html#home">
+              <i class="ph ph-pencil-simple-line" aria-hidden="true"></i>
+              <span>Edit Website</span>
+            </a>
+            <button type="button" class="nav-dropdown-toggle" aria-expanded="false"
+                    aria-controls="editWebsiteMenu" aria-label="Toggle Edit Website sections">
+              <i class="ph ph-caret-down" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <div class="nav-dropdown-menu" id="editWebsiteMenu" role="menu" aria-label="Edit website sections">
+            <a role="menuitem" href="admin-editweb.html#home">
+              <i class="ph ph-house-line" aria-hidden="true"></i>
+              <span>Home Page</span>
+            </a>
+            <a role="menuitem" href="admin-editweb.html#gallery">
+              <i class="ph ph-image" aria-hidden="true"></i>
+              <span>Gallery</span>
+            </a>
+            <a role="menuitem" href="admin-editweb.html#catalogue">
+              <i class="ph ph-book-open" aria-hidden="true"></i>
+              <span>Catalogue</span>
+            </a>
+            <a role="menuitem" href="admin-editweb.html#artist">
+              <i class="ph ph-user-circle" aria-hidden="true"></i>
+              <span>Artists</span>
+            </a>
+            <a role="menuitem" href="admin-editweb.html#faqs">
+              <i class="ph ph-question" aria-hidden="true"></i>
+              <span>FAQs</span>
+            </a>
+            <a role="menuitem" href="admin-editweb.html#aftercare">
+              <i class="ph ph-first-aid-kit" aria-hidden="true"></i>
+              <span>Aftercare</span>
+            </a>
+            <a role="menuitem" href="admin-editweb.html#booking">
+              <i class="ph ph-calendar-check" aria-hidden="true"></i>
+              <span>Booking Info</span>
+            </a>
+          </div>
+        </div>
+      </nav>
+
+      <div class="signout-btn">
+        <a class="nav-item" href="../user-side/sign-in.html">
+          <i class="ph ph-sign-out" aria-hidden="true"></i>
+          <span>Sign Out</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- CENTER: NOTIFICATION LIST -->
+    <main class="notifications-column" id="mainContent">
+      <section class="notifications-card" aria-labelledby="notificationsHeading">
+        <header class="notifications-head">
+          <div>
+            <h2 id="notificationsHeading">Studio activity</h2>
+            <p id="notificationsSummary">Loading notifications&hellip;</p>
+          </div>
+          <button type="button" class="notifications-markall" id="btnMarkAllRead" disabled>
+            Mark all as read
+          </button>
+        </header>
+
+        <div class="notifications-tabs" role="tablist" aria-label="Filter notifications">
+          <button type="button" class="notifications-tab active" role="tab" aria-selected="true"
+                  data-filter="all" id="tabAllNotifications" aria-controls="notificationsList">
+            All (<span id="notificationsAllCount">0</span>)
+          </button>
+          <button type="button" class="notifications-tab" role="tab" aria-selected="false"
+                  data-filter="unread" id="tabUnreadNotifications" aria-controls="notificationsList">
+            Unread (<span id="notificationsUnreadCount">0</span>)
+          </button>
+        </div>
+
+        <div class="notifications-list" id="notificationsList" role="tabpanel" aria-live="polite">
+          <!-- Rendered by JS -->
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- NOTIFICATION DETAIL MODAL -->
+  <div class="notification-modal-overlay" id="notificationModal" hidden>
+    <article class="notification-modal" role="dialog" aria-modal="true"
+             aria-labelledby="notificationModalTitle" tabindex="-1">
+      <button type="button" class="notification-modal-close" id="notificationModalClose"
+              aria-label="Close notification">
+        <i class="ph ph-x" aria-hidden="true"></i>
+      </button>
+
+      <span class="notification-modal-icon" id="notificationModalIcon" aria-hidden="true">
+        <i class="ph ph-bell"></i>
+      </span>
+
+      <h2 class="notification-modal-title" id="notificationModalTitle">Notification</h2>
+      <p class="notification-modal-message" id="notificationModalMessage"></p>
+      <div class="notification-modal-meta" id="notificationModalMeta"></div>
+
+      <dl class="notification-modal-details" id="notificationModalDetails" hidden></dl>
+
+      <div class="notification-modal-actions">
+        <button type="button" class="notification-modal-delete" id="btnDeleteNotification">
+          <i class="ph ph-trash" aria-hidden="true"></i> Delete
+        </button>
+        <a class="notification-modal-link hidden" id="notificationModalLink" href="#">Open booking</a>
+        <button type="button" class="notification-modal-secondary" id="notificationModalDone">Close</button>
+      </div>
+    </article>
+  </div>
+
+  <script src="../../js/api-base.js"></script>
+  <script src="../../js/admin-nav.js"></script>
+  <script src="../../js/admin-notifications.js"></script>
+  <script type="module" src="../../js/notice.js"></script>
+  <script src="../../js/notifications-page.js?v=4"></script>
+</body>
+</html>

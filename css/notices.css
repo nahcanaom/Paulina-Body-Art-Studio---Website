@@ -1,0 +1,197 @@
+/* ==========================================================================
+   PAULINA BODY ART STUDIO — BRANDED NOTICES
+   Centered, on-brand replacement for native window.confirm / window.alert
+   prompts on the public site.
+   ========================================================================== */
+
+.pa-notice-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: none;
+  place-items: center;
+  padding: 24px;
+  background: rgba(18, 4, 8, 0.74);
+  -webkit-backdrop-filter: blur(6px) saturate(120%);
+  backdrop-filter: blur(6px) saturate(120%);
+}
+
+.pa-notice-overlay.active {
+  display: grid;
+  animation: pa-notice-fade 0.18s ease both;
+}
+
+.pa-notice {
+  position: relative;
+  width: min(430px, 100%);
+  padding: 32px 30px 26px;
+  overflow: hidden;
+  border: 1px solid rgba(246, 208, 214, 0.28);
+  border-radius: 18px;
+  background:
+    radial-gradient(120% 130% at 8% 0%, rgba(246, 208, 214, 0.16) 0%, rgba(246, 208, 214, 0) 58%),
+    var(--color-cream, #fbf7f1);
+  color: var(--color-ink, #2a1015);
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.52),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  font-family: var(--font-serif, 'FootlightMTPro', Georgia, serif);
+  animation: pa-notice-rise 0.22s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
+/* Decorative brand flourish in the top-right corner. */
+.pa-notice::after {
+  content: "";
+  position: absolute;
+  top: -42px;
+  right: -42px;
+  width: 128px;
+  height: 128px;
+  border: 1px solid rgba(128, 21, 26, 0.14);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.pa-notice-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-bottom: 16px;
+  border-radius: 50%;
+  background: rgba(128, 21, 26, 0.08);
+  color: var(--color-accent-red, #80151a);
+  font-size: 21px;
+  line-height: 1;
+}
+
+.pa-notice.is-danger .pa-notice-icon {
+  background: rgba(154, 28, 34, 0.12);
+  color: #8d1b21;
+}
+
+.pa-notice-title {
+  margin: 0;
+  padding-right: 12px;
+  color: var(--color-maroon, #440b14);
+  font-family: var(--font-serif, 'FootlightMTPro', Georgia, serif);
+  font-size: 25px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.2px;
+  overflow-wrap: anywhere;
+}
+
+.pa-notice-message {
+  margin: 10px 0 0;
+  color: rgba(42, 16, 21, 0.72);
+  font-family: var(--font-sans, 'FootlightMTPro', Georgia, serif);
+  font-size: 14.5px;
+  line-height: 1.6;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.pa-notice-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 26px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(42, 16, 21, 0.12);
+}
+
+.pa-notice-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 20px;
+  border-radius: 4px;
+  font-family: var(--font-serif, 'FootlightMTPro', Georgia, serif);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.pa-notice-btn-secondary {
+  border: 1.5px solid rgba(68, 11, 20, 0.55);
+  background: transparent;
+  color: var(--color-ink, #2a1015);
+}
+
+.pa-notice-btn-secondary:hover {
+  background: rgba(68, 11, 20, 0.07);
+}
+
+.pa-notice-btn-primary {
+  border: 1.5px solid var(--color-maroon, #440b14);
+  background: var(--color-maroon, #440b14);
+  color: var(--color-cream, #fbf7f1);
+}
+
+.pa-notice-btn-primary:hover {
+  border-color: #5a1019;
+  background: #5a1019;
+}
+
+.pa-notice.is-danger .pa-notice-btn-primary {
+  border-color: #8d1420;
+  background: #8d1420;
+}
+
+.pa-notice.is-danger .pa-notice-btn-primary:hover {
+  border-color: #a31826;
+  background: #a31826;
+}
+
+.pa-notice-btn[hidden] {
+  display: none;
+}
+
+@keyframes pa-notice-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes pa-notice-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 520px) {
+  .pa-notice-overlay {
+    padding: 16px;
+  }
+
+  .pa-notice {
+    padding: 26px 22px 22px;
+  }
+
+  .pa-notice-actions {
+    flex-direction: column-reverse;
+  }
+
+  .pa-notice-btn {
+    width: 100%;
+    min-height: 46px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pa-notice-overlay.active,
+  .pa-notice {
+    animation: none;
+  }
+}

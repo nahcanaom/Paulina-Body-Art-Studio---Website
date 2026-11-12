@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Artist | PAULINA Body Art Studio</title>
+  <link rel="icon" type="image/png" href="../../assets/logos/favicon_white.png">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+
+  <!-- Header, Footer & Global Brand Stylesheet -->
+  <link rel="stylesheet" href="../../css/header_and_footer.css">
+
+  <!-- Page-specific Stylesheet -->
+  <link rel="stylesheet" href="../../css/artist.css">
+</head>
+
+<body>
+  <div class="page-content">
+
+    <!-- =========================================================================
+         HEADER / NAVIGATION BAR
+         ========================================================================= -->
+    <nav class="navbar" aria-label="Main navigation">
+      <a href="home.html#hero" class="brand-logo" aria-label="PAULINA Body Art Studio home">
+        <img src="../../assets/logos/logo_2.png" alt="PAULINA Body Art Studio Logo">
+      </a>
+
+      <a href="account_settings.html" class="mobile-account-link" aria-label="Account settings" title="Account settings">
+        <i class="ph ph-user-circle" aria-hidden="true"></i>
+      </a>
+
+      <button class="nav-toggle" type="button" aria-controls="navMenu" aria-expanded="false"
+        aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <div class="nav-links" id="navMenu">
+        <a href="home.html">HOME</a>
+        <a href="gallery.html">GALLERY</a>
+        <a href="catalogue.html">CATALOGUE</a>
+        <a href="aftercare.html">AFTERCARE</a>
+        <a href="artist.html" class="active">ARTIST</a>
+        <a href="faqs.html">FAQs</a>
+        <a href="booking.html">BOOKING</a>
+        <a href="sign-in.html" class="nav-account" title="account" aria-label="account">Account</a>
+      </div>
+          <div class="nav-icons">
+      <a href="sign-in.html" class="account-trigger" title="account" aria-label="account" aria-expanded="false">
+        <i class="ph ph-user-circle account-icon-ph" aria-hidden="true"></i>
+      </a>
+      <div class="account-dropdown" id="accountDropdown">
+        <a href="sign-in.html" class="account-dropdown-item account-logout-btn" data-logout-btn role="button">Log out</a>
+        <div class="account-dropdown-divider"></div>
+        <a href="account_settings.html" class="account-dropdown-item account-settings-link" data-settings-link>Settings</a>
+      </div>
+    </div>
+  </nav>
+
+    <main id="main">
+      <!-- =========================================================================
+           ARTIST PROFILES
+           Every artist is rendered as one self-contained block: profile details,
+           their Favorite Works and their own Book Your Appointment button.
+           ========================================================================= -->
+      <section class="artist-profile-section" id="artist" aria-labelledby="artist-title">
+        <div class="section-florals" aria-hidden="true">
+          <img class="section-flower floral-size-large floral-left-top floral-bg2" src="../../assets/images/flower_bg2.png"
+            alt="">
+          <img class="section-flower floral-size-medium floral-right-bottom floral-bg1"
+            src="../../assets/images/flower_bg1.png" alt="">
+        </div>
+
+        <h1 class="section-title" id="artist-title">ARTISTS</h1>
+
+        <div class="artist-list" data-artist-list>
+          <!-- Static fallback: replaced by the published artist blocks from the dashboard. -->
+          <article class="artist-block" data-artist-fallback>
+            <div class="artist-profile-card">
+              <!-- Left: Artist Photo -->
+              <div class="artist-image-wrapper">
+                <img src="../../assets/images/mspau.png"
+                  alt="Paulina" class="artist-photo" id="artistPhoto">
+              </div>
+
+              <!-- Right: Artist Details -->
+              <div class="artist-details">
+                <div class="artist-name-group">
+                  <h2 class="artist-script-name">Paulina <span class="artist-serif-name">Vampire</span></h2>
+                </div>
+
+                <p class="artist-bio">
+                  <strong>Paulina Vampire</strong> is the visionary artist, master piercer, and founding owner behind
+                  <strong>Paulina Body Art Studio</strong>, a premier destination for high-end body modification and custom
+                  tattoo artistry. Blending technical precision with raw creative expression, she has built a studio known
+                  for its exceptional hygiene standards and welcoming atmosphere. Specializing in <strong>precision body
+                    piercing, curated ear styling, and fine-line tattoos</strong>, she views the human body as the ultimate
+                  canvas and is dedicated to transforming each client's unique vision into a safe, beautiful, and lasting
+                  statement.
+                </p>
+
+                <a href="https://www.instagram.com/paulinabodyart/" target="_blank" rel="noreferrer" class="artist-social-link"
+                  title="Instagram" aria-label="Instagram">
+                  <i class="ph-fill ph-instagram-logo" aria-hidden="true"></i>
+                  <span>paulinabodyart</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- Favorite Works -->
+            <section class="artist-favorite-works" id="favorites" aria-labelledby="favorites-title">
+              <div class="section-florals" aria-hidden="true">
+                <img class="section-flower floral-size-medium floral-left-middle floral-bg1"
+                  src="../../assets/images/flower_bg1.png" alt="">
+                <img class="section-flower floral-size-small floral-right-middle floral-bg2"
+                  src="../../assets/images/flower_bg2.png" alt="">
+              </div>
+
+              <div class="section-divider-heading">
+                <h2 id="favorites-title">Favorite Works</h2>
+                <div class="divider-line" aria-hidden="true"></div>
+              </div>
+
+              <div class="piercings-grid" data-site-images="artist-favorites">
+                <article class="piercing-card" data-title="Vampire Snake Bites"
+                  data-desc="Custom implant-grade titanium fangs fitting styled for high-impact lip symmetry."
+                  data-img="../../assets/images/fave1.png">
+                  <div class="piercing-img-box">
+                    <img src="../../assets/images/fave1.png" alt="Vampire Piercing">
+                  </div>
+                  <span class="piercing-name">Vampire Snake Bites</span>
+                </article>
+
+                <article class="piercing-card" data-title="Curated Ear Stack"
+                  data-desc="Triple lobe, conch, and helix arrangement utilizing 14k solid gold ends and crystal studs."
+                  data-img="../../assets/images/fave2.png">
+                  <div class="piercing-img-box">
+                    <img src="../../assets/images/fave2.png" alt="Ear Curation Piercing">
+                  </div>
+                  <span class="piercing-name">Curated Ear Stack</span>
+                </article>
+
+                <article class="piercing-card" data-title="Dainty Navel Floating Gem"
+                  data-desc="Precision floating navel barbell with genuine CZ teardrop gem placement."
+                  data-img="../../assets/images/fave3.png">
+                  <div class="piercing-img-box">
+                    <img src="../../assets/images/fave3.png" alt="Navel Piercing">
+                  </div>
+                  <span class="piercing-name">Dainty Navel Floating Gem</span>
+                </article>
+              </div>
+
+              <div class="btn-container">
+                <button type="button" class="btn booking-btn" id="bookBtn" data-booking-btn>BOOK YOUR APPOINTMENT</button>
+              </div>
+            </section>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <!-- =========================================================================
+         FOOTER
+         ========================================================================= -->
+    <footer class="footer">
+      <div class="section-florals" aria-hidden="true">
+        <img class="section-flower floral-size-medium floral-center-top floral-bg1" src="../../assets/images/flower_bg1.png"
+          alt="">
+        <img class="section-flower floral-size-small floral-left-bottom floral-bg2" src="../../assets/images/flower_bg2.png"
+          alt="">
+      </div>
+      <hr class="visit-separator">
+      <div class="footer-top-logo">
+        <img src="../../assets/logos/logo_2.png" alt="Paulina Body Art Studio Logo">
+      </div>
+
+      <div class="footer-layout">
+        <a class="footer-mark" href="home.html#hero" aria-label="Return to home">
+          <img src="../../assets/logos/logomark_1.png" alt="Paulina Body Art Studio mark">
+        </a>
+
+        <nav class="footer-nav" aria-label="Footer navigation">
+          <div>
+            <a href="home.html#hero">Home</a>
+            <a href="gallery.html">Gallery</a>
+            <a href="catalogue.html">Catalogue</a>
+          </div>
+          <div>
+            <a href="artist.html">Artist</a>
+            <a href="aftercare.html">Aftercare</a>
+            <a href="faqs.html">FAQs</a>
+          </div>
+        </nav>
+
+        <div class="footer-contact">
+          <div class="footer-contact-details">
+            <a href="https://www.google.com/maps/search/?api=1&amp;query=Paulina%20Body%20Art%20Studio%2C%20P3R6%2BWCW%2C%20Ilang-ilang%2C%20Novaliches%2C%20Caloocan%2C%20Metro%20Manila%2C%20Philippines"
+              target="_blank" rel="noreferrer" title="Google Maps" aria-label="Google Maps">
+              <i class="ph-fill ph-map-pin accent-icon"></i>
+              <span>Paulina Body Art Studio, P3R6+WCW, Ilang-ilang, Novaliches, Caloocan, Metro Manila</span>
+            </a>
+            <a href="mailto:paulinabodyart@gmail.com">
+              <i class="ph ph-envelope-simple"></i>
+              <span>paulinabodyart@gmail.com</span>
+            </a>
+            <a href="tel:+639517417630">
+              <i class="ph-fill ph-phone"></i>
+              <span>0951 741 7630</span>
+            </a>
+          </div>
+          <div class="social-links">
+            <a href="https://www.instagram.com/paulinabodyart/" target="_blank" rel="noreferrer" title="Instagram"
+              aria-label="Instagram"><i class="ph-fill ph-instagram-logo"></i></a>
+            <a href="https://www.facebook.com/PaulinaBodyArtStudio" target="_blank" rel="noreferrer" title="Facebook"
+              aria-label="Facebook"><i class="ph-fill ph-facebook-logo"></i></a>
+            <a href="https://www.tiktok.com/@paulinabodyart" target="_blank" rel="noreferrer" title="TikTok"
+              aria-label="TikTok"><i class="ph-fill ph-tiktok-logo"></i></a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Photo previews (portrait + favourite works) are rendered by the shared
+         gallery-style viewer in js/photo-viewer.js. -->
+  </div>
+
+  <script src="../../js/header_and_footer.js"></script>
+  <script type="module" src="../../js/site-content.js"></script>
+  <script type="module" src="../../js/artist.js"></script>
+</body>
+
+</html>

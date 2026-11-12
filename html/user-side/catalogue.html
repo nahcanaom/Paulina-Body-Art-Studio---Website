@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAULINA Body Art Studio | Catalogue</title>
+    <meta name="description" content="Browse the PAULINA Body Art Studio piercing catalogue: ASTM F136 titanium jewelry for ear, facial, oral and body piercings, plus NeilMed aftercare. Filter by placement or material and order via Instagram.">
+    <link rel="icon" type="image/png" href="../../assets/logos/favicon_white.png">
+
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../css/header_and_footer.css">
+    <link rel="stylesheet" href="../../css/catalogue.css">
+</head>
+
+
+
+
+<body>
+
+
+
+
+    <!-- ========================================
+         NAVIGATION
+    ========================================= -->
+    <nav class="navbar" aria-label="Main navigation">
+        <a href="home.html#hero" class="brand-logo" aria-label="PAULINA Body Art Studio home">
+            <img src="../../assets/logos/logo_2.png" alt="PAULINA Body Art Studio Logo">
+        </a>
+
+
+        <a href="account_settings.html" class="mobile-account-link" aria-label="Account settings" title="Account settings">
+            <i class="ph ph-user-circle" aria-hidden="true"></i>
+        </a>
+
+        <button
+            class="nav-toggle"
+            type="button"
+            aria-controls="navMenu"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+        >
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+
+        <div class="nav-links" id="navMenu">
+            <a href="home.html">HOME</a>
+            <a href="gallery.html">GALLERY</a>
+            <a href="catalogue.html" class="active">CATALOGUE</a>
+            <a href="aftercare.html">AFTERCARE</a>
+            <a href="artist.html">ARTIST</a>
+            <a href="faqs.html">FAQs</a>
+            <a href="booking.html">BOOKING</a>
+            <a href="sign-in.html" class="nav-account" title="account" aria-label="account">
+                Account
+            </a>
+        </div>
+
+
+            <div class="nav-icons">
+      <a href="sign-in.html" class="account-trigger" title="account" aria-label="account" aria-expanded="false">
+        <i class="ph ph-user-circle account-icon-ph" aria-hidden="true"></i>
+      </a>
+      <div class="account-dropdown" id="accountDropdown">
+        <a href="sign-in.html" class="account-dropdown-item account-logout-btn" data-logout-btn role="button">Log out</a>
+        <div class="account-dropdown-divider"></div>
+        <a href="account_settings.html" class="account-dropdown-item account-settings-link" data-settings-link>Settings</a>
+      </div>
+    </div>
+  </nav>
+
+
+
+
+
+
+
+
+    <!-- ========================================
+         PIERCING CATALOGUE
+    ========================================= -->
+    <main class="piercing-pricelist">
+
+
+
+
+        <div class="section-florals" aria-hidden="true">
+            <img
+                class="section-flower floral-size-large floral-left-top floral-bg1"
+                src="../../assets/images/flower_bg1.png"
+                alt=""
+            >
+
+
+
+
+            <img
+                class="section-flower floral-size-small floral-right-bottom floral-bg1"
+                src="../../assets/images/flower_bg1.png"
+                alt=""
+            >
+
+
+
+
+            <img
+                class="section-flower floral-size-medium floral-center-bottom floral-bg2"
+                src="../../assets/images/flower_bg2.png"
+                alt=""
+            >
+
+
+
+
+            <img
+                class="section-flower floral-size-large floral-left-bottom floral-bg2"
+                src="../../assets/images/flower_bg2.png"
+                alt=""
+            >
+        </div>
+
+
+
+
+        <!-- Catalogue Content -->
+        <div class="catalogue-container">
+
+
+
+
+            <!-- Catalogue Header -->
+            <header class="catalogue-header">
+                <div class="catalogue-header-row">
+
+
+
+
+                    <!-- Catalogue Title -->
+                    <div class="catalogue-title-wrap">
+                        <h1 class="catalogue-title">
+                            Piercing Catalogue
+                        </h1>
+                    </div>
+
+
+
+
+                    <!-- Search and Sort -->
+                    <div class="catalogue-tools">
+
+
+
+
+                        <!-- Search Bar -->
+                        <div class="search-box">
+                            <div
+                                id="searchSuggestions"
+                                class="search-suggestions"
+                                role="listbox"
+                                aria-label="Piercing suggestions"
+                                hidden
+                            ></div>
+                            <span class="search-icon">
+                                <i class="ph-fill ph-magnifying-glass"></i>
+                            </span>
+
+
+
+
+                            <input
+                                type="text"
+                                id="searchInput"
+                                placeholder="Search Piercing"
+                                aria-label="Search piercings"
+                                class="search-input"
+                                role="combobox"
+                                aria-autocomplete="list"
+                                aria-expanded="false"
+                                aria-controls="searchSuggestions"
+                                aria-haspopup="listbox"
+                                autocomplete="off"
+                                spellcheck="false"
+                            >
+                        </div>
+
+
+
+
+                        <!-- Sort Dropdown: Below Search -->
+                        <div class="sort-row">
+                            <label
+                                for="sortSelect"
+                                class="sort-label"
+                            >
+                                Sort by:
+                            </label>
+
+
+
+
+                            <div class="select-wrap">
+                                <select
+                                    id="sortSelect"
+                                    class="sort-select"
+                                >
+                                    <option value="az">A ~ Z</option>
+                                    <option value="za">Z ~ A</option>
+                                    <option value="price-low">Price: Low to High</option>
+                                    <option value="price-high">Price: High to Low</option>
+                                </select>
+
+
+
+
+                                <span class="select-chevron">
+                                    <i class="ph ph-caret-down"></i>
+                                </span>
+                            </div>
+                        </div>
+
+
+
+
+                    </div>
+                </div>
+            </header>
+
+
+
+
+            <!-- Mobile Filter Action Bar -->
+            <div class="mobile-filter-bar">
+                <button
+                    type="button"
+                    class="filter-trigger"
+                    id="filterTriggerBtn"
+                    aria-controls="filtersPanel"
+                    aria-expanded="false"
+                >
+                    <i class="ph-fill ph-sliders" aria-hidden="true"></i>
+
+
+                    <span>Filter &amp; Sort</span>
+
+
+                    <span class="filter-badge" id="filterBadge" hidden>(0)</span>
+                </button>
+            </div>
+
+
+
+
+
+
+
+
+            <!-- ========================================
+                 FILTERS AND PRODUCTS
+            ========================================= -->
+            <div class="catalogue-layout">
+
+
+
+
+                <!-- Sidebar Filters / Off-Canvas Drawer (mobile) -->
+                <aside
+                    class="filters-panel"
+                    id="filtersPanel"
+                    aria-label="Product filters"
+                >
+
+
+
+
+                    <div class="filters-head">
+                        <h2 class="filters-title">
+                            Filters
+                        </h2>
+
+
+
+
+                        <div class="filters-head-actions">
+                            <button
+                                id="clearFiltersBtn"
+                                type="button"
+                                class="clear-filters-btn"
+                            >
+                                Clear all
+                            </button>
+
+
+
+
+                            <button
+                                id="closeFiltersBtn"
+                                type="button"
+                                class="drawer-close-btn"
+                                aria-label="Close filters"
+                            >
+                                &times;
+                            </button>
+                        </div>
+                    </div>
+
+
+
+
+                                        <div id="filterAccordion" class="filter-groups">
+                        <div>
+                            <h3 class="filter-group-title">
+                                Ear
+                            </h3>
+
+                            <div class="filter-list">
+                                <label class="filter-option">
+                                    <input type="checkbox" value="Conch" class="custom-checkbox filter-cb">
+                                    <span>Conch</span>
+                                </label>
+
+                                <label class="filter-option">
+                                    <input type="checkbox" value="Daith" class="custom-checkbox filter-cb">
+                                    <span>Daith</span>
+                                </label>
+
+                                <label class="filter-option">
+                                    <input type="checkbox" value="Flat" class="custom-checkbox filter-cb">
+                                    <span>Flat</span>
+                                </label>
+
+                                <label class="filter-option">
+                                    <input type="checkbox" value="Helix" class="custom-checkbox filter-cb">
+                                    <span>Helix</span>
+                                </label>
+
+                                <label class="filter-option">
+                                    <input type="checkbox" value="Lobe/Upper Lobe" class="custom-checkbox filter-cb">
+                                    <span>Lobe/Upper Lobe</span>
+                                </label>
+
+                                <label class="filter-option">
+                                    <input type="checkbox" value="Rook" class="custom-checkbox filter-cb">
+                                    <span>Rook</span>
+                                </label>
+                            </div>
+                        </div>
+
+
+                        <div>
+                            <h3 class="filter-group-title">
+                                Facial
+                            </h3>
+
+                            <div class="filter-list">
+                                <label class="filter-option">
+                                    <input type="checkbox" value="Eyebrow" class="custom-checkbox filter-cb">
+                                    <span>Eyebrow</span>
+                                </label>
+
+                                <label class="filter-option">
+                                    <input type="checkbox" value="Septum" class="custom-checkbox filter-cb">
+                                    <span>Septum</span>
+                                </label>
+                            </div>
+                        </div>
+
+
+                        <div>
+                            <h3 class="filter-group-title">
+                                Oral
+                            </h3>
+
+                            <div class="filter-list">
+                                <label class="filter-option">
+                                    <input type="checkbox" value="Tongue" class="custom-checkbox filter-cb">
+                                    <span>Tongue</span>
+                                </label>
+                            </div>
+                        </div>
+
+
+                        <div>
+                            <h3 class="filter-group-title">
+                                Body
+                            </h3>
+
+                            <div class="filter-list">
+                                <label class="filter-option">
+                                    <input type="checkbox" value="Navel" class="custom-checkbox filter-cb">
+                                    <span>Navel</span>
+                                </label>
+                            </div>
+                        </div>
+
+
+                        <div>
+                            <h3 class="filter-group-title">
+                                Aftercare
+                            </h3>
+
+                            <div class="filter-list">
+                                <label class="filter-option">
+                                    <input type="checkbox" value="Saline Spray" class="custom-checkbox filter-cb">
+                                    <span>Saline Spray</span>
+                                </label>
+                            </div>
+                        </div>
+
+
+                        <div>
+                            <h3 class="filter-group-title">
+                                Material
+                            </h3>
+
+                            <div class="filter-list">
+                                <label class="filter-option">
+                                    <input type="checkbox" value="Titanium" class="custom-checkbox filter-cb">
+                                    <span>ASTM F136 Titanium</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+                <!-- Off-Canvas Filter Backdrop (mobile) -->
+                <div
+                    class="filter-backdrop"
+                    id="filterBackdrop"
+                    aria-hidden="true"
+                ></div>
+
+
+
+
+
+
+
+
+                <!-- Product Grid -->
+                <div class="results-col">
+
+
+
+
+                    <div
+                        id="productGrid"
+                        class="product-grid"
+                    >
+                        <!-- Product Cards -->
+                    </div>
+
+
+
+
+                    <!-- No Results -->
+                    <div
+                        id="noResults"
+                        class="no-results hidden"
+                    >
+                        <i class="ph-fill ph-diamond no-results-icon"></i>
+
+
+
+
+                        <p class="no-results-text">
+                            No piercings match your criteria.
+                        </p>
+
+
+
+
+                        <button
+                            id="resetSearchBtn"
+                            type="button"
+                            class="reset-btn"
+                        >
+                            Reset Filters
+                        </button>
+                    </div>
+
+
+
+
+                    <!-- Load More -->
+                    <div class="load-more-row">
+                        <button
+                            id="loadMoreBtn"
+                            type="button"
+                            class="load-more-btn"
+                        >
+                            Load More
+                        </button>
+                    </div>
+
+
+
+
+                </div>
+            </div>
+        </div>
+
+
+    </main>
+
+
+
+
+
+
+
+
+   
+    <!-- ========================================
+        INSTAGRAM ORDER MODAL
+    ========================================= -->
+   
+    <!-- PRODUCT DETAIL MODAL -->
+    <div
+        id="orderModal"
+        class="order-modal"
+        aria-hidden="true">
+
+
+
+
+        <div
+            id="modalContainer"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modalItemName"
+            class="order-modal-box">
+
+
+
+
+            <!-- Close Button -->
+            <button
+                id="closeModalBtn"
+                type="button"
+                aria-label="Close product details"
+                class="modal-close"
+            >
+                &times;
+            </button>
+
+
+
+
+            <!-- Main Product Image -->
+            <div class="modal-media" id="modalMedia">
+
+                <img
+                    id="modalMainImage"
+                    alt="Selected piercing"
+                    class="modal-main-image">
+
+                <button
+                    id="modalPrevImageBtn"
+                    type="button"
+                    aria-label="Previous photo"
+                    class="modal-nav-btn modal-nav-prev">
+                    &lsaquo;
+                </button>
+
+                <button
+                    id="modalNextImageBtn"
+                    type="button"
+                    aria-label="Next photo"
+                    class="modal-nav-btn modal-nav-next">
+                    &rsaquo;
+                </button>
+            </div>
+
+
+
+
+            <!-- Product Summary -->
+            <div class="modal-summary">
+
+                <div class="modal-details">
+                    <div class="modal-info">
+                        <h2
+                            id="modalItemName"
+                            class="modal-name">
+                            Product Name
+                        </h2>
+
+                        <p
+                            id="modalItemMaterial"
+                            class="modal-material">
+                            Product Material
+                        </p>
+                    </div>
+
+                    <div
+                        id="modalItemPrice"
+                        class="modal-price">
+                        ₱ 0
+                    </div>
+                </div>
+
+                <p
+                    id="modalSizesLabel"
+                    class="modal-sizes-label">
+                    Available Sizes
+                </p>
+
+                <div
+                    id="modalSizeOptions"
+                    class="size-pills modal-size-pills"
+                    role="group"
+                    aria-labelledby="modalSizesLabel">
+                </div>
+            </div>
+
+
+
+
+            <!-- Order Button -->
+            <a
+                id="igOrderBtn"
+                href="https://www.instagram.com/paulinabodyart/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="modal-order-btn">
+                Order Via Instagram
+            </a>
+
+
+
+
+            <!-- Thumbnail Gallery -->
+            <div
+                id="modalThumbnailBar"
+                class="modal-thumbs"
+                role="group"
+                aria-label="Product photo thumbnails">
+            </div>
+
+            <p
+                id="modalGalleryStatus"
+                class="sr-only"
+                aria-live="polite">
+            </p>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- ========================================
+         TOAST NOTIFICATION
+    ========================================= -->
+    <div
+        id="toast"
+        class="toast"
+        role="status"
+        aria-live="polite"
+    >
+        <i class="ph-fill ph-check-circle toast-icon"></i>
+        <span id="toastMsg">More piercings loaded!</span>
+    </div>
+
+
+
+
+
+
+
+
+    <!-- Footer -->
+    <button
+        id="backToTopBtn"
+        type="button"
+        class="back-to-top"
+        aria-label="Back to top"
+    >
+        <i class="ph ph-arrow-up" aria-hidden="true"></i>
+    </button>
+
+  <footer class="footer">
+    <div class="section-florals" aria-hidden="true">
+      <img class="section-flower floral-size-medium floral-center-top floral-bg1" src="../../assets/images/flower_bg1.png" alt="">
+      <img class="section-flower floral-size-small floral-left-bottom floral-bg2" src="../../assets/images/flower_bg2.png" alt="">
+    </div>
+    <hr class="visit-separator">
+    <div class="footer-top-logo">
+      <img src="../../assets/logos/logo_2.png" alt="Paulina Body Art Studio Logo">
+    </div>
+   
+    <div class="footer-layout">
+      <a class="footer-mark" href="home.html#hero" aria-label="Return to home">
+        <img src="../../assets/logos/logomark_1.png" alt="Paulina Body Art Studio mark">
+      </a>
+
+
+
+
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <div>
+          <a href="home.html#hero">Home</a>
+          <a href="gallery.html">Gallery</a>
+          <a href="catalogue.html">Catalogue</a>
+        </div>
+        <div>
+          <a href="artist.html">Artist</a>
+          <a href="aftercare.html">Aftercare</a>
+          <a href="faqs.html">FAQs</a>
+        </div>
+      </nav>
+
+
+
+
+      <div class="footer-contact">
+        <div class="footer-contact-details">
+          <a href="https://www.google.com/maps/search/?api=1&amp;query=Paulina%20Body%20Art%20Studio%2C%20P3R6%2BWCW%2C%20Ilang-ilang%2C%20Novaliches%2C%20Caloocan%2C%20Metro%20Manila%2C%20Philippines" target="_blank" rel="noreferrer" title="Google Maps" aria-label="Google Maps">
+            <i class="ph-fill ph-map-pin accent-icon"></i>
+            <span>Paulina Body Art Studio, P3R6+WCW, Ilang-ilang, Novaliches, Caloocan, Metro Manila</span>
+          </a>
+          <a href="mailto:paulinabodyart@gmail.com">
+            <i class="ph ph-envelope-simple"></i>
+            <span>paulinabodyart@gmail.com</span>
+          </a>
+          <a href="tel:+639517417630">
+            <i class="ph-fill ph-phone"></i>
+            <span>0951 741 7630</span>
+          </a>
+        </div>
+        <div class="social-links">
+          <a href="https://www.instagram.com/paulinabodyart/" target="_blank" rel="noreferrer" title="Instagram" aria-label="Instagram"><i class="ph-fill ph-instagram-logo"></i></a>
+          <a href="https://www.facebook.com/PaulinaBodyArtStudio" target="_blank" rel="noreferrer" title="Facebook" aria-label="Facebook"><i class="ph-fill ph-facebook-logo"></i></a>
+          <a href="https://www.tiktok.com/@paulinabodyart" target="_blank" rel="noreferrer" title="TikTok" aria-label="TikTok"><i class="ph-fill ph-tiktok-logo"></i></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+
+
+  <!-- JavaScript -->
+    <script src="../../js/header_and_footer.js"></script>
+    <script src="../../js/api-base.js"></script>
+    <script type="module" src="../../js/site-content.js"></script>
+    <script type="module" src="../../js/catalogue.js"></script>
+</body>
+</html>
+
+

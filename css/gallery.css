@@ -1,0 +1,1245 @@
+/* ==========================================================================
+   PAULINA BODY ART STUDIO - GALLERY PAGE STYLES
+   ========================================================================== */
+
+/* Body background */
+body {
+  background-color: var(--color-primary);
+}
+
+/* Page Banner / Hero */
+.page-banner {
+  position: relative;
+  max-width: none;
+  margin: 60px 0 40px;
+  padding: 0 4%;
+  text-align: left;
+  color: var(--color-offwhite);
+  z-index: 1;
+}
+
+.page-banner-content {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.page-banner > *:not(.section-florals) {
+  position: relative;
+  z-index: 2;
+}
+
+.page-banner .selected-works {
+  font-family: var(--font-accent);
+  font-size: 0.85rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--color-pink-soft);
+  margin-bottom: 12px;
+  display: inline-block;
+}
+
+.page-banner h1 {
+  font-family: var(--font-heading);
+  font-size: clamp(2.5rem, 6vw, 3.5rem);
+  font-weight: 400;
+  letter-spacing: 2px;
+  margin: 0 0 24px;
+  color: var(--color-offwhite);
+}
+
+.gallery-toggle {
+  display: flex;
+  gap: 12px;
+  margin-top: 0;
+}
+
+button {
+  padding: 8px 24px;
+  font-family: var(--font-accent);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  background: transparent;
+  color: inherit;
+}
+
+.piercing-btn {
+  background: transparent;
+  border: 1.5px solid var(--color-accent-red);
+  color: var(--color-offwhite);
+}
+
+.tattoo-btn {
+  border: 1.5px solid var(--color-accent-red);
+  color: var(--color-offwhite);
+  background: transparent;
+}
+
+.piercing-btn.active,
+.tattoo-btn.active {
+  background: var(--color-accent-red);
+}
+
+.tattoo-btn:hover {
+  background-color: var(--color-accent-red);
+}
+
+/* ==========================================================================
+   SECTION HEADERS
+   ========================================================================== */
+.gallery-section {
+  position: relative;
+  isolation: isolate;
+  padding: 40px 4% 60px;
+}
+
+.gallery-section-header {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  max-width: 1120px;
+  margin: 0 auto 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(246, 208, 214, 0.25);
+}
+
+.gallery-section-number {
+  font-family: var(--font-general);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--color-offwhite);
+}
+
+.gallery-section-title {
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  font-weight: 400;
+  letter-spacing: 2px;
+  color: var(--color-offwhite);
+  text-transform: uppercase;
+}
+
+/* ==========================================================================
+   CARDS COMMON STYLES
+   ========================================================================== */
+.zoom-card {
+  position: relative;
+  min-height: 0;
+  min-width: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.zoom-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 10px;
+  transition: transform 0.4s cubic-bezier(0.2, 0, 0.2, 1);
+}
+
+.zoom-card:hover img {
+  transform: scale(1.04);
+}
+
+.zoom-card-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(40, 10, 15, 0.45);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 10px;
+  pointer-events: none;
+}
+
+.zoom-card:hover .zoom-card-overlay {
+  opacity: 1;
+}
+
+.zoom-card-overlay p {
+  font-family: var(--font-general);
+  font-size: 0.95rem;
+  letter-spacing: 1px;
+  color: var(--color-offwhite);
+}
+
+/* ==========================================================================
+   SECTION 01: FACE PIERCING GRID
+   ========================================================================== */
+.face-gallery-grid {
+  display: grid;
+  grid-template-columns: 168fr 191fr;
+  gap: 14px;
+  max-width: 1120px;
+  margin: 0 auto;
+  height: clamp(520px, 66.7vw, 760px);
+}
+
+.face-block {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+}
+
+/* Left block: Top row (86) + Eyebrow (150) = 236 */
+.face-block--left .face-top-row {
+  height: calc((100% - 14px) * 86 / 236);
+  display: flex;
+  gap: 14px;
+  min-height: 0;
+}
+
+.face-block--left .face-eyebrow {
+  height: calc((100% - 14px) * 150 / 236);
+  width: 100%;
+}
+
+.face-block--left .face-ear {
+  flex: 83;
+  height: 100%;
+}
+
+.face-block--left .face-col-stack {
+  flex: 80;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 0;
+}
+
+.face-block--left .face-bridge {
+  height: calc((100% - 14px) * 32 / 80);
+}
+
+.face-block--left .face-lips {
+  height: calc((100% - 14px) * 48 / 80);
+}
+
+/* Right block: Top row (164) + Smiley (72) = 236 */
+.face-block--right .face-top-row {
+  height: calc((100% - 14px) * 164 / 236);
+  display: flex;
+  gap: 14px;
+  min-height: 0;
+}
+
+.face-block--right .face-smiley {
+  height: calc((100% - 14px) * 72 / 236);
+  width: 100%;
+}
+
+.face-block--right .face-col-stack {
+  flex: 82;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 0;
+}
+
+.face-block--right .face-nose {
+  height: calc((100% - 14px) * 99 / 159);
+}
+
+.face-block--right .face-septum {
+  height: calc((100% - 14px) * 60 / 159);
+}
+
+.face-block--right .face-industrial {
+  flex: 103;
+  height: 100%;
+}
+
+/* ==========================================================================
+   SECTION 02: BODY PIERCING GRID
+   ========================================================================== */
+.body-gallery-grid {
+  display: grid;
+  grid-template-columns: 96fr 110fr 150fr;
+  gap: 14px;
+  max-width: 1120px;
+  margin: 0 auto;
+  height: clamp(620px, 83.7vw, 950px);
+}
+
+.body-col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+}
+
+/* Column 1: Finger (140) + Navel (158) = 298 */
+.body-col--1 .body-finger {
+  height: calc((100% - 14px) * 140 / 298);
+}
+
+.body-col--1 .body-navel {
+  height: calc((100% - 14px) * 158 / 298);
+}
+
+/* Column 2: Nape (73) + Wrist (137) + Dimples (82) = 292 */
+.body-col--2 .body-nape {
+  height: calc((100% - 28px) * 73 / 292);
+}
+
+.body-col--2 .body-wrist {
+  height: calc((100% - 28px) * 137 / 292);
+}
+
+.body-col--2 .body-dimples {
+  height: calc((100% - 28px) * 82 / 292);
+}
+
+/* Column 3: Hips (140) + Mid Row (70) + Spine (82) = 292 */
+.body-col--3 .body-hips {
+  height: calc((100% - 28px) * 140 / 292);
+}
+
+.body-col--3 .body-mid-row {
+  height: calc((100% - 28px) * 70 / 292);
+  display: flex;
+  gap: 14px;
+  min-height: 0;
+}
+
+.body-col--3 .body-throat {
+  flex: 72;
+  height: 100%;
+}
+
+.body-col--3 .body-clavicle {
+  flex: 74;
+  height: 100%;
+}
+
+.body-col--3 .body-spine {
+  height: calc((100% - 28px) * 82 / 292);
+}
+
+/* ==========================================================================
+   MODAL FUNCTION & DESIGN (Matches Mockup Image 2)
+   ========================================================================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  padding: 20px;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-box {
+  background: #331418;
+  border: 1px solid rgba(246, 208, 214, 0.15);
+  border-radius: 16px;
+  padding: 24px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.75);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  transform: scale(0.94);
+  transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1);
+}
+
+.modal-overlay.active .modal-box {
+  transform: scale(1);
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  background: transparent;
+  border: none;
+  color: var(--color-pink-soft);
+  font-size: 1.8rem;
+  line-height: 1;
+  padding: 4px 8px;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 10;
+}
+
+.modal-close:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.modal-img-wrap {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.3);
+  margin-bottom: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+}
+
+.modal-img-wrap #modalImage {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: min(52vh, 400px);
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+  border: 0;
+  border-radius: 10px;
+}
+
+.modal-box h3 {
+  font-family: var(--font-heading);
+  font-size: 1.55rem;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: var(--color-offwhite);
+  margin: 0 0 4px;
+}
+
+.modal-box p {
+  font-family: var(--font-general);
+  font-size: 0.95rem;
+  color: var(--color-pink-soft);
+  text-transform: lowercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+/* Footer styles are standardized globally in css/header_and_footer.css */
+
+/* ==========================================================================
+   RESPONSIVE DESIGN
+   ========================================================================== */
+@media (max-width: 860px) {
+  .page-banner {
+    padding: 40px 4% 30px;
+  }
+
+  .gallery-section {
+    padding: 24px 4% 40px;
+  }
+
+  .face-gallery-grid {
+    grid-template-columns: 1fr;
+    height: auto;
+    gap: 16px;
+  }
+
+  .face-block {
+    height: 460px;
+  }
+
+  .body-gallery-grid {
+    grid-template-columns: 1fr 1fr;
+    height: auto;
+    gap: 16px;
+  }
+
+  .body-col--1,
+  .body-col--2 {
+    height: 520px;
+  }
+
+  .body-col--3 {
+    grid-column: 1 / -1;
+    height: 460px;
+  }
+
+}
+
+@media (max-width: 580px) {
+  .page-banner {
+    padding: 30px 4% 20px;
+    margin: 40px 0 20px;
+  }
+
+  .page-banner h1 {
+    font-size: 2.2rem;
+    margin-bottom: 16px;
+  }
+
+  .gallery-section-title {
+    font-size: 1.3rem;
+  }
+
+  .face-block {
+    height: clamp(300px, 88vw, 360px);
+  }
+
+  .body-gallery-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .body-col--1,
+  .body-col--2,
+  .body-col--3 {
+    height: clamp(340px, 100vw, 420px);
+  }
+
+  .modal-box {
+    padding: 18px;
+    max-width: 92%;
+  }
+
+  .modal-box h3 {
+    font-size: 1.35rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .gallery-toggle {
+    gap: 8px;
+  }
+
+  .gallery-toggle button {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 9px 10px;
+    font-size: 0.75rem;
+  }
+
+  .gallery-section-title {
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+  }
+}
+
+
+/* ==========================================================================
+   DYNAMIC BENTO GALLERY (Admin-Synchronized)
+   Numbered sections group works by subcategory. Cards use mixed grid spans so
+   every upload slots into a designed composition instead of a uniform grid.
+   ========================================================================== */
+.dynamic-gallery-section {
+  position: relative;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 10px 4% 60px;
+  z-index: 2;
+}
+
+.dynamic-gallery-masonry {
+  display: block;
+  width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   SECTION HEADERS — 01 FACE PIERCING
+   -------------------------------------------------------------------------- */
+.bento-section {
+  margin-bottom: 46px;
+}
+
+.bento-section:last-child {
+  margin-bottom: 0;
+}
+
+.bento-section__header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(246, 208, 214, 0.22);
+}
+
+.bento-section__number {
+  font-family: var(--font-general);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--color-pink-soft);
+}
+
+.bento-section__title {
+  font-family: var(--font-heading);
+  font-size: clamp(1.25rem, 2.2vw, 1.65rem);
+  font-weight: 400;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--color-offwhite);
+  margin: 0;
+}
+
+.bento-section__rule {
+  flex: 1 1 auto;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(246, 208, 214, 0.28), rgba(246, 208, 214, 0));
+}
+
+.bento-section__count {
+  font-family: var(--font-general);
+  font-size: 0.72rem;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: rgba(246, 208, 214, 0.6);
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   BENTO GRID
+   -------------------------------------------------------------------------- */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-auto-rows: 90px;
+  grid-auto-flow: dense;
+  gap: 14px;
+}
+
+/* Span recipes assigned by js/gallery.js */
+.bento-card--normal {
+  grid-column: span 1;
+  grid-row: span 3;
+}
+
+.bento-card--small {
+  grid-column: span 1;
+  grid-row: span 2;
+}
+
+.bento-card--tall {
+  grid-column: span 1;
+  grid-row: span 4;
+}
+
+.bento-card--wide {
+  grid-column: span 2;
+  grid-row: span 3;
+}
+
+.bento-card--feature {
+  grid-column: span 2;
+  grid-row: span 4;
+}
+
+.bento-card--half {
+  grid-column: span 2;
+  grid-row: span 4;
+}
+
+.bento-card--solo {
+  grid-column: 2 / span 2;
+  grid-row: span 5;
+}
+
+/* --------------------------------------------------------------------------
+   EXACT DESKTOP COMPOSITIONS (1–8 works per section)
+   Every recipe tiles the four columns completely, so a section never leaves a
+   hole beside the last upload. Mobile uses the simpler class spans below.
+   -------------------------------------------------------------------------- */
+@media (min-width: 901px) {
+  .bento-grid--count-1 .bento-card:nth-child(1) {
+    grid-column: 2 / span 2;
+    grid-row: 1 / span 5;
+  }
+
+  .bento-grid--count-2 .bento-card:nth-child(1) {
+    grid-column: 1 / span 2;
+    grid-row: 1 / span 5;
+  }
+  .bento-grid--count-2 .bento-card:nth-child(2) {
+    grid-column: 3 / span 2;
+    grid-row: 1 / span 5;
+  }
+
+  .bento-grid--count-3 .bento-card:nth-child(1) {
+    grid-column: 1 / span 2;
+    grid-row: 1 / span 5;
+  }
+  .bento-grid--count-3 .bento-card:nth-child(2) {
+    grid-column: 3;
+    grid-row: 1 / span 5;
+  }
+  .bento-grid--count-3 .bento-card:nth-child(3) {
+    grid-column: 4;
+    grid-row: 1 / span 5;
+  }
+
+  .bento-grid--count-4 .bento-card:nth-child(1) {
+    grid-column: 1 / span 2;
+    grid-row: 1 / span 4;
+  }
+  .bento-grid--count-4 .bento-card:nth-child(2) {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+  }
+  .bento-grid--count-4 .bento-card:nth-child(3) {
+    grid-column: 3;
+    grid-row: 3 / span 2;
+  }
+  .bento-grid--count-4 .bento-card:nth-child(4) {
+    grid-column: 4;
+    grid-row: 1 / span 4;
+  }
+
+  .bento-grid--count-5 .bento-card:nth-child(1) {
+    grid-column: 1 / span 2;
+    grid-row: 1 / span 4;
+  }
+  .bento-grid--count-5 .bento-card:nth-child(2) {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+  }
+  .bento-grid--count-5 .bento-card:nth-child(3) {
+    grid-column: 3;
+    grid-row: 3 / span 2;
+  }
+  .bento-grid--count-5 .bento-card:nth-child(4) {
+    grid-column: 4;
+    grid-row: 1 / span 2;
+  }
+  .bento-grid--count-5 .bento-card:nth-child(5) {
+    grid-column: 4;
+    grid-row: 3 / span 2;
+  }
+
+  .bento-grid--count-6 .bento-card:nth-child(1) {
+    grid-column: 1 / span 2;
+    grid-row: 1 / span 5;
+  }
+  .bento-grid--count-6 .bento-card:nth-child(2) {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+  }
+  .bento-grid--count-6 .bento-card:nth-child(3) {
+    grid-column: 3;
+    grid-row: 3 / span 3;
+  }
+  .bento-grid--count-6 .bento-card:nth-child(4) {
+    grid-column: 4;
+    grid-row: 1 / span 5;
+  }
+  .bento-grid--count-6 .bento-card:nth-child(5) {
+    grid-column: 1 / span 2;
+    grid-row: 6 / span 3;
+  }
+  .bento-grid--count-6 .bento-card:nth-child(6) {
+    grid-column: 3 / span 2;
+    grid-row: 6 / span 3;
+  }
+
+  .bento-grid--count-7 .bento-card:nth-child(1) {
+    grid-column: 1 / span 2;
+    grid-row: 1 / span 4;
+  }
+  .bento-grid--count-7 .bento-card:nth-child(2) {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+  }
+  .bento-grid--count-7 .bento-card:nth-child(3) {
+    grid-column: 3;
+    grid-row: 3 / span 2;
+  }
+  .bento-grid--count-7 .bento-card:nth-child(4) {
+    grid-column: 4;
+    grid-row: 1 / span 4;
+  }
+  .bento-grid--count-7 .bento-card:nth-child(5) {
+    grid-column: 1;
+    grid-row: 5 / span 4;
+  }
+  .bento-grid--count-7 .bento-card:nth-child(6) {
+    grid-column: 2;
+    grid-row: 5 / span 4;
+  }
+  .bento-grid--count-7 .bento-card:nth-child(7) {
+    grid-column: 3 / span 2;
+    grid-row: 5 / span 4;
+  }
+
+  .bento-grid--count-8 .bento-card:nth-child(1) {
+    grid-column: 1 / span 2;
+    grid-row: 1 / span 4;
+  }
+  .bento-grid--count-8 .bento-card:nth-child(2) {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+  }
+  .bento-grid--count-8 .bento-card:nth-child(3) {
+    grid-column: 3;
+    grid-row: 3 / span 2;
+  }
+  .bento-grid--count-8 .bento-card:nth-child(4) {
+    grid-column: 4;
+    grid-row: 1 / span 4;
+  }
+  .bento-grid--count-8 .bento-card:nth-child(5) {
+    grid-column: 1;
+    grid-row: 5 / span 4;
+  }
+  .bento-grid--count-8 .bento-card:nth-child(6) {
+    grid-column: 2;
+    grid-row: 5 / span 4;
+  }
+  .bento-grid--count-8 .bento-card:nth-child(7) {
+    grid-column: 3;
+    grid-row: 5 / span 4;
+  }
+  .bento-grid--count-8 .bento-card:nth-child(8) {
+    grid-column: 4;
+    grid-row: 5 / span 4;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   BENTO CARD — just the photo, with a permanent body-part label
+   -------------------------------------------------------------------------- */
+.bento-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  isolation: isolate;
+  transform: translateZ(0);
+  transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1);
+}
+
+.bento-card:hover,
+.bento-card:focus-visible {
+  transform: translateY(-3px);
+  outline: none;
+}
+
+.bento-card__media {
+  position: absolute;
+  inset: 0;
+}
+
+.bento-card__photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  padding: 0;
+  z-index: 1;
+}
+
+/* Hover affordance */
+.bento-card__view {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: rgba(128, 21, 26, 0.92);
+  color: #fff;
+  font-family: var(--font-general);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.bento-card:hover .bento-card__view,
+.bento-card:focus-visible .bento-card__view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Permanent caption + body-part chip */
+.bento-card__info {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 30px 14px 12px;
+  background: linear-gradient(
+    180deg,
+    rgba(18, 5, 8, 0) 0%,
+    rgba(18, 5, 8, 0.55) 45%,
+    rgba(18, 5, 8, 0.92) 100%
+  );
+  pointer-events: none;
+}
+
+.bento-card__part {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 100%;
+  padding: 4px 10px 4px 8px;
+  border-radius: 999px;
+  background: rgba(128, 21, 26, 0.9);
+  border: 1px solid rgba(246, 208, 214, 0.28);
+  color: #fff;
+  font-family: var(--font-general);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.bento-card__part i {
+  font-size: 0.72rem;
+  flex: 0 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE BENTO
+   -------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  .bento-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: 78px;
+    gap: 12px;
+  }
+
+  .bento-card--normal {
+    grid-column: span 1;
+    grid-row: span 4;
+  }
+
+  .bento-card--small {
+    grid-column: span 1;
+    grid-row: span 3;
+  }
+
+  .bento-card--tall {
+    grid-column: span 1;
+    grid-row: span 5;
+  }
+
+  .bento-card--wide,
+  .bento-card--feature,
+  .bento-card--half {
+    grid-column: span 2;
+    grid-row: span 4;
+  }
+
+  .bento-card--solo {
+    grid-column: 1 / -1;
+    grid-row: span 5;
+  }
+
+  .bento-card__photo {
+    padding: 0;
+  }
+}
+
+@media (max-width: 580px) {
+  .bento-section {
+    margin-bottom: 34px;
+  }
+
+  .bento-section__header {
+    flex-wrap: wrap;
+    gap: 8px 12px;
+  }
+
+  .bento-section__rule {
+    display: none;
+  }
+
+  .bento-section__count {
+    margin-left: auto;
+  }
+
+  .bento-grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-auto-rows: auto;
+    gap: 12px;
+  }
+
+  .bento-card--normal,
+  .bento-card--small,
+  .bento-card--tall,
+  .bento-card--wide,
+  .bento-card--feature,
+  .bento-card--half,
+  .bento-card--solo {
+    grid-column: 1 / -1;
+    grid-row: auto;
+    aspect-ratio: 4 / 5;
+  }
+}
+
+/* Modal details enhancement */
+.modal-details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.modal-alt-text {
+  font-size: 0.88rem;
+  color: rgba(246, 208, 214, 0.8);
+  margin-top: 6px;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.modal-book-cta {
+  display: inline-block;
+  margin-top: 14px;
+  background: var(--color-accent-red);
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.8px;
+  padding: 10px 20px;
+  border-radius: 6px;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.modal-book-cta:hover {
+  background: #a31c22;
+  transform: translateY(-1px);
+}
+
+/* Shimmer Loading Skeleton */
+.gallery-skeleton-card {
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  border-radius: 14px;
+  border: 1px solid rgba(246, 208, 214, 0.08);
+  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.bento-skeleton-line {
+  display: block;
+  height: 14px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.09) 50%, rgba(255,255,255,0.04) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.bento-skeleton-line--number {
+  width: 34px;
+}
+
+.bento-skeleton-line--title {
+  width: min(220px, 40%);
+}
+
+.bento-section--skeleton {
+  pointer-events: none;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.gallery-empty-notice {
+  text-align: center;
+  padding: 48px 16px;
+  color: var(--color-pink-soft);
+  font-size: 1.1rem;
+}
+
+/* ==========================================================================
+   GALLERY CATEGORY PILLS (All / Face / Body)
+   Only Face and Body remain as categories; the All pill shows every work.
+   ========================================================================== */
+.gallery-toggle .all-btn,
+.gallery-toggle .face-btn,
+.gallery-toggle .body-btn {
+  background: transparent;
+  border: 1.5px solid var(--color-accent-red);
+  color: var(--color-offwhite);
+}
+
+.gallery-toggle .all-btn.active,
+.gallery-toggle .face-btn.active,
+.gallery-toggle .body-btn.active,
+.gallery-toggle .all-btn:hover,
+.gallery-toggle .face-btn:hover,
+.gallery-toggle .body-btn:hover {
+  background: var(--color-accent-red);
+  color: #fff;
+}
+
+/* ==========================================================================
+   INTERACTIVE PHOTO INDICATORS
+   A persistent expand badge marks every clickable photo, on touch screens a
+   "Tap to view" caption sits next to the body-part chip, and the hover chip
+   stays as the desktop affordance.
+   ========================================================================== */
+.bento-card__expand {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 4;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(51, 20, 24, 0.72);
+  border: 1px solid rgba(246, 208, 214, 0.6);
+  color: #f6f2f0;
+  font-size: 16px;
+  line-height: 1;
+  pointer-events: none;
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.bento-card:hover .bento-card__expand,
+.bento-card:focus-visible .bento-card__expand {
+  background: var(--color-accent-red);
+  transform: scale(1.06);
+}
+
+.bento-card__tap {
+  display: none;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(51, 20, 24, 0.78);
+  color: var(--color-pink-soft);
+  font-family: var(--font-general);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+@media (hover: none), (max-width: 768px) {
+  .bento-card__view {
+    display: none;
+  }
+
+  .bento-card__tap {
+    display: inline-flex;
+  }
+
+  .bento-card__expand {
+    display: inline-flex;
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+  }
+}
+
+/* ==========================================================================
+   GALLERY CATEGORY TABS
+   The page is split into two galleries: PIERCING and TATTOOS. Each tab shows
+   its own numbered editorial sections, so the numbering restarts at 01.
+   ========================================================================== */
+.gallery-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+}
+
+.gallery-tab {
+  min-width: 132px;
+  padding: 10px 28px;
+  background: transparent;
+  border: 1.5px solid var(--color-accent-red);
+  border-radius: 4px;
+  color: var(--color-offwhite);
+  font-family: var(--font-accent);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}
+
+.gallery-tab:hover,
+.gallery-tab:focus-visible {
+  background-color: rgba(128, 21, 26, 0.6);
+  outline: none;
+}
+
+.gallery-tab:focus-visible {
+  box-shadow: 0 0 0 2px rgba(246, 208, 214, 0.6);
+}
+
+.gallery-tab.is-active {
+  background-color: var(--color-accent-red);
+  border-color: var(--color-accent-red);
+  color: var(--color-offwhite);
+}
+
+@media (max-width: 580px) {
+  .gallery-tabs {
+    gap: 10px;
+  }
+
+  .gallery-tab {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 9px 16px;
+    font-size: 0.72rem;
+    letter-spacing: 1.5px;
+  }
+}

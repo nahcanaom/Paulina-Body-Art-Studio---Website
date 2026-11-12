@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paulina Body Art Studio - Master Calendar</title>
+  <link rel="icon" type="image/png" href="../../assets/logos/favicon_white.png">
+
+  <!-- Typography & Icons -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+
+  <!-- Master Calendar Styles -->
+  <link rel="stylesheet" href="../../css/master-calendar.css">
+  <link rel="stylesheet" href="../../css/notifications.css">
+  <link rel="stylesheet" href="../../css/admin-nav.css">
+</head>
+<body>
+
+  <!-- TOP HEADER -->
+  <header class="top-header">
+    <a href="dashboard.html" class="brand-logo" aria-label="Paulina Body Art Studio">
+      <img src="../../assets/logos/logo_2.png" alt="Paulina Body Art Studio">
+    </a>
+
+    <div class="header-titles">
+      <h1>Master Calendar</h1>
+      <p>Get a quick snap of your studio&rsquo;s performance - bookings, payments - all in one place.</p>
+    </div>
+
+    <div class="header-actions">
+      <a class="header-btn notification-btn" id="notificationsBtn" href="notifications.html" title="Notifications" aria-label="Notifications">
+        <i class="ph ph-bell" aria-hidden="true"></i>
+        <span class="notification-badge" id="notificationBadge" data-notification-badge hidden>0</span>
+      </a>
+      <a class="header-btn avatar-icon" href="account-settings.html" title="Account settings" aria-label="Account settings">
+        <i class="ph ph-user-circle" aria-hidden="true"></i>
+      </a>
+    </div>
+  </header>
+
+  <!-- MAIN DASHBOARD WRAPPER -->
+  <div class="calendar-container">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar">
+      <nav class="nav-group" aria-label="Admin sections">
+        <a class="nav-item" href="dashboard.html">
+          <i class="ph ph-squares-four" aria-hidden="true"></i>
+          <span>Dashboard</span>
+        </a>
+        <a class="nav-item" href="custom-requests.html">
+          <i class="ph ph-chat-circle-dots" aria-hidden="true"></i>
+          <span>Booking</span>
+        </a>
+        <a class="nav-item active" href="master-calendar.html" aria-current="page">
+          <i class="ph ph-calendar-blank" aria-hidden="true"></i>
+          <span>Master Calendar</span>
+        </a>
+
+        <div class="nav-dropdown">
+          <div class="nav-dropdown-row">
+            <a class="nav-item nav-dropdown-link" href="admin-editweb.html#home">
+              <i class="ph ph-pencil-simple-line" aria-hidden="true"></i>
+              <span>Edit Website</span>
+            </a>
+            <button type="button" class="nav-dropdown-toggle" aria-expanded="false"
+                    aria-controls="editWebsiteMenu" aria-label="Toggle Edit Website sections">
+              <i class="ph ph-caret-down" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <div class="nav-dropdown-menu" id="editWebsiteMenu" role="menu" aria-label="Edit website sections">
+            <a role="menuitem" href="admin-editweb.html#home">
+              <i class="ph ph-house-line" aria-hidden="true"></i>
+              <span>Home Page</span>
+            </a>
+            <a role="menuitem" href="admin-editweb.html#gallery">
+              <i class="ph ph-image" aria-hidden="true"></i>
+              <span>Gallery</span>
+            </a>
+            <a role="menuitem" href="admin-editweb.html#catalogue">
+              <i class="ph ph-book-open" aria-hidden="true"></i>
+              <span>Catalogue</span>
+            </a>
+            <a role="menuitem" href="admin-editweb.html#artist">
+              <i class="ph ph-user-circle" aria-hidden="true"></i>
+              <span>Artists</span>
+            </a>
+            <a role="menuitem" href="admin-editweb.html#faqs">
+              <i class="ph ph-question" aria-hidden="true"></i>
+              <span>FAQs</span>
+            </a>
+            <a role="menuitem" href="admin-editweb.html#aftercare">
+              <i class="ph ph-first-aid-kit" aria-hidden="true"></i>
+              <span>Aftercare</span>
+            </a>
+            <a role="menuitem" href="admin-editweb.html#booking">
+              <i class="ph ph-calendar-check" aria-hidden="true"></i>
+              <span>Booking Info</span>
+            </a>
+          </div>
+        </div>
+      </nav>
+
+      <div class="signout-btn">
+        <a class="nav-item" href="../user-side/sign-in.html">
+          <i class="ph ph-sign-out" aria-hidden="true"></i>
+          <span>Sign Out</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- CALENDAR MAIN WORKSPACE -->
+    <main class="calendar-main" aria-label="Master Calendar View">
+
+      <!-- CALENDAR HEADER & VIEW CONTROLS -->
+      <div class="cal-header">
+        <div class="cal-header-left">
+          <h2 class="cal-title" id="calCurrentMonth">Month</h2>
+        </div>
+
+        <div class="cal-header-right">
+          <div class="cal-nav">
+            <button type="button" class="cal-nav-btn" id="calPrevBtn" aria-label="Previous month" title="Previous month">
+              <i class="ph ph-caret-left" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="cal-nav-btn cal-nav-btn-today" id="calTodayNavBtn">
+              Today
+            </button>
+            <button type="button" class="cal-nav-btn" id="calNextBtn" aria-label="Next month" title="Next month">
+              <i class="ph ph-caret-right" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <div class="cal-view-group" role="tablist" aria-label="Calendar views">
+            <button type="button" class="cal-view-btn active" id="viewBtnMonth" role="tab" aria-selected="true" data-view="month">Month</button>
+            <button type="button" class="cal-view-btn" id="viewBtnWeek" role="tab" aria-selected="false" data-view="week">Week</button>
+            <button type="button" class="cal-view-btn" id="viewBtnToday" role="tab" aria-selected="false" data-view="today">Today</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- FILTER CONTROLS BAR -->
+      <div class="cal-filters" role="search" aria-label="Filter bookings">
+        <div class="cal-filter-group">
+          <label class="cal-filter-label" for="filterService">SERVICE</label>
+          <div class="cal-filter-wrap">
+            <select class="cal-filter-select" id="filterService">
+              <option value="all">All services</option>
+            </select>
+            <i class="ph ph-caret-down cal-filter-caret" aria-hidden="true"></i>
+          </div>
+        </div>
+
+        <div class="cal-filter-group">
+          <label class="cal-filter-label" for="filterArtist">ARTIST</label>
+          <div class="cal-filter-wrap">
+            <select class="cal-filter-select" id="filterArtist">
+              <option value="all">All artists</option>
+            </select>
+            <i class="ph ph-caret-down cal-filter-caret" aria-hidden="true"></i>
+          </div>
+        </div>
+
+        <div class="cal-filter-group">
+          <label class="cal-filter-label" for="filterStatus">STATUS</label>
+          <div class="cal-filter-wrap">
+            <select class="cal-filter-select" id="filterStatus">
+              <option value="all">All statuses</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="completed">Completed</option>
+              <option value="noshow">No-Show</option>
+              <option value="late">Late Arrival</option>
+            </select>
+            <i class="ph ph-caret-down cal-filter-caret" aria-hidden="true"></i>
+          </div>
+        </div>
+      </div>
+
+      <p class="cal-notice" id="calNotice" role="status" hidden></p>
+
+      <!-- MONTH VIEW -->
+      <div class="cal-grid-wrap active-view" id="monthViewWrap">
+        <div class="cal-day-headers" aria-hidden="true">
+          <div class="cal-day-header">Sun</div>
+          <div class="cal-day-header">Mon</div>
+          <div class="cal-day-header">Tue</div>
+          <div class="cal-day-header">Wed</div>
+          <div class="cal-day-header">Thu</div>
+          <div class="cal-day-header">Fri</div>
+          <div class="cal-day-header">Sat</div>
+        </div>
+        <div class="cal-grid" id="calMonthGrid" role="grid" aria-label="Month calendar days">
+          <!-- Rendered dynamically by master-calendar.js -->
+        </div>
+      </div>
+
+      <!-- WEEK VIEW -->
+      <div class="cal-week-view" id="weekViewWrap">
+        <div class="week-day-headers" id="weekDayHeaders">
+          <!-- Rendered dynamically -->
+        </div>
+        <div class="week-grid" id="weekGrid">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- TODAY VIEW -->
+      <div class="cal-today-view" id="todayViewWrap">
+        <div class="today-timeline" id="todayTimeline">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- LEGEND BAR -->
+      <div class="cal-legend" aria-label="Service legend">
+        <div class="cal-legend-left">
+          <div class="cal-legend-item">
+            <span class="cal-legend-dot dot-tattoo" aria-hidden="true"></span>
+            <span class="cal-legend-label">Tattoo</span>
+          </div>
+          <div class="cal-legend-item">
+            <span class="cal-legend-dot dot-piercing" aria-hidden="true"></span>
+            <span class="cal-legend-label">Piercing</span>
+          </div>
+          <div class="cal-legend-item">
+            <span class="cal-legend-dot dot-troubleshooting" aria-hidden="true"></span>
+            <span class="cal-legend-label">Troubleshooting</span>
+          </div>
+        </div>
+        <p class="cal-legend-helper">Artist and status are shown on each booking. All times are Philippine time (PHT).</p>
+      </div>
+
+    </main>
+
+    <!-- RIGHT-SIDE DETAIL PANEL -->
+    <aside class="cal-detail-panel" id="detailPanel" data-sheet="detailPanel" aria-label="Selected booking details">
+      <span class="sheet-grip" data-sheet-grip aria-hidden="true"></span>
+      <button type="button" class="sheet-close" data-sheet-close aria-label="Close booking details">
+        <i class="ph ph-x" aria-hidden="true"></i>
+      </button>
+
+      <div class="detail-header">
+        <h2 class="detail-title">Selected booking</h2>
+        <span class="detail-status-badge" id="detailStatusBadge">No selection</span>
+      </div>
+
+      <div class="detail-client-name" id="detailClientName">No booking selected</div>
+      <div class="detail-booking-id" id="detailBookingId">Pick a day or booking on the calendar</div>
+
+      <div class="detail-rows">
+        <div class="detail-row">
+          <span class="detail-row-label">DATE</span>
+          <div class="detail-row-value" id="detailDate">&mdash;</div>
+        </div>
+
+        <div class="detail-row">
+          <span class="detail-row-label">TIME</span>
+          <div class="detail-row-value" id="detailTime">&mdash;</div>
+        </div>
+
+        <div class="detail-row">
+          <span class="detail-row-label">SERVICE / ARTIST</span>
+          <div class="detail-row-value" id="detailServiceArtist">&mdash;</div>
+        </div>
+
+        <div class="detail-row">
+          <span class="detail-row-label">CUSTOMER CONTACT</span>
+          <div class="detail-row-value" id="detailContact">&mdash;</div>
+        </div>
+
+        <div class="detail-deposit">
+          <span class="detail-deposit-amount" id="detailDeposit">&mdash;</span>
+          <span class="detail-deposit-badge" id="detailPublicationBadge">&mdash;</span>
+        </div>
+
+        <p class="detail-description" id="detailDescription">No booking is selected for this day.</p>
+      </div>
+
+      <div class="detail-actions">
+        <button type="button" class="detail-btn detail-btn-edit" id="btnEditBooking" aria-label="Edit booking">
+          <i class="ph ph-pencil-simple" aria-hidden="true"></i>
+          <span>EDIT</span>
+        </button>
+        <button type="button" class="detail-btn detail-btn-cancel" id="btnCancelBooking" aria-label="Cancel or void booking">
+          <span>CANCEL</span>
+        </button>
+      </div>
+    </aside>
+
+  </div>
+
+  <div class="sheet-backdrop" data-sheet-backdrop="detailPanel" aria-hidden="true"></div>
+
+  <!-- EDIT BOOKING DIALOG -->
+  <div class="dialog-overlay" id="editBookingDialog" aria-hidden="true">
+    <div class="dialog-box" role="dialog" aria-modal="true" aria-labelledby="editDialogTitle">
+      <h2 class="dialog-title" id="editDialogTitle">Manage Booking</h2>
+      <p class="dialog-text">Update the booking status, artist, schedule, or consultation notes.</p>
+
+      <div class="dialog-group">
+        <label class="dialog-label">Status</label>
+        <div class="dialog-status-grid" id="editStatusOptions">
+          <button type="button" class="dialog-status-option active" data-status="confirmed">Confirmed</button>
+          <button type="button" class="dialog-status-option" data-status="completed">Completed</button>
+          <button type="button" class="dialog-status-option" data-status="cancelled">Cancelled</button>
+          <button type="button" class="dialog-status-option" data-status="noshow">No-Show</button>
+          <button type="button" class="dialog-status-option" data-status="late">Late Arrival</button>
+        </div>
+      </div>
+
+      <div class="dialog-group">
+        <label class="dialog-label" for="editServiceType">Service Type</label>
+        <select class="dialog-select" id="editServiceType">
+          <option value="Tattoo">Tattoo</option>
+          <option value="Piercing">Piercing</option>
+          <option value="Troubleshooting">Troubleshooting</option>
+        </select>
+      </div>
+
+      <div class="dialog-group">
+        <label class="dialog-label" for="editArtist">Artist</label>
+        <select class="dialog-select" id="editArtist">
+          <option value="Pauline">Pauline</option>
+          <option value="Guest Artist">Guest Artist</option>
+        </select>
+      </div>
+
+      <div class="dialog-group">
+        <label class="dialog-label" for="editDate">Date</label>
+        <input type="text" class="dialog-input" id="editDate" placeholder="e.g. October 13, 2026">
+      </div>
+
+      <div class="dialog-group">
+        <label class="dialog-label" for="editTime">Time &amp; Duration</label>
+        <input type="text" class="dialog-input" id="editTime" placeholder="e.g. 03:00 PM">
+      </div>
+
+      <div class="dialog-group">
+        <label class="dialog-label" for="editNotes">Notes &amp; Placement</label>
+        <textarea class="dialog-textarea" id="editNotes" placeholder="Client requests, design notes, placement details..."></textarea>
+      </div>
+
+      <div class="dialog-actions">
+        <button type="button" class="dialog-btn dialog-btn-secondary" data-dialog-close>Close</button>
+        <button type="button" class="dialog-btn dialog-btn-primary" id="btnSaveBookingChanges">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CANCEL / DELETE BOOKING CONFIRMATION DIALOG -->
+  <div class="dialog-overlay" id="cancelConfirmDialog" aria-hidden="true">
+    <div class="dialog-box" role="dialog" aria-modal="true" aria-labelledby="cancelDialogTitle">
+      <h2 class="dialog-title" id="cancelDialogTitle">Cancel or Remove Booking</h2>
+      <p class="dialog-text">
+        Choose whether to void this appointment by marking it as <strong>Cancelled</strong> (which frees up the public slot) or delete the record permanently.
+      </p>
+
+      <div class="dialog-actions">
+        <button type="button" class="dialog-btn dialog-btn-secondary" data-dialog-close>Back</button>
+        <button type="button" class="dialog-btn dialog-btn-primary" id="btnMarkCancelled">Mark Cancelled</button>
+        <button type="button" class="dialog-btn dialog-btn-danger" id="btnConfirmDelete">Delete Record</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Master Calendar Controller -->
+  <script src="../../js/admin-nav.js"></script>
+  <script src="../../js/admin-sheet.js"></script>
+  <script src="../../js/api-base.js"></script>
+  <script src="../../js/admin-notifications.js"></script>
+  <script type="module" src="../../js/master-calendar.js"></script>
+</body>
+</html>

@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Edit every PAULINA Body Art Studio public page from one central admin workspace.">
+  <title>Paulina Body Art Studio - Edit Website</title>
+  <link rel="icon" type="image/png" href="../../assets/logos/favicon_white.png">
+
+  <!-- Typography & Icons -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+
+  <!-- Shared admin styles: form controls, dropzones, cards, modals and tabs -->
+  <link rel="stylesheet" href="../../css/admin-style.css">
+  <link rel="stylesheet" href="../../css/notifications.css">
+  <link rel="stylesheet" href="../../css/admin-nav.css">
+</head>
+<body>
+
+  <a class="skip-link" href="#editwebMain">Skip to website content</a>
+
+  <!-- TOP HEADER -->
+  <header class="top-header">
+    <a href="dashboard.html" class="brand-logo" aria-label="Paulina Body Art Studio dashboard">
+      <img src="../../assets/logos/logo_2.png" alt="Paulina Body Art Studio">
+    </a>
+
+    <div class="header-titles">
+      <h1 id="editwebPageTitle">Edit Website</h1>
+      <p id="editwebPageSubtitle">Manage the home page, gallery, catalogue, artists, FAQs and booking information from one place.</p>
+    </div>
+
+    <div class="header-actions">
+      <a class="header-btn notification-btn" id="notificationsBtn" href="notifications.html" title="Notifications" aria-label="Notifications">
+        <i class="ph ph-bell" aria-hidden="true"></i>
+        <span class="notification-badge" id="notificationBadge" data-notification-badge hidden>0</span>
+      </a>
+      <a class="header-btn avatar-icon" href="account-settings.html" title="Account settings" aria-label="Account settings">
+        <i class="ph ph-user-circle" aria-hidden="true"></i>
+      </a>
+    </div>
+  </header>
+
+  <!-- MAIN DASHBOARD WRAPPER -->
+  <div class="dashboard-container editweb-container">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar">
+      <nav class="nav-group" aria-label="Admin sections">
+        <a class="nav-item" href="dashboard.html">
+          <i class="ph ph-squares-four" aria-hidden="true"></i>
+          <span>Dashboard</span>
+        </a>
+        <a class="nav-item" href="custom-requests.html">
+          <i class="ph ph-chat-circle-dots" aria-hidden="true"></i>
+          <span>Booking</span>
+        </a>
+        <a class="nav-item" href="master-calendar.html">
+          <i class="ph ph-calendar-blank" aria-hidden="true"></i>
+          <span>Master Calendar</span>
+        </a>
+
+        <div class="nav-dropdown is-active">
+          <div class="nav-dropdown-row">
+            <a class="nav-item nav-dropdown-link" href="admin-editweb.html#home" aria-current="page">
+              <i class="ph ph-pencil-simple-line" aria-hidden="true"></i>
+              <span>Edit Website</span>
+            </a>
+            <button type="button" class="nav-dropdown-toggle" aria-expanded="false"
+                    aria-controls="editWebsiteMenu" aria-label="Toggle Edit Website sections">
+              <i class="ph ph-caret-down" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <div class="nav-dropdown-menu" id="editWebsiteMenu" role="menu" aria-label="Edit website sections">
+            <a role="menuitem" id="editwebHomeLink" class="active" href="admin-editweb.html#home"
+               data-editweb-link data-tab="hero-tab">
+              <i class="ph ph-house-line" aria-hidden="true"></i>
+              <span>Home Page</span>
+            </a>
+            <a role="menuitem" id="editwebGalleryLink" href="admin-editweb.html#gallery"
+               data-editweb-link data-tab="gallery-tab">
+              <i class="ph ph-image" aria-hidden="true"></i>
+              <span>Gallery</span>
+            </a>
+            <a role="menuitem" id="editwebCatalogueLink" href="admin-editweb.html#catalogue"
+               data-editweb-link data-tab="catalogue-tab">
+              <i class="ph ph-book-open" aria-hidden="true"></i>
+              <span>Catalogue</span>
+            </a>
+            <a role="menuitem" id="editwebArtistLink" href="admin-editweb.html#artist"
+               data-editweb-link data-tab="artist-tab">
+              <i class="ph ph-user-circle" aria-hidden="true"></i>
+              <span>Artists</span>
+            </a>
+            <a role="menuitem" id="editwebFaqLink" href="admin-editweb.html#faqs"
+               data-editweb-link data-tab="faqs-tab">
+              <i class="ph ph-question" aria-hidden="true"></i>
+              <span>FAQs</span>
+            </a>
+            <a role="menuitem" id="editwebAftercareLink" href="admin-editweb.html#aftercare"
+               data-editweb-link data-tab="aftercare-tab">
+              <i class="ph ph-first-aid-kit" aria-hidden="true"></i>
+              <span>Aftercare</span>
+            </a>
+            <a role="menuitem" id="editwebReviewsLink" href="admin-editweb.html#reviews"
+               data-editweb-link data-tab="reviews-tab">
+              <i class="ph ph-chat-circle-quotes" aria-hidden="true"></i>
+              <span>Reviews</span>
+            </a>
+            <a role="menuitem" id="editwebBookingLink" href="admin-editweb.html#booking"
+               data-editweb-link data-tab="booking-tab">
+              <i class="ph ph-calendar-check" aria-hidden="true"></i>
+              <span>Booking Info</span>
+            </a>
+          </div>
+        </div>
+      </nav>
+
+      <div class="signout-btn">
+        <a class="nav-item" href="../user-side/sign-in.html" data-sign-out>
+          <i class="ph ph-sign-out" aria-hidden="true"></i>
+          <span>Sign Out</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- CENTRAL CONTENT WORKSPACE -->
+    <main class="editweb-main" id="editwebMain">
+
+      <div class="visually-hidden" aria-live="polite">
+        <span class="editweb-status" id="contentStatus"></span>
+      </div>
+
+      <div class="editweb-panes">
+
+        <!-- ==================================================================
+             HERO & HOME
+             ================================================================== -->
+        <section class="tab-pane" id="hero-tab" role="tabpanel" aria-labelledby="editwebHomeLink">
+          <div class="section-tabs" role="tablist" aria-label="Home page sections">
+            <button type="button" class="section-tab is-active" role="tab" aria-selected="true"
+                    data-subtab-group="home" data-subtab-target="home-carousel">Carousel</button>
+            <button type="button" class="section-tab" role="tab" aria-selected="false" tabindex="-1"
+                    data-subtab-group="home" data-subtab-target="home-content">Page Content</button>
+          </div>
+
+          <div class="subtab-pane" data-subtab-group="home" data-subtab-pane="home-carousel" role="tabpanel">
+          <div class="home-editor-grid">
+            <section class="hero-carousel-card" aria-labelledby="heroCarouselTitle">
+              <div class="hero-carousel-head">
+                <div>
+                  <h2 id="heroCarouselTitle">Hero Carousel</h2>
+                  <p>Create and manage slides on your homepage</p>
+                </div>
+                <button type="button" class="hero-refresh" id="refreshHeroBtn"
+                        title="Refresh hero content" aria-label="Refresh hero content">
+                  <i class="ph ph-arrows-clockwise" aria-hidden="true"></i>
+                </button>
+              </div>
+
+              <div class="hero-slides-grid" id="heroBannersGrid" aria-live="polite"></div>
+
+              <div class="hero-slides-empty hidden" id="heroBannersEmpty">
+                <i class="ph ph-images" aria-hidden="true"></i>
+                <h3>No slides yet</h3>
+                <p>Choose a file below to create the first slide, then edit its details in the slide editor.</p>
+              </div>
+            </section>
+
+            <div class="upload-dropzone hero-upload-dropzone" id="heroUploadDropzone">
+              <div class="upload-dropzone__info">
+                <i class="ph ph-plus-square" aria-hidden="true"></i>
+                <div>
+                  <h3>Add new studio work</h3>
+                  <p>Drop JPG, PNG or WebP images &bull; Up to 10 MB each</p>
+                </div>
+              </div>
+              <button type="button" class="btn-choose-files" id="heroUploadBtn">
+                <i class="ph ph-plus" aria-hidden="true"></i>
+                Choose Files
+              </button>
+              <input type="file" id="heroUploadInput" accept="image/jpeg,image/png,image/webp" hidden>
+            </div>
+          </div>
+          </div>
+
+          <div class="subtab-pane hidden" data-subtab-group="home" data-subtab-pane="home-content" role="tabpanel">
+            <form class="editweb-card" id="homeContentForm">
+              <div class="card-head">
+                <div>
+                  <h3>Homepage copy</h3>
+                  <p>These fields control the first section visitors see on the home page.</p>
+                </div>
+              </div>
+
+              <div class="form-grid">
+                <label class="form-field form-field--full">
+                  <span>Studio announcement</span>
+                  <input type="text" id="homeAnnouncement" placeholder="Example: Holiday walk-ins are open until 8 PM.">
+                </label>
+
+                <label class="form-field">
+                  <span>Eyebrow label</span>
+                  <input type="text" id="homeEyebrow" placeholder="Piercing &amp; Tattoo Studio">
+                </label>
+
+                <label class="form-field">
+                  <span>Quote attribution</span>
+                  <input type="text" id="homeQuoteAttribution" placeholder="Psalm 139:14">
+                </label>
+
+                <label class="form-field">
+                  <span>Headline line 1</span>
+                  <input type="text" id="homeHeadline1" placeholder="INK">
+                </label>
+
+                <label class="form-field">
+                  <span>Headline line 2</span>
+                  <input type="text" id="homeHeadline2" placeholder="PIERCE">
+                </label>
+
+                <label class="form-field form-field--full">
+                  <span>Headline line 3</span>
+                  <input type="text" id="homeHeadline3" placeholder="EXPRESS">
+                </label>
+
+                <label class="form-field form-field--full">
+                  <span>Hero description</span>
+                  <textarea id="homeDescription" rows="3" placeholder="A short line that sets the tone for the studio."></textarea>
+                </label>
+              </div>
+
+              <div class="form-divider"></div>
+
+              <div class="card-head card-head--compact">
+                <div>
+                  <h3>Operating hours</h3>
+                  <p>Shown on the home page and used as the reference for walk-in enquiries.</p>
+                </div>
+              </div>
+
+              <div class="form-grid">
+                <label class="form-field">
+                  <span>Monday to Friday</span>
+                  <input type="text" id="homeHoursWeekdays" placeholder="10:00 AM - 8:00 PM">
+                </label>
+                <label class="form-field">
+                  <span>Saturday</span>
+                  <input type="text" id="homeHoursSaturday" placeholder="10:00 AM - 9:00 PM">
+                </label>
+                <label class="form-field">
+                  <span>Sunday</span>
+                  <input type="text" id="homeHoursSunday" placeholder="By appointment only">
+                </label>
+                <label class="form-field">
+                  <span>Hours note</span>
+                  <input type="text" id="homeHoursNote" placeholder="Walk-ins are subject to availability.">
+                </label>
+              </div>
+
+              <div class="form-divider"></div>
+
+              <div class="card-head card-head--compact">
+                <div>
+                  <h3>Contact details</h3>
+                  <p>Displayed in the footer and visit section across the public website.</p>
+                </div>
+              </div>
+
+              <div class="form-grid">
+                <label class="form-field">
+                  <span>Email address</span>
+                  <input type="email" id="homeContactEmail" placeholder="studio@example.com">
+                </label>
+                <label class="form-field">
+                  <span>Phone number</span>
+                  <input type="tel" id="homeContactPhone" placeholder="+63 900 000 0000">
+                </label>
+                <label class="form-field form-field--full">
+                  <span>Studio address</span>
+                  <input type="text" id="homeContactAddress" placeholder="Street, building, city">
+                </label>
+                <label class="form-field form-field--full">
+                  <span>Google Maps link</span>
+                  <input type="url" id="homeMapsUrl" placeholder="https://maps.google.com/...">
+                </label>
+                <label class="form-field">
+                  <span>Instagram URL</span>
+                  <input type="url" id="homeInstagramUrl" placeholder="https://instagram.com/...">
+                </label>
+                <label class="form-field">
+                  <span>Facebook URL</span>
+                  <input type="url" id="homeFacebookUrl" placeholder="https://facebook.com/...">
+                </label>
+                <label class="form-field form-field--full">
+                  <span>TikTok URL</span>
+                  <input type="url" id="homeTiktokUrl" placeholder="https://tiktok.com/@...">
+                </label>
+              </div>
+
+              <div class="form-actions">
+                <span class="form-status" id="homeFormStatus" role="status"></span>
+                <button type="submit" class="btn-primary" id="saveHomeBtn">
+                  <i class="ph ph-floppy-disk" aria-hidden="true"></i>
+                  Save home page
+                </button>
+              </div>
+            </form>
+
+            <section class="editweb-card image-group-card" aria-labelledby="homeStudioImagesTitle">
+              <div class="card-head">
+                <div>
+                  <h3 id="homeStudioImagesTitle">Studio photos</h3>
+                  <p>Shown in the “Our Studio” grid on the home page.</p>
+                </div>
+                <button type="button" class="btn-secondary" data-image-add="home-studio">
+                  <i class="ph ph-plus" aria-hidden="true"></i> Add image
+                </button>
+              </div>
+              <div class="data-list" data-image-list="home-studio" aria-live="polite"></div>
+              <p class="image-group-empty hidden" data-image-empty="home-studio">No studio photos yet.</p>
+            </section>
+
+            <section class="editweb-card image-group-card" aria-labelledby="homeServicesImagesTitle">
+              <div class="card-head">
+                <div>
+                  <h3 id="homeServicesImagesTitle">Best services</h3>
+                  <p>Images and popup descriptions for the services grid.</p>
+                </div>
+                <button type="button" class="btn-secondary" data-image-add="home-services">
+                  <i class="ph ph-plus" aria-hidden="true"></i> Add image
+                </button>
+              </div>
+              <div class="data-list" data-image-list="home-services" aria-live="polite"></div>
+              <p class="image-group-empty hidden" data-image-empty="home-services">No service images yet.</p>
+            </section>
+
+            <section class="editweb-card image-group-card" aria-labelledby="homeArtistImagesTitle">
+              <div class="card-head">
+                <div>
+                  <h3 id="homeArtistImagesTitle">Artist portraits</h3>
+                  <p>Portraits shown in the “Meet the Artist” section.</p>
+                </div>
+                <button type="button" class="btn-secondary" data-image-add="home-artists">
+                  <i class="ph ph-plus" aria-hidden="true"></i> Add image
+                </button>
+              </div>
+              <div class="data-list" data-image-list="home-artists" aria-live="polite"></div>
+              <p class="image-group-empty hidden" data-image-empty="home-artists">No artist portraits yet.</p>
+            </section>
+
+            <section class="editweb-card image-group-card" aria-labelledby="homePricelistImageTitle">
+              <div class="card-head">
+                <div>
+                  <h3 id="homePricelistImageTitle">Piercing price list</h3>
+                  <p>The price-list image opened from the home page.</p>
+                </div>
+                <button type="button" class="btn-secondary" data-image-add="pricelist">
+                  <i class="ph ph-plus" aria-hidden="true"></i> Add image
+                </button>
+              </div>
+              <div class="data-list" data-image-list="pricelist" aria-live="polite"></div>
+              <p class="image-group-empty hidden" data-image-empty="pricelist">No price list image yet.</p>
+            </section>
+          </div>
+        </section>
+
+        <!-- ==================================================================
+             GALLERY
+             ================================================================== -->
+        <section class="tab-pane hidden" id="gallery-tab" role="tabpanel" aria-labelledby="editwebGalleryLink">
+          <div class="pane-head">
+            <div>
+              <h2>Gallery Portfolio</h2>
+              <p>Upload face and body work, tag it, publish it, or remove it from the public gallery.</p>
+            </div>
+            <div class="pane-head__actions">
+              <button type="button" class="btn-primary" id="galleryAddBtn">
+                <i class="ph ph-plus" aria-hidden="true"></i>
+                Add photo
+              </button>
+            </div>
+          </div>
+
+          <div class="admin-toolbar">
+            <div class="search-box">
+              <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
+              <input type="search" id="gallerySearch" placeholder="Search image title or tag" aria-label="Search gallery">
+            </div>
+            <div class="select-wrapper">
+              <select id="galleryCategoryFilter" aria-label="Filter gallery by category">
+                <option value="all">All categories</option>
+                <option value="Face Tattoo">Face Tattoo</option>
+                <option value="Body Tattoo">Body Tattoo</option>
+                <option value="Face Piercing">Face Piercing</option>
+                <option value="Body Piercing">Body Piercing</option>
+              </select>
+              <i class="ph ph-caret-down select-caret" aria-hidden="true"></i>
+            </div>
+            <div class="select-wrapper">
+              <select id="galleryVisibilityFilter" aria-label="Filter gallery by visibility">
+                <option value="all">All visibility</option>
+                <option value="published">Published</option>
+                <option value="draft">Draft</option>
+              </select>
+              <i class="ph ph-caret-down select-caret" aria-hidden="true"></i>
+            </div>
+          </div>
+
+          <div class="admin-card-grid" id="adminGalleryGrid" aria-live="polite"></div>
+          <div class="admin-empty hidden" id="galleryEmpty">
+            <i class="ph ph-image-square" aria-hidden="true"></i>
+            <h3>No gallery work matches these filters</h3>
+            <p>Try clearing the search, or add a new photo above.</p>
+          </div>
+        </section>
+
+        <!-- ==================================================================
+             CATALOGUE
+             ================================================================== -->
+        <section class="tab-pane hidden" id="catalogue-tab" role="tabpanel" aria-labelledby="editwebCatalogueLink">
+          <div class="pane-head">
+            <div>
+              <h2>Catalogue</h2>
+              <p>Manage catalogue photos, descriptions, prices, sizes, publishing status and social order links.</p>
+            </div>
+            <button type="button" class="btn-primary" id="catalogueAddBtn">
+              <i class="ph ph-plus" aria-hidden="true"></i>
+              Add catalogue item
+            </button>
+          </div>
+
+          <div class="admin-toolbar">
+            <div class="search-box">
+              <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
+              <input type="search" id="catalogueSearch" placeholder="Search catalogue name or material" aria-label="Search catalogue">
+            </div>
+            <div class="select-wrapper">
+              <select id="catalogueCategoryFilter" aria-label="Filter catalogue by category">
+                <option value="all">All categories</option>
+                <option value="Ear">Ear</option>
+                <option value="Facial">Facial</option>
+                <option value="Oral">Oral</option>
+                <option value="Body">Body</option>
+                <option value="Aftercare">Aftercare</option>
+              </select>
+              <i class="ph ph-caret-down select-caret" aria-hidden="true"></i>
+            </div>
+            <div class="select-wrapper">
+              <select id="catalogueVisibilityFilter" aria-label="Filter catalogue by visibility">
+                <option value="all">All visibility</option>
+                <option value="published">Published</option>
+                <option value="draft">Draft</option>
+              </select>
+              <i class="ph ph-caret-down select-caret" aria-hidden="true"></i>
+            </div>
+          </div>
+
+          <div class="admin-card-grid" id="adminCatalogueGrid" aria-live="polite"></div>
+          <div class="admin-empty hidden" id="catalogueEmpty">
+            <i class="ph ph-book-open" aria-hidden="true"></i>
+            <h3>No catalogue items match these filters</h3>
+            <p>Try clearing the search, or add a new item above.</p>
+          </div>
+        </section>
+
+        <!-- ==================================================================
+             REVIEWS & TESTIMONIALS
+             ================================================================== -->
+        <section class="tab-pane hidden" id="reviews-tab" role="tabpanel" aria-labelledby="editwebReviewsLink">
+          <div class="pane-head">
+            <div>
+              <h2>Reviews &amp; Testimonials</h2>
+              <p>Every client review appears here in real time. Edit, hide or delete a testimonial and the public reviews page updates immediately.</p>
+            </div>
+            <div class="pane-head__actions">
+              <button type="button" class="btn-secondary" id="reviewsRefreshBtn">
+                <i class="ph ph-arrows-clockwise" aria-hidden="true"></i>
+                Refresh
+              </button>
+            </div>
+          </div>
+
+          <div class="admin-toolbar">
+            <div class="search-box">
+              <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
+              <input type="search" id="reviewsSearch" placeholder="Search reviewer name or review text" aria-label="Search reviews">
+            </div>
+            <div class="select-wrapper">
+              <select id="reviewsVisibilityFilter" aria-label="Filter reviews by visibility">
+                <option value="all">All reviews</option>
+                <option value="published">Published</option>
+                <option value="hidden">Hidden</option>
+              </select>
+              <i class="ph ph-caret-down select-caret" aria-hidden="true"></i>
+            </div>
+          </div>
+
+          <p class="review-admin-status" id="reviewsAdminStatus" role="status" aria-live="polite"></p>
+          <div class="admin-card-grid review-admin-grid" id="adminReviewsGrid" aria-live="polite"></div>
+          <div class="admin-empty hidden" id="reviewsEmpty">
+            <i class="ph ph-chat-circle-quotes" aria-hidden="true"></i>
+            <h3>No reviews match these filters</h3>
+            <p>Client reviews post here automatically once they are submitted on the public site.</p>
+          </div>
+        </section>
+
+        <!-- ==================================================================
+             ARTISTS
+             ================================================================== -->
+        <section class="tab-pane hidden" id="artist-tab" role="tabpanel" aria-labelledby="editwebArtistLink">
+          <div class="section-tabs" role="tablist" aria-label="Artist page sections">
+            <button type="button" class="section-tab is-active" role="tab" aria-selected="true"
+                    data-subtab-group="artists" data-subtab-target="artist-profiles">Artist profiles</button>
+            <button type="button" class="section-tab" role="tab" aria-selected="false" tabindex="-1"
+                    data-subtab-group="artists" data-subtab-target="artist-favorites">Favorite Works</button>
+          </div>
+
+          <div class="subtab-pane" data-subtab-group="artists" data-subtab-pane="artist-profiles" role="tabpanel">
+          <div class="pane-head">
+            <div>
+              <h2>Artist Profiles</h2>
+              <p>Update resident artist names, bios, specialties and avatar images for the public artist page.</p>
+            </div>
+            <button type="button" class="btn-primary" id="artistAddBtn">
+              <i class="ph ph-plus" aria-hidden="true"></i>
+              Add artist
+            </button>
+          </div>
+
+          <div class="admin-card-grid admin-card-grid--wide" id="adminArtistGrid" aria-live="polite"></div>
+          <div class="admin-empty hidden" id="artistEmpty">
+            <i class="ph ph-user-circle" aria-hidden="true"></i>
+            <h3>No artist profiles yet</h3>
+            <p>Add the first resident artist so their profile can appear on the website.</p>
+          </div>
+
+          </div>
+
+          <div class="subtab-pane hidden" data-subtab-group="artists" data-subtab-pane="artist-favorites" role="tabpanel">
+            <div class="pane-head">
+              <div>
+                <h2>Favorite Works</h2>
+                <p>Every work belongs to one artist and appears inside that artist's Favorite Works section on the public artist page. Use the artist selector on a work to move it.</p>
+              </div>
+            </div>
+
+            <div class="favorite-works-groups" id="adminFavoriteWorks" aria-live="polite"></div>
+            <div class="image-group-empty hidden" data-favorite-empty>
+              No Favorite Works yet. Use <strong>Add work</strong> on an artist to publish their first piece.
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================================================================
+             FAQS
+             ================================================================== -->
+        <section class="tab-pane hidden" id="faqs-tab" role="tabpanel" aria-labelledby="editwebFaqLink">
+                    <div class="section-tabs" role="tablist" aria-label="FAQ sections">
+            <button type="button" class="section-tab is-active" role="tab" aria-selected="true"
+                    data-subtab-group="faqs" data-subtab-target="faq-list">FAQ List</button>
+          </div>
+
+          <div class="subtab-pane" data-subtab-group="faqs" data-subtab-pane="faq-list" role="tabpanel">
+          <div class="pane-head">
+            <div>
+              <h2>FAQs &amp; Policies</h2>
+              <p>Add, update, reorder or remove public questions. Questions in this list appear on the FAQs page; aftercare questions are managed from the Aftercare tab.</p>
+            </div>
+            <button type="button" class="btn-primary" id="faqAddBtn">
+              <i class="ph ph-plus" aria-hidden="true"></i>
+              Add question
+            </button>
+          </div>
+
+          <div class="data-list" id="adminFaqList" aria-live="polite"></div>
+          <div class="admin-empty hidden" id="faqEmpty">
+            <i class="ph ph-question" aria-hidden="true"></i>
+            <h3>No FAQs yet</h3>
+            <p>Add the first question and answer pair for the FAQ page.</p>
+          </div>
+
+          </div>
+
+          </section>
+
+        <!-- ==================================================================
+             AFTERCARE
+             ================================================================== -->
+        <section class="tab-pane hidden" id="aftercare-tab" role="tabpanel" aria-labelledby="editwebAftercareLink">
+          <div class="section-tabs" role="tablist" aria-label="Aftercare page sections">
+            <button type="button" class="section-tab is-active" role="tab" aria-selected="true"
+                    data-subtab-group="aftercare" data-subtab-target="aftercare-faq-list">FAQ List</button>
+            <button type="button" class="section-tab" role="tab" aria-selected="false" tabindex="-1"
+                    data-subtab-group="aftercare" data-subtab-target="aftercare-content">Page Content</button>
+          </div>
+
+          <div class="subtab-pane" data-subtab-group="aftercare" data-subtab-pane="aftercare-faq-list" role="tabpanel">
+            <div class="pane-head">
+              <div>
+                <h2>Aftercare FAQs</h2>
+                <p>Add, update, reorder or remove the questions shown on the aftercare page.</p>
+              </div>
+              <button type="button" class="btn-primary" id="aftercareFaqAddBtn">
+                <i class="ph ph-plus" aria-hidden="true"></i>
+                Add question
+              </button>
+            </div>
+
+            <div class="data-list" id="adminAftercareFaqList" aria-live="polite"></div>
+            <div class="admin-empty hidden" id="aftercareFaqEmpty">
+              <i class="ph ph-question" aria-hidden="true"></i>
+              <h3>No aftercare FAQs yet</h3>
+              <p>Add the first question and answer pair for the aftercare page.</p>
+            </div>
+          </div>
+
+          <div class="subtab-pane hidden" data-subtab-group="aftercare" data-subtab-pane="aftercare-content" role="tabpanel">
+            <div class="section-tabs" role="tablist" aria-label="Aftercare page content categories">
+              <button type="button" class="section-tab is-active" role="tab" aria-selected="true"
+                      data-subtab-group="aftercare-content" data-subtab-target="aftercare-tattoo">Tattoo</button>
+              <button type="button" class="section-tab" role="tab" aria-selected="false" tabindex="-1"
+                      data-subtab-group="aftercare-content" data-subtab-target="aftercare-piercing">Piercing</button>
+            </div>
+
+            <div class="subtab-pane" data-subtab-group="aftercare-content" data-subtab-pane="aftercare-tattoo" role="tabpanel">
+              <section class="editweb-card image-group-card" aria-labelledby="aftercareHeroImagesTitle">
+                <div class="card-head">
+                  <div>
+                    <h3 id="aftercareHeroImagesTitle">Tattoo hero image</h3>
+                    <p>The tattoo photo at the top of the aftercare page.</p>
+                  </div>
+                  <button type="button" class="btn-secondary" data-image-add="aftercare-hero-tattoo">
+                    <i class="ph ph-plus" aria-hidden="true"></i> Add image
+                  </button>
+                </div>
+                <div class="data-list" data-image-list="aftercare-hero-tattoo" aria-live="polite"></div>
+                <p class="image-group-empty hidden" data-image-empty="aftercare-hero-tattoo">No tattoo hero image yet.</p>
+              </section>
+
+              <section class="editweb-card image-group-card" aria-labelledby="aftercareNeilmedImageTitle">
+                <div class="card-head">
+                  <div>
+                    <h3 id="aftercareNeilmedImageTitle">NeilMed image</h3>
+                    <p>The NeilMed aftercare product image.</p>
+                  </div>
+                  <button type="button" class="btn-secondary" data-image-add="aftercare-neilmed">
+                    <i class="ph ph-plus" aria-hidden="true"></i> Add image
+                  </button>
+                </div>
+                <div class="data-list" data-image-list="aftercare-neilmed" aria-live="polite"></div>
+                <p class="image-group-empty hidden" data-image-empty="aftercare-neilmed">No NeilMed image yet.</p>
+              </section>
+            </div>
+
+            <div class="subtab-pane hidden" data-subtab-group="aftercare-content" data-subtab-pane="aftercare-piercing" role="tabpanel">
+              <section class="editweb-card image-group-card" aria-labelledby="aftercarePiercingHeroTitle">
+                <div class="card-head">
+                  <div>
+                    <h3 id="aftercarePiercingHeroTitle">Piercing hero image</h3>
+                    <p>Shown when visitors switch the aftercare page to piercing.</p>
+                  </div>
+                  <button type="button" class="btn-secondary" data-image-add="aftercare-hero-piercing">
+                    <i class="ph ph-plus" aria-hidden="true"></i> Add image
+                  </button>
+                </div>
+                <div class="data-list" data-image-list="aftercare-hero-piercing" aria-live="polite"></div>
+                <p class="image-group-empty hidden" data-image-empty="aftercare-hero-piercing">No piercing hero image yet.</p>
+              </section>
+
+              <section class="editweb-card image-group-card" aria-labelledby="aftercareGuideImageTitle">
+                <div class="card-head">
+                  <div>
+                    <h3 id="aftercareGuideImageTitle">Piercing guide image</h3>
+                    <p>The square aftercare guide image on the piercing panel.</p>
+                  </div>
+                  <button type="button" class="btn-secondary" data-image-add="aftercare-guide">
+                    <i class="ph ph-plus" aria-hidden="true"></i> Add image
+                  </button>
+                </div>
+                <div class="data-list" data-image-list="aftercare-guide" aria-live="polite"></div>
+                <p class="image-group-empty hidden" data-image-empty="aftercare-guide">No piercing guide image yet.</p>
+              </section>
+
+              <section class="editweb-card image-group-card" aria-labelledby="aftercareDownsizingImageTitle">
+                <div class="card-head">
+                  <div>
+                    <h3 id="aftercareDownsizingImageTitle">Jewellery downsizing image</h3>
+                    <p>The square image beside the downsizing questions.</p>
+                  </div>
+                  <button type="button" class="btn-secondary" data-image-add="aftercare-downsizing">
+                    <i class="ph ph-plus" aria-hidden="true"></i> Add image
+                  </button>
+                </div>
+                <div class="data-list" data-image-list="aftercare-downsizing" aria-live="polite"></div>
+                <p class="image-group-empty hidden" data-image-empty="aftercare-downsizing">No downsizing image yet.</p>
+              </section>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ==================================================================
+             BOOKING INFO
+             ================================================================== -->
+        <section class="tab-pane hidden" id="booking-tab" role="tabpanel" aria-labelledby="editwebBookingLink">
+          <div class="section-tabs" role="tablist" aria-label="Booking information sections">
+            <button type="button" class="section-tab is-active" role="tab" aria-selected="true"
+                    data-subtab-group="booking" data-subtab-target="booking-details">Booking Details</button>
+            <button type="button" class="section-tab" role="tab" aria-selected="false" tabindex="-1"
+                    data-subtab-group="booking" data-subtab-target="booking-qr">Payment QR</button>
+          </div>
+
+          <div class="subtab-pane" data-subtab-group="booking" data-subtab-pane="booking-details" role="tabpanel">
+          <div class="pane-head">
+            <div>
+              <h2>Booking Info</h2>
+              <p>Control the guidance, deposit rules and policies shown throughout the booking experience.</p>
+            </div>
+            <button type="button" class="btn-secondary" id="refreshBookingBtn">
+              <i class="ph ph-arrows-clockwise" aria-hidden="true"></i>
+              Refresh
+            </button>
+          </div>
+
+          <form class="editweb-card" id="bookingContentForm">
+            <div class="card-head">
+              <div>
+                <h3>Booking guidance</h3>
+                <p>Keep the wording clear so clients know what to prepare before they reserve a slot.</p>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <label class="form-field form-field--full">
+                <span>Booking introduction</span>
+                <textarea id="bookingIntro" rows="3" placeholder="Tell clients how the booking process works."></textarea>
+              </label>
+
+              <label class="form-field">
+                <span>Reservation deposit</span>
+                <input type="text" id="bookingDepositAmount" placeholder="500">
+              </label>
+              <label class="form-field">
+                <span>How far ahead can clients book?</span>
+                <input type="text" id="bookingLeadTime" placeholder="Up to 60 days in advance">
+              </label>
+
+              <label class="form-field form-field--full">
+                <span>Deposit note</span>
+                <input type="text" id="bookingDepositNote" placeholder="The deposit is deducted from the final bill.">
+              </label>
+
+              <label class="form-field form-field--full">
+                <span>Cancellation policy</span>
+                <textarea id="bookingCancellationPolicy" rows="3"></textarea>
+              </label>
+
+              <label class="form-field form-field--full">
+                <span>Rescheduling policy</span>
+                <textarea id="bookingReschedulePolicy" rows="3"></textarea>
+              </label>
+
+              <label class="form-field form-field--full">
+                <span>Accepted payment methods</span>
+                <input type="text" id="bookingPaymentMethods" placeholder="GCash, Maya, bank transfer, cash">
+              </label>
+
+              <label class="form-field form-field--full">
+                <span>Arrival instructions</span>
+                <textarea id="bookingArrivalInstructions" rows="3"></textarea>
+              </label>
+
+              <label class="form-field">
+                <span>Booking contact email</span>
+                <input type="email" id="bookingContactEmail" placeholder="studio@example.com">
+              </label>
+              <label class="form-field">
+                <span>Booking contact phone</span>
+                <input type="tel" id="bookingContactPhone" placeholder="+63 900 000 0000">
+              </label>
+            </div>
+
+            <div class="form-actions">
+              <span class="form-status" id="bookingFormStatus" role="status"></span>
+              <button type="submit" class="btn-primary" id="saveBookingBtn">
+                <i class="ph ph-floppy-disk" aria-hidden="true"></i>
+                Save booking info
+              </button>
+            </div>
+          </form>
+
+          </div>
+
+          <div class="subtab-pane hidden" data-subtab-group="booking" data-subtab-pane="booking-qr" role="tabpanel">
+            <section class="editweb-card image-group-card" aria-labelledby="bookingQrImageTitle">
+              <div class="card-head">
+                <div>
+                  <h3 id="bookingQrImageTitle">GCash QR code</h3>
+                  <p>The QR code shown when the client selects GCash.</p>
+                </div>
+                <button type="button" class="btn-secondary" data-image-add="booking-qr">
+                  <i class="ph ph-plus" aria-hidden="true"></i> Add image
+                </button>
+              </div>
+              <div class="data-list" data-image-list="booking-qr" aria-live="polite"></div>
+              <p class="image-group-empty hidden" data-image-empty="booking-qr">No GCash QR code yet.</p>
+            </section>
+
+            <section class="editweb-card image-group-card" aria-labelledby="bookingQrMayaTitle">
+              <div class="card-head">
+                <div>
+                  <h3 id="bookingQrMayaTitle">Maya QR code</h3>
+                  <p>The QR code shown when the client selects Maya.</p>
+                </div>
+                <button type="button" class="btn-secondary" data-image-add="booking-qr-maya">
+                  <i class="ph ph-plus" aria-hidden="true"></i> Add image
+                </button>
+              </div>
+              <div class="data-list" data-image-list="booking-qr-maya" aria-live="polite"></div>
+              <p class="image-group-empty hidden" data-image-empty="booking-qr-maya">No Maya QR code yet.</p>
+            </section>
+
+            <section class="editweb-card image-group-card" aria-labelledby="bookingQrBpiTitle">
+              <div class="card-head">
+                <div>
+                  <h3 id="bookingQrBpiTitle">BPI QR code</h3>
+                  <p>The QR code shown when the client selects BPI.</p>
+                </div>
+                <button type="button" class="btn-secondary" data-image-add="booking-qr-bpi">
+                  <i class="ph ph-plus" aria-hidden="true"></i> Add image
+                </button>
+              </div>
+              <div class="data-list" data-image-list="booking-qr-bpi" aria-live="polite"></div>
+              <p class="image-group-empty hidden" data-image-empty="booking-qr-bpi">No BPI QR code yet.</p>
+            </section>
+
+            <section class="editweb-card image-group-card" aria-labelledby="bookingQrGotymeTitle">
+              <div class="card-head">
+                <div>
+                  <h3 id="bookingQrGotymeTitle">GoTyme QR code</h3>
+                  <p>The QR code shown when the client selects GoTyme.</p>
+                </div>
+                <button type="button" class="btn-secondary" data-image-add="booking-qr-gotyme">
+                  <i class="ph ph-plus" aria-hidden="true"></i> Add image
+                </button>
+              </div>
+              <div class="data-list" data-image-list="booking-qr-gotyme" aria-live="polite"></div>
+              <p class="image-group-empty hidden" data-image-empty="booking-qr-gotyme">No GoTyme QR code yet.</p>
+            </section>
+
+            <section class="editweb-card image-group-card" aria-labelledby="bookingQrMaribankTitle">
+              <div class="card-head">
+                <div>
+                  <h3 id="bookingQrMaribankTitle">Maribank QR code</h3>
+                  <p>The QR code shown when the client selects Maribank.</p>
+                </div>
+                <button type="button" class="btn-secondary" data-image-add="booking-qr-maribank">
+                  <i class="ph ph-plus" aria-hidden="true"></i> Add image
+                </button>
+              </div>
+              <div class="data-list" data-image-list="booking-qr-maribank" aria-live="polite"></div>
+              <p class="image-group-empty hidden" data-image-empty="booking-qr-maribank">No Maribank QR code yet.</p>
+            </section>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ====================================================================
+       HERO SLIDE EDITOR MODAL
+       ==================================================================== -->
+  <div class="modal-backdrop hidden" id="bannerModal" role="dialog" aria-modal="true" aria-labelledby="bannerEditorTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog--wide">
+      <div class="modal-head">
+        <div>
+          <h3 id="bannerEditorTitle">Edit hero slide</h3>
+          <p class="hero-modal-meta">
+            <span id="bannerSelectedLabel">No slide selected</span>
+            <span class="hero-status-pill hidden" id="bannerStatusPill">Active</span>
+          </p>
+        </div>
+        <button type="button" class="modal-close" data-close-modal="bannerModal" aria-label="Close slide editor">
+          <i class="ph ph-x" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <form class="modal-form" id="bannerForm">
+        <input type="hidden" id="bannerId">
+
+        <div class="form-field form-field--full">
+          <span>Slide image</span>
+          <div class="image-upload hero-image-upload" id="bannerImageDropzone"
+               role="button" tabindex="0" aria-label="Choose slide image">
+            <img id="bannerImagePreview" alt="" class="is-empty">
+            <div class="image-upload__placeholder">
+              <i class="ph ph-image-square" aria-hidden="true"></i>
+              <span>Drop an image here or click to browse</span>
+            </div>
+            <span class="image-upload__overlay">Choose image</span>
+            <input type="file" id="bannerImageInput" accept="image/jpeg,image/png,image/webp" hidden>
+          </div>
+          <small class="form-hint">Recommended 1920 × 800 px (JPG, PNG or WebP), up to 5 MB on mobile.</small>
+        </div>
+
+        <div class="form-grid">
+          <label class="form-field form-field--full">
+            <span>Title</span>
+            <input type="text" id="bannerTitle" placeholder="Promo" required>
+          </label>
+
+          <label class="form-field form-field--full">
+            <span>Alt text</span>
+            <input type="text" id="bannerAlt" placeholder="Describe the banner image">
+          </label>
+
+          <label class="form-field form-field--full">
+            <span>Link URL (optional)</span>
+            <input type="url" id="bannerLink" placeholder="https://instagram.com/...">
+          </label>
+
+          <div class="form-field form-field--full switch-field">
+            <div>
+              <span class="visibility-title">Visible in carousel</span>
+              <span class="visibility-subtitle">Published on the studio website.</span>
+            </div>
+            <label class="luxury-switch" aria-label="Publish slide">
+              <input type="checkbox" id="bannerPublished" checked>
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" data-close-modal="bannerModal">Cancel</button>
+          <button type="submit" class="btn-primary" id="saveBannerBtn">
+            <i class="ph ph-floppy-disk" aria-hidden="true"></i>
+            Save changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       GALLERY EDITOR MODAL
+       ==================================================================== -->
+  <div class="modal-backdrop hidden" id="galleryModal" role="dialog" aria-modal="true" aria-labelledby="galleryModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog--wide">
+      <div class="modal-head">
+        <div>
+          <h3 id="galleryModalTitle">Edit gallery image</h3>
+          <p>Uploaded photos appear in the public gallery right away.</p>
+        </div>
+        <button type="button" class="modal-close" data-close-modal="galleryModal" aria-label="Close gallery editor">
+          <i class="ph ph-x" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <form class="modal-form" id="galleryForm">
+        <input type="hidden" id="galleryItemId">
+
+        <div class="form-field form-field--full">
+          <span>Gallery image</span>
+          <div class="image-upload" id="galleryImageDropzone" role="button" tabindex="0" aria-label="Choose gallery image">
+            <img id="galleryImagePreview" alt="" class="is-empty">
+            <div class="image-upload__placeholder">
+              <i class="ph ph-image-square" aria-hidden="true"></i>
+              <span>Drop a photo here or click to browse</span>
+            </div>
+            <span class="image-upload__overlay">Choose image</span>
+            <input type="file" id="galleryImageInput" accept="image/jpeg,image/png,image/webp" hidden>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <label class="form-field form-field--full">
+            <span>Title</span>
+            <input type="text" id="galleryTitle" placeholder="Collarbone script" required>
+          </label>
+          <label class="form-field">
+            <span>Gallery section</span>
+            <select id="galleryCategory">
+              <option value="Face Tattoo">Face Tattoo</option>
+              <option value="Body Tattoo">Body Tattoo</option>
+              <option value="Face Piercing">Face Piercing</option>
+              <option value="Body Piercing">Body Piercing</option>
+            </select>
+          </label>
+          <!-- The public gallery groups by section only; the subcategory column
+               mirrors the section so legacy readers stay compatible. -->
+          <input type="hidden" id="gallerySubcategory" value="Face Tattoo">
+          <div class="form-field form-field--full">
+            <label for="galleryBodyPartSearch">Body part</label>
+            <div class="combobox" id="galleryBodyPartCombobox">
+              <input type="hidden" id="galleryBodyPart">
+              <div class="combobox-control">
+                <input
+                  type="text"
+                  id="galleryBodyPartSearch"
+                  role="combobox"
+                  aria-autocomplete="list"
+                  aria-expanded="false"
+                  aria-controls="galleryBodyPartList"
+                  aria-haspopup="listbox"
+                  autocomplete="off"
+                  spellcheck="false"
+                  placeholder="Search body parts..."
+                >
+                <button type="button" class="combobox-clear" id="galleryBodyPartClear" hidden aria-label="Clear body part">
+                  <i class="ph ph-x" aria-hidden="true"></i>
+                </button>
+              </div>
+              <ul
+                class="combobox-panel"
+                id="galleryBodyPartList"
+                role="listbox"
+                aria-label="Body parts"
+                hidden
+              ></ul>
+            </div>
+            <small class="form-hint">Search or pick the area shown on the public gallery card. Leave blank to use the subcategory.</small>
+          </div>
+          <label class="form-field form-field--full">
+            <span>Alt text</span>
+            <textarea id="galleryAlt" rows="3" placeholder="Describe the image for accessibility and SEO"></textarea>
+          </label>
+          <div class="form-field form-field--full switch-field">
+            <div>
+              <span class="visibility-title">Visible in gallery</span>
+              <span class="visibility-subtitle">Publish this work on the public gallery.</span>
+            </div>
+            <label class="luxury-switch" aria-label="Publish gallery image">
+              <input type="checkbox" id="galleryPublished" checked>
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" data-close-modal="galleryModal">Cancel</button>
+          <button type="submit" class="btn-primary" id="saveGalleryBtn">
+            <i class="ph ph-floppy-disk" aria-hidden="true"></i>
+            Save image
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       CATALOGUE EDITOR MODAL
+       ==================================================================== -->
+  <div class="modal-backdrop hidden" id="catalogueModal" role="dialog" aria-modal="true" aria-labelledby="catalogueModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog--wide">
+      <div class="modal-head">
+        <div>
+          <h3 id="catalogueModalTitle">Add catalogue item</h3>
+          <p>Photos are saved with the catalogue and shown on the public site.</p>
+        </div>
+        <button type="button" class="modal-close" data-close-modal="catalogueModal" aria-label="Close catalogue editor">
+          <i class="ph ph-x" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <form class="modal-form" id="catalogueForm">
+        <input type="hidden" id="catalogueItemId">
+
+        <div class="form-field form-field--full">
+          <span>Jewellery photo</span>
+          <div class="image-upload" id="catalogueImageDropzone" role="button" tabindex="0" aria-label="Choose catalogue image">
+            <img id="catalogueImagePreview" alt="" class="is-empty">
+            <div class="image-upload__placeholder">
+              <i class="ph ph-image-square" aria-hidden="true"></i>
+              <span>Drop a photo here or click to browse</span>
+            </div>
+            <span class="image-upload__overlay">Choose image</span>
+            <input type="file" id="catalogueImageInput" accept="image/jpeg,image/png,image/webp" hidden>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <label class="form-field form-field--full">
+            <span>Item title</span>
+            <input type="text" id="catalogueTitle" placeholder="Fleur flatback labret" required>
+          </label>
+          <label class="form-field form-field--full">
+            <span>Description</span>
+            <textarea id="catalogueDescription" rows="3" placeholder="Describe the material, finish and styling."></textarea>
+          </label>
+          <label class="form-field">
+            <span>Price (PHP)</span>
+            <input type="number" id="cataloguePrice" min="0" step="0.01" placeholder="600">
+          </label>
+          <label class="form-field">
+            <span>Category</span>
+            <select id="catalogueCategory">
+              <option value="Ear">Ear</option>
+              <option value="Facial">Facial</option>
+              <option value="Oral">Oral</option>
+              <option value="Body">Body</option>
+              <option value="Aftercare">Aftercare</option>
+            </select>
+          </label>
+          <label class="form-field">
+            <span>Subcategory</span>
+            <input type="text" id="catalogueSubcategory" placeholder="Helix">
+          </label>
+          <label class="form-field">
+            <span>Material</span>
+            <input type="text" id="catalogueMaterial" placeholder="ASTM F136 Titanium">
+          </label>
+          <label class="form-field form-field--full">
+            <span>Available sizes</span>
+            <input type="text" id="catalogueSizes" placeholder="4mm, 3mm, 2mm">
+          </label>
+          <label class="form-field">
+            <span>Social platform</span>
+            <select id="catalogueSocialMedia">
+              <option value="Instagram">Instagram</option>
+              <option value="TikTok">TikTok</option>
+              <option value="Facebook">Facebook</option>
+            </select>
+          </label>
+          <label class="form-field">
+            <span>Social order link</span>
+            <input type="url" id="catalogueOrderUrl" placeholder="https://instagram.com/p/...">
+          </label>
+          <div class="form-field form-field--full switch-field">
+            <div>
+              <span class="visibility-title">Published</span>
+              <span class="visibility-subtitle">Show this item in the public catalogue.</span>
+            </div>
+            <label class="luxury-switch" aria-label="Publish catalogue item">
+              <input type="checkbox" id="cataloguePublished" checked>
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" data-close-modal="catalogueModal">Cancel</button>
+          <button type="submit" class="btn-primary" id="saveCatalogueBtn">
+            <i class="ph ph-floppy-disk" aria-hidden="true"></i>
+            Save item
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       ARTIST EDITOR MODAL
+       ==================================================================== -->
+  <div class="modal-backdrop hidden" id="artistModal" role="dialog" aria-modal="true" aria-labelledby="artistModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog--wide">
+      <div class="modal-head">
+        <div>
+          <h3 id="artistModalTitle">Add artist profile</h3>
+          <p>Saved changes appear on the public artist page.</p>
+        </div>
+        <button type="button" class="modal-close" data-close-modal="artistModal" aria-label="Close artist editor">
+          <i class="ph ph-x" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <form class="modal-form" id="artistForm">
+        <input type="hidden" id="artistId">
+
+        <div class="form-field form-field--full">
+          <span>Avatar image</span>
+          <div class="image-upload image-upload--avatar" id="artistAvatarDropzone" role="button" tabindex="0" aria-label="Choose artist avatar">
+            <img id="artistAvatarPreview" alt="" class="is-empty">
+            <div class="image-upload__placeholder">
+              <i class="ph ph-user-circle" aria-hidden="true"></i>
+              <span>Drop a portrait here or click to browse</span>
+            </div>
+            <span class="image-upload__overlay">Choose avatar</span>
+            <input type="file" id="artistAvatarInput" accept="image/jpeg,image/png,image/webp" hidden>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <label class="form-field">
+            <span>Name</span>
+            <input type="text" id="artistName" placeholder="Paulina Vampire" required>
+          </label>
+          <label class="form-field">
+            <span>Role / title</span>
+            <input type="text" id="artistRole" placeholder="Founder &amp; Master Piercer">
+          </label>
+          <label class="form-field form-field--full">
+            <span>Bio</span>
+            <textarea id="artistBio" rows="5" placeholder="Tell clients about the artist's experience and approach."></textarea>
+          </label>
+          <div class="form-field form-field--full">
+            <label for="artistSpecialtiesSearch">Specialties</label>
+            <div class="combobox" id="artistSpecialtiesCombobox">
+              <input type="hidden" id="artistSpecialties">
+              <div class="combobox-control">
+                <input
+                  type="text"
+                  id="artistSpecialtiesSearch"
+                  role="combobox"
+                  aria-autocomplete="list"
+                  aria-expanded="false"
+                  aria-controls="artistSpecialtiesList"
+                  aria-haspopup="listbox"
+                  autocomplete="off"
+                  spellcheck="false"
+                  placeholder="Search specialties..."
+                >
+                <button type="button" class="combobox-clear" id="artistSpecialtiesClear" hidden aria-label="Clear specialties">
+                  <i class="ph ph-x" aria-hidden="true"></i>
+                </button>
+              </div>
+              <ul
+                class="combobox-panel"
+                id="artistSpecialtiesList"
+                role="listbox"
+                aria-label="Specialties"
+                hidden
+              ></ul>
+              <div class="specialty-chips" id="artistSpecialtiesChips" aria-live="polite"></div>
+            </div>
+            <small class="form-hint">Start typing to see predicted specialties. Press Enter or click a prediction to add it.</small>
+          </div>
+          <label class="form-field">
+            <span>Instagram URL</span>
+            <input type="url" id="artistInstagram" placeholder="https://instagram.com/...">
+          </label>
+          <div class="form-field form-field--full switch-field">
+            <div>
+              <span class="visibility-title">Visible on the artist page</span>
+              <span class="visibility-subtitle">Publish this profile on the public website.</span>
+            </div>
+            <label class="luxury-switch" aria-label="Publish artist profile">
+              <input type="checkbox" id="artistPublished" checked>
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" data-close-modal="artistModal">Cancel</button>
+          <button type="submit" class="btn-primary" id="saveArtistBtn">
+            <i class="ph ph-floppy-disk" aria-hidden="true"></i>
+            Save artist
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       FAQ EDITOR MODAL
+       ==================================================================== -->
+  <div class="modal-backdrop hidden" id="faqModal" role="dialog" aria-modal="true" aria-labelledby="faqModalTitle" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-head">
+        <div>
+          <h3 id="faqModalTitle">Add FAQ</h3>
+          <p>Questions appear in the order set below.</p>
+        </div>
+        <button type="button" class="modal-close" data-close-modal="faqModal" aria-label="Close FAQ editor">
+          <i class="ph ph-x" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <form class="modal-form" id="faqForm">
+        <input type="hidden" id="faqId">
+
+        <div class="form-grid">
+          <label class="form-field form-field--full">
+            <span>Question</span>
+            <input type="text" id="faqQuestion" placeholder="How do I book an appointment?" required>
+          </label>
+          <label class="form-field form-field--full">
+            <span>Answer</span>
+            <textarea id="faqAnswer" rows="5" placeholder="Write the answer shown when the question is opened." required></textarea>
+          </label>
+          <label class="form-field">
+            <span>Category</span>
+            <input type="text" id="faqCategory" placeholder="e.g. Booking, Policies, Pricing">
+          </label>
+          <div class="form-field form-field--full switch-field">
+            <div>
+              <span class="visibility-title">Visible on the public site</span>
+              <span class="visibility-subtitle">Unpublished questions stay in the admin panel only.</span>
+            </div>
+            <label class="luxury-switch" aria-label="Publish FAQ">
+              <input type="checkbox" id="faqPublished" checked>
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" data-close-modal="faqModal">Cancel</button>
+          <button type="submit" class="btn-primary" id="saveFaqBtn">
+            <i class="ph ph-floppy-disk" aria-hidden="true"></i>
+            Save question
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       SITE IMAGE EDITOR MODAL
+       ==================================================================== -->
+  <div class="modal-backdrop hidden" id="siteImageModal" role="dialog" aria-modal="true" aria-labelledby="siteImageModalTitle" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-head">
+        <div>
+          <h3 id="siteImageModalTitle">Add site image</h3>
+          <p>Choose the public section this image belongs to.</p>
+        </div>
+        <button type="button" class="modal-close" data-close-modal="siteImageModal" aria-label="Close image editor">
+          <i class="ph ph-x" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <form class="modal-form" id="siteImageForm">
+        <input type="hidden" id="siteImageId">
+
+        <div class="form-grid">
+          <label class="form-field form-field--full">
+            <span>Section</span>
+            <select id="siteImageSection" required>
+              <option value="home-studio">Home — Studio photos</option>
+              <option value="home-services">Home — Best services</option>
+              <option value="home-artists">Home — Artist portraits</option>
+              <option value="artist-favorites">Artist page — Favorite Works</option>
+              <option value="pricelist">Home — Piercing price list</option>
+              <option value="booking-qr">Booking — Payment QR code</option>
+              <option value="aftercare-hero-tattoo">Aftercare — Tattoo hero image</option>
+              <option value="aftercare-hero-piercing">Aftercare — Piercing hero image</option>
+              <option value="aftercare-guide">Aftercare — Piercing guide image</option>
+              <option value="aftercare-neilmed">Aftercare — NeilMed image</option>
+              <option value="aftercare-downsizing">Aftercare — Downsizing image</option>
+            </select>
+          </label>
+
+          <label class="form-field form-field--full hidden" id="siteImageArtistField">
+            <span>Artist</span>
+            <select id="siteImageArtist"></select>
+            <small class="form-hint">This work appears in the selected artist's Favorite Works section on the public artist page.</small>
+          </label>
+
+          <label class="form-field form-field--full">
+            <span>Image</span>
+            <div class="image-upload" id="siteImageDropzone" tabindex="0" role="button" aria-label="Choose an image">
+              <img id="siteImagePreview" class="is-empty" alt="Selected site image preview">
+              <div class="image-upload__placeholder">
+                <i class="ph ph-image-square" aria-hidden="true"></i>
+                <span>Drop an image here or click to browse</span>
+              </div>
+              <span class="image-upload__overlay">Choose image</span>
+              <input type="file" id="siteImageInput" accept="image/jpeg,image/png,image/webp" hidden>
+            </div>
+          </label>
+
+          <label class="form-field">
+            <span>Title</span>
+            <input type="text" id="siteImageTitle" placeholder="Lounge & reception area">
+          </label>
+          <label class="form-field">
+            <span>Short label</span>
+            <input type="text" id="siteImageSubtitle" placeholder="Optional label (services only)">
+          </label>
+          <label class="form-field form-field--full">
+            <span>Alt text</span>
+            <input type="text" id="siteImageAlt" placeholder="Describe the image for screen readers">
+          </label>
+          <label class="form-field form-field--full">
+            <span>Description</span>
+            <textarea id="siteImageDescription" rows="3" placeholder="Shown in the image popup."></textarea>
+          </label>
+          <div class="form-field form-field--full switch-field">
+            <div>
+              <span class="visibility-title">Published</span>
+              <span class="visibility-subtitle">Unpublished images stay hidden on the public site.</span>
+            </div>
+            <label class="luxury-switch" aria-label="Publish site image">
+              <input type="checkbox" id="siteImagePublished" checked>
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" data-close-modal="siteImageModal">Cancel</button>
+          <button type="submit" class="btn-primary" id="saveSiteImageBtn">
+            <i class="ph ph-floppy-disk" aria-hidden="true"></i>
+            Save image
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       SHARED DELETE CONFIRMATION MODAL
+       ==================================================================== -->
+  <div class="modal-backdrop hidden" id="confirmModal" role="dialog" aria-modal="true" aria-labelledby="confirmModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog--compact">
+      <div class="modal-head">
+        <div>
+          <h3 id="confirmModalTitle">Delete item</h3>
+          <p id="confirmModalBody">This action cannot be undone.</p>
+        </div>
+        <button type="button" class="modal-close" data-close-modal="confirmModal" aria-label="Close confirmation">
+          <i class="ph ph-x" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" id="confirmModalCancel">Cancel</button>
+        <button type="button" class="btn-danger" id="confirmModalOk">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       REVIEW EDITOR MODAL
+       ==================================================================== -->
+  <div class="modal-backdrop hidden" id="reviewEditorModal" role="dialog" aria-modal="true"
+       aria-labelledby="reviewEditorTitle" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-head">
+        <div>
+          <h3 id="reviewEditorTitle">Edit review</h3>
+          <p>Changes are published to the client reviews page right away.</p>
+        </div>
+        <button type="button" class="modal-close" data-review-modal-close aria-label="Close review editor">
+          <i class="ph ph-x" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <form class="modal-form" id="reviewEditorForm">
+        <input type="hidden" id="reviewEditorId">
+
+        <div class="form-grid">
+          <div class="form-field form-field--full">
+            <span>Reviewer</span>
+            <p class="review-admin-reviewer" id="reviewEditorReviewer">&mdash;</p>
+          </div>
+          <label class="form-field">
+            <span>Rating</span>
+            <select id="reviewEditorRating">
+              <option value="5">5 stars</option>
+              <option value="4">4 stars</option>
+              <option value="3">3 stars</option>
+              <option value="2">2 stars</option>
+              <option value="1">1 star</option>
+            </select>
+          </label>
+          <div class="form-field switch-field">
+            <div>
+              <span class="visibility-title">Published</span>
+              <span class="visibility-subtitle">Show this testimonial on the public site.</span>
+            </div>
+            <label class="luxury-switch" aria-label="Publish review">
+              <input type="checkbox" id="reviewEditorPublished" checked>
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+          <label class="form-field form-field--full">
+            <span>Review</span>
+            <textarea id="reviewEditorBody" rows="7" maxlength="2000" required></textarea>
+          </label>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" data-review-modal-close>Cancel</button>
+          <button type="submit" class="btn-primary" id="reviewEditorSave">
+            <i class="ph ph-floppy-disk" aria-hidden="true"></i>
+            Save review
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Global feedback toast -->
+  <div class="toast" id="adminToast" role="status" aria-live="polite"></div>
+
+  <script src="../../js/admin-nav.js"></script>
+  <script src="../../js/admin-sheet.js"></script>
+  <script src="../../js/api-base.js"></script>
+  <script src="../../js/admin-notifications.js"></script>
+  <script type="module" src="../../js/admin-editweb.js"></script>
+  <script type="module" src="../../js/admin-reviews.js"></script>
+</body>
+</html>

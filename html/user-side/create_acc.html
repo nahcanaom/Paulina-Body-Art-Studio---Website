@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PAULINA Body Art Studio | Create an Account</title>
+  <link rel="icon" type="image/png" href="../../assets/logos/favicon_white.png">
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+  <link rel="stylesheet" href="../../css/create_acc.css">
+</head>
+<body>
+  <div class="page-shell">
+    <aside class="brand-panel">
+      <div class="brand-meta">A STUDIO FOR SELF-EXPRESSION</div>
+      <blockquote class="brand-quote">
+        “Fearfully and wonderfully made.”
+        <span>— Psalm 139:14</span>
+      </blockquote>
+    </aside>
+
+    <main class="auth-panel">
+      <section class="auth-box" aria-label="Create an account form">
+        <h2>WELCOME TO THE STUDIO</h2>
+        <h3>Create your Account</h3>
+
+        <form class="auth-form" data-auth-mode="create-account" method="post" novalidate>
+          <div class="field-group">
+            <label for="fullName">Full Name</label>
+            <div class="input-wrap">
+              <span class="input-icon"><i class="ph ph-user"></i></span>
+              <input id="fullName" name="fullName" type="text" placeholder="Your name" autocomplete="name" aria-label="Full Name" aria-describedby="fullName-error" required>
+            </div>
+            <p class="field-error" id="fullName-error" data-field-error aria-live="polite"></p>
+          </div>
+
+          <div class="field-group">
+            <label for="email">Email Address</label>
+            <div class="input-wrap">
+              <span class="input-icon"><i class="ph-fill ph-envelope-simple"></i></span>
+              <input id="email" name="email" type="email" placeholder="you@gmail.com" autocomplete="email" aria-label="Email Address" aria-describedby="email-error" required>
+            </div>
+            <p class="field-error" id="email-error" data-field-error aria-live="polite"></p>
+          </div>
+
+          <div class="field-group">
+            <label for="password">Password</label>
+            <div class="input-wrap">
+              <span class="input-icon"><i class="ph-fill ph-lock"></i></span>
+              <input id="password" name="password" type="password" placeholder="At least 8 characters" autocomplete="new-password" aria-label="Password" aria-describedby="password-error" minlength="8" required>
+              <button class="password-toggle" type="button" data-password-toggle aria-controls="password" aria-label="Show password" aria-pressed="false">
+                <i class="ph-fill ph-eye" aria-hidden="true"></i>
+              </button>
+            </div>
+            <p class="field-error" id="password-error" data-field-error aria-live="polite"></p>
+          </div>
+
+          <div class="field-group">
+            <label for="confirmPassword">Confirm Password</label>
+            <div class="input-wrap">
+              <span class="input-icon"><i class="ph-fill ph-lock"></i></span>
+              <input id="confirmPassword" name="confirmPassword" type="password" placeholder="Re-enter password" autocomplete="new-password" aria-label="Confirm Password" aria-describedby="confirmPassword-error" required>
+              <button class="password-toggle" type="button" data-password-toggle aria-controls="confirmPassword" aria-label="Show password" aria-pressed="false">
+                <i class="ph-fill ph-eye" aria-hidden="true"></i>
+              </button>
+            </div>
+            <p class="field-error" id="confirmPassword-error" data-field-error aria-live="polite"></p>
+          </div>
+
+          <button type="submit" class="primary-btn">CREATE ACCOUNT</button>
+        </form>
+
+        <div class="divider"></div>
+
+        <button type="button" class="secondary-btn" data-google-auth>CONTINUE WITH GOOGLE</button>
+        <p class="auth-message" id="auth-message" role="status" aria-live="polite"></p>
+
+        <p class="signup-link">Already have an account? <a href="sign-in.html">Sign in</a></p>
+      </section>
+    </main>
+  </div>
+  <script type="module" src="../../js/auth.js"></script>
+</body>
+</html>

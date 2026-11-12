@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Paulina Body Art Studio admin dashboard: bookings, revenue, deposits and upcoming appointments at a glance.">
+  <title>Paulina Body Art Studio - Admin Dashboard</title>
+  <link rel="icon" type="image/png" href="../../assets/logos/favicon_white.png">
+
+  <!-- Icon set (all studio pages use Phosphor) -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+
+  <!-- Chart.js Engine -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Dashboard styles -->
+  <link rel="stylesheet" href="../../css/admin-style.css">
+  <link rel="stylesheet" href="../../css/notices.css">
+  <link rel="stylesheet" href="../../css/notifications.css">
+  <link rel="stylesheet" href="../../css/admin-nav.css">
+</head>
+<body>
+
+  <a class="skip-link" href="#mainContent">Skip to dashboard content</a>
+
+  <!-- Recent activity, shown on login until dismissed -->
+  <section class="notification-bar" id="notificationBar" aria-live="polite" hidden>
+    <div class="notification-bar-inner">
+      <i class="ph ph-bell-ringing notification-bar-icon" aria-hidden="true"></i>
+      <strong class="notification-bar-title" id="notificationBarTitle">You have new activity</strong>
+      <div class="notification-bar-actions">
+        <a class="notification-bar-link" href="notifications.html">View all</a>
+        <button type="button" class="notification-bar-dismiss" id="notificationBarDismiss" aria-label="Dismiss notifications">
+          <i class="ph ph-x" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOP HEADER -->
+  <header class="top-header">
+    <a href="dashboard.html" class="brand-logo" aria-label="Paulina Body Art Studio dashboard">
+      <img src="../../assets/logos/logo_2.png" alt="Paulina Body Art Studio">
+    </a>
+
+    <div class="header-titles">
+      <h1>Dashboard Overview</h1>
+      <p>Get a quick snap of your studio&rsquo;s performance - bookings, payments - all in one place.</p>
+    </div>
+
+    <div class="header-actions">
+      <a class="header-btn notification-btn" id="notificationsBtn" href="notifications.html" title="Notifications" aria-label="Notifications">
+        <i class="ph ph-bell" aria-hidden="true"></i>
+        <span class="notification-badge" id="notificationBadge" data-notification-badge hidden>0</span>
+      </a>
+      <a class="header-btn avatar-icon" href="account-settings.html" title="Account settings" aria-label="Account settings">
+        <i class="ph ph-user-circle" aria-hidden="true"></i>
+      </a>
+    </div>
+  </header>
+
+  <!-- DASHBOARD -->
+  <div class="dashboard-container">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar">
+      <nav class="nav-group" aria-label="Admin sections">
+        <a class="nav-item active" href="dashboard.html" aria-current="page">
+          <i class="ph ph-squares-four" aria-hidden="true"></i>
+          <span>Dashboard</span>
+        </a>
+        <a class="nav-item" href="custom-requests.html">
+          <i class="ph ph-chat-circle-dots" aria-hidden="true"></i>
+          <span>Booking</span>
+        </a>
+        <a class="nav-item" href="master-calendar.html">
+          <i class="ph ph-calendar-blank" aria-hidden="true"></i>
+          <span>Master Calendar</span>
+        </a>
+
+        <div class="nav-dropdown">
+          <div class="nav-dropdown-row">
+            <a class="nav-item nav-dropdown-link" href="admin-editweb.html#home">
+              <i class="ph ph-pencil-simple-line" aria-hidden="true"></i>
+              <span>Edit Website</span>
+            </a>
+            <button type="button" class="nav-dropdown-toggle" aria-expanded="false"
+                    aria-controls="editWebsiteMenu" aria-label="Toggle Edit Website sections">
+              <i class="ph ph-caret-down" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <div class="nav-dropdown-menu" id="editWebsiteMenu" role="menu" aria-label="Edit website sections">
+            <a role="menuitem" href="admin-editweb.html#home">
+              <i class="ph ph-house-line" aria-hidden="true"></i>
+              <span>Home Page</span>
+            </a>
+            <a role="menuitem" href="admin-editweb.html#gallery">
+              <i class="ph ph-image" aria-hidden="true"></i>
+              <span>Gallery</span>
+            </a>
+            <a role="menuitem" href="admin-editweb.html#catalogue">
+              <i class="ph ph-book-open" aria-hidden="true"></i>
+              <span>Catalogue</span>
+            </a>
+            <a role="menuitem" href="admin-editweb.html#artist">
+              <i class="ph ph-user-circle" aria-hidden="true"></i>
+              <span>Artists</span>
+            </a>
+            <a role="menuitem" href="admin-editweb.html#faqs">
+              <i class="ph ph-question" aria-hidden="true"></i>
+              <span>FAQs</span>
+            </a>
+            <a role="menuitem" href="admin-editweb.html#aftercare">
+              <i class="ph ph-first-aid-kit" aria-hidden="true"></i>
+              <span>Aftercare</span>
+            </a>
+            <a role="menuitem" href="admin-editweb.html#booking">
+              <i class="ph ph-calendar-check" aria-hidden="true"></i>
+              <span>Booking Info</span>
+            </a>
+          </div>
+        </div>
+      </nav>
+
+      <div class="signout-btn">
+        <a class="nav-item" href="../user-side/sign-in.html" data-sign-out>
+          <i class="ph ph-sign-out" aria-hidden="true"></i>
+          <span>Sign Out</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- CENTER CONTENT -->
+    <main class="main-content" id="mainContent">
+
+      <!-- KPI CARDS -->
+      <section class="kpi-grid" aria-label="Key performance indicators">
+        <article class="kpi-card" data-kpi="bookings">
+          <div class="kpi-card-header">
+            <span class="kpi-icon-wrap"><i class="ph-fill ph-check-square kpi-icon" aria-hidden="true"></i></span>
+            <h2 class="kpi-title">Bookings</h2>
+          </div>
+          <div class="kpi-value kpi-value-couture" id="kpiBookings">0</div>
+          <div class="trend-row">
+            <span class="trend-pill" title="Compared with last month">
+              <i class="ph ph-trend-up" aria-hidden="true"></i><span>0%</span>
+            </span>
+            <span class="trend-note">vs last month</span>
+          </div>
+        </article>
+
+        <article class="kpi-card" data-kpi="revenue">
+          <div class="kpi-card-header">
+            <span class="kpi-icon-wrap"><i class="ph ph-coins kpi-icon" aria-hidden="true"></i></span>
+            <h2 class="kpi-title">Revenue</h2>
+            <span class="kpi-edit-hint" aria-hidden="true" title="Click the amount to edit this month's revenue">
+              <i class="ph ph-pencil-simple"></i>
+            </span>
+          </div>
+          <input
+            type="text"
+            class="kpi-value kpi-value-couture revenue-input"
+            id="kpiRevenue"
+            value="P0"
+            inputmode="decimal"
+            autocomplete="off"
+            spellcheck="false"
+            aria-label="Monthly revenue. Click to edit and press Enter to save."
+            title="Click to edit this month's revenue"
+          />
+          <div class="trend-row">
+            <span class="trend-pill" title="Compared with last month">
+              <i class="ph ph-trend-up" aria-hidden="true"></i><span>0%</span>
+            </span>
+            <span class="trend-note">vs last month</span>
+          </div>
+        </article>
+
+        <article class="kpi-card" data-kpi="deposits">
+          <div class="kpi-card-header">
+            <span class="kpi-icon-wrap"><i class="ph ph-money kpi-icon" aria-hidden="true"></i></span>
+            <h2 class="kpi-title">Deposits collected</h2>
+          </div>
+          <div class="kpi-value kpi-value-couture" id="kpiDeposits">P0</div>
+          <div class="trend-row">
+            <span class="trend-pill" title="Compared with last month">
+              <i class="ph ph-trend-up" aria-hidden="true"></i><span>0%</span>
+            </span>
+            <span class="trend-note">vs last month</span>
+          </div>
+        </article>
+
+        <article class="kpi-card" data-kpi="noShow">
+          <div class="kpi-card-header">
+            <span class="kpi-icon-wrap"><i class="ph ph-x-circle kpi-icon" aria-hidden="true"></i></span>
+            <h2 class="kpi-title">No show rate</h2>
+          </div>
+          <div class="kpi-value" id="kpiNoShow"><span class="kpi-value-couture">0</span>%</div>
+          <div class="trend-row">
+            <span class="trend-pill" title="Compared with last month">
+              <i class="ph ph-trend-up" aria-hidden="true"></i><span>0%</span>
+            </span>
+            <span class="trend-note">vs last month</span>
+          </div>
+        </article>
+      </section>
+
+      <!-- BOOKING INSIGHTS (rendered by renderChart) -->
+      <section class="chart-card" aria-labelledby="insightsTitle">
+        <div class="chart-header">
+          <h3 id="insightsTitle">Booking insights</h3>
+          <span class="chart-period" id="chartPeriod"></span>
+        </div>
+
+        <div class="chart-wrapper" id="chartWrapper">
+          <canvas id="bookingInsightsChart" aria-label="Monthly bookings chart" role="img"></canvas>
+          <div class="chart-tooltip" id="chartTooltip" hidden></div>
+        </div>
+
+        <!-- Screen-reader alternative to the canvas. The wrapper (not the
+             table) carries .visually-hidden: a table ignores width: 1px and
+             would otherwise widen the page on narrow screens. -->
+        <div class="visually-hidden">
+          <table id="chartDataTable">
+            <caption id="chartCaption">Monthly bookings</caption>
+            <thead>
+              <tr>
+                <th scope="col">Month</th>
+                <th scope="col">Bookings</th>
+              </tr>
+            </thead>
+            <tbody id="chartDataBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <noscript>
+        <p class="noscript-note">Enable JavaScript to load live studio metrics.</p>
+      </noscript>
+    </main>
+
+    <!-- RIGHT COLUMN -->
+    <section class="right-column" aria-label="Bookings and appointments">
+
+      <!-- BOOKINGS FEED -->
+      <article class="feed-card">
+        <div class="feed-header">
+          <h2>Bookings Feed</h2>
+          <div class="filter-wrap">
+            <select id="feedFilterSelect" class="filter-select" aria-label="Filter bookings by service type">
+              <option value="All">All types</option>
+              <option value="Tattoo">Tattoo</option>
+              <option value="Piercing">Piercing</option>
+              <option value="Troubleshooting">Troubleshooting</option>
+            </select>
+            <i class="ph ph-caret-down filter-caret" aria-hidden="true"></i>
+          </div>
+        </div>
+
+        <div class="table-scroll">
+          <table class="feed-table">
+            <colgroup>
+              <col class="col-client">
+              <col class="col-service">
+              <col class="col-datetime">
+              <col class="col-status">
+            </colgroup>
+            <thead>
+              <tr>
+                <th scope="col">Client name</th>
+                <th scope="col">Service type</th>
+                <th scope="col">Date &amp; Time</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody id="bookingsFeedBody"></tbody>
+          </table>
+        </div>
+      </article>
+
+      <!-- UPCOMING APPOINTMENTS -->
+      <article class="appointments-card">
+        <div class="appointments-header">
+          <h2>Upcoming appointments</h2>
+          <a class="expand-btn" href="master-calendar.html" aria-label="Open the master calendar">
+            <i class="ph ph-arrow-square-out" aria-hidden="true"></i>
+          </a>
+        </div>
+
+        <ul class="appointment-list" id="appointmentsList"></ul>
+      </article>
+    </section>
+
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- Shared API origin resolver (Live Server -> Express on :3000) -->
+  <script src="../../js/api-base.js"></script>
+
+  <!-- Shared admin sidebar -->
+  <script src="../../js/admin-nav.js"></script>
+
+  <!-- Notifications: bell badge + login bar -->
+  <script src="../../js/admin-notifications.js"></script>
+
+  <!-- Branded confirm/notice modal -->
+  <script type="module" src="../../js/notice.js"></script>
+
+  <!-- Dashboard Scripts -->
+  <script src="../../js/admin-app.js"></script>
+</body>
+</html>

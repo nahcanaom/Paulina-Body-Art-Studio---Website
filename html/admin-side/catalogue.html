@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paulina Body Art Studio - Catalogue Management</title>
+  <link rel="icon" type="image/png" href="../../assets/logos/favicon_white.png">
+
+  <!-- Typography & Icons -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../../css/admin-dashboard.css">
+  <link rel="stylesheet" href="../../css/admin-catalogue.css">
+  <link rel="stylesheet" href="../../css/notifications.css">
+  <link rel="stylesheet" href="../../css/admin-nav.css">
+</head>
+<body>
+
+  <!-- TOP HEADER -->
+  <header class="top-header">
+    <a href="dashboard.html" class="brand-logo" aria-label="Paulina Body Art Studio">
+      <img src="../../assets/logos/logo_2.png" alt="Paulina Body Art Studio">
+    </a>
+
+    <div class="header-titles">
+      <h1>Catalogue Management</h1>
+      <p>Get a quick snap of your studio&rsquo;s performance - bookings, payments - all in one place.</p>
+    </div>
+
+        <div class="header-actions">
+      <a class="header-btn notification-btn" id="notificationsBtn" href="notifications.html" title="Notifications" aria-label="Notifications">
+        <i class="ph ph-bell" aria-hidden="true"></i>
+        <span class="notification-badge" id="notificationBadge" data-notification-badge hidden>0</span>
+      </a>
+      <a class="header-btn avatar-icon" href="account-settings.html" title="Account settings" aria-label="Account settings">
+        <i class="ph ph-user-circle" aria-hidden="true"></i>
+      </a>
+    </div>
+  </header>
+
+  <!-- MAIN DASHBOARD WRAPPER -->
+  <div class="dashboard-container">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar">
+      <nav class="nav-group" aria-label="Admin sections">
+        <a class="nav-item" href="dashboard.html">
+          <i class="ph ph-squares-four" aria-hidden="true"></i>
+          <span>Dashboard</span>
+        </a>
+        <a class="nav-item" href="custom-requests.html">
+          <i class="ph ph-chat-circle-dots" aria-hidden="true"></i>
+          <span>Booking</span>
+        </a>
+        <a class="nav-item" href="master-calendar.html">
+          <i class="ph ph-calendar-blank" aria-hidden="true"></i>
+          <span>Master Calendar</span>
+        </a>
+
+        <div class="nav-dropdown is-active">
+          <div class="nav-dropdown-row">
+            <a class="nav-item nav-dropdown-link" href="admin-editweb.html#catalogue" aria-current="page">
+              <i class="ph ph-pencil-simple-line" aria-hidden="true"></i>
+              <span>Edit Website</span>
+            </a>
+            <button type="button" class="nav-dropdown-toggle" aria-expanded="false"
+                    aria-controls="editWebsiteMenu" aria-label="Toggle Edit Website sections">
+              <i class="ph ph-caret-down" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <div class="nav-dropdown-menu" id="editWebsiteMenu" role="menu" aria-label="Edit website sections">
+            <a role="menuitem" href="admin-editweb.html#home">
+              <i class="ph ph-house-line" aria-hidden="true"></i>
+              <span>Home Page</span>
+            </a>
+            <a role="menuitem" href="admin-editweb.html#gallery">
+              <i class="ph ph-image" aria-hidden="true"></i>
+              <span>Gallery</span>
+            </a>
+            <a role="menuitem" href="admin-editweb.html#catalogue">
+              <i class="ph ph-book-open" aria-hidden="true"></i>
+              <span>Catalogue</span>
+            </a>
+            <a role="menuitem" href="admin-editweb.html#artist">
+              <i class="ph ph-user-circle" aria-hidden="true"></i>
+              <span>Artists</span>
+            </a>
+            <a role="menuitem" href="admin-editweb.html#faqs">
+              <i class="ph ph-question" aria-hidden="true"></i>
+              <span>FAQs</span>
+            </a>
+            <a role="menuitem" href="admin-editweb.html#aftercare">
+              <i class="ph ph-first-aid-kit" aria-hidden="true"></i>
+              <span>Aftercare</span>
+            </a>
+            <a role="menuitem" href="admin-editweb.html#booking">
+              <i class="ph ph-calendar-check" aria-hidden="true"></i>
+              <span>Booking Info</span>
+            </a>
+          </div>
+        </div>
+      </nav>
+
+      <div class="signout-btn">
+        <a class="nav-item" href="../user-side/sign-in.html">
+          <i class="ph ph-sign-out" aria-hidden="true"></i>
+          <span>Sign Out</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- MAIN CATALOGUE CONTENT AREA -->
+    <div class="catalogue-management-wrapper">
+
+      <!-- LEFT: CATALOGUE CARDS & UPLOAD -->
+      <main class="catalogue-main-column">
+
+        <!-- Category Filter Pills -->
+        <div class="catalogue-category-pills" id="categoryPills">
+          <button type="button" class="category-pill active" data-category="all">
+            All <span class="pill-count" id="countAll">(6)</span>
+          </button>
+          <button type="button" class="category-pill" data-category="ear">
+            Ear
+          </button>
+          <button type="button" class="category-pill" data-category="facial">
+            Facial
+          </button>
+          <button type="button" class="category-pill" data-category="oral">
+            Oral
+          </button>
+          <button type="button" class="category-pill" data-category="body">
+            Body
+          </button>
+          <button type="button" class="category-pill" data-category="aftercare">
+            Aftercare
+          </button>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="catalogue-filter-bar">
+          <div class="search-box">
+            <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
+            <input type="text" id="searchInput" placeholder="Search image title" aria-label="Search image title">
+          </div>
+
+          <div class="select-wrapper">
+            <select id="categoryFilter" aria-label="Filter by category">
+              <option value="all">All categories</option>
+              <option value="Ear">Ear</option>
+              <option value="Facial">Facial</option>
+              <option value="Oral">Oral</option>
+              <option value="Body">Body</option>
+              <option value="Aftercare">Aftercare</option>
+            </select>
+            <i class="ph ph-caret-down select-caret" aria-hidden="true"></i>
+          </div>
+
+          <div class="select-wrapper">
+            <select id="visibilityFilter" aria-label="Filter by visibility">
+              <option value="all">All visibility</option>
+              <option value="published">Published</option>
+              <option value="draft">Draft</option>
+            </select>
+            <i class="ph ph-caret-down select-caret" aria-hidden="true"></i>
+          </div>
+        </div>
+
+        <!-- Metrics & Sort Line -->
+        <div class="catalogue-status-line">
+          <div class="status-counts" id="statusCounts">
+            6 images - 5 published
+          </div>
+          <div class="sort-wrapper">
+            <select id="sortOrder" aria-label="Sort order">
+              <option value="newest">Newest first &darr;</option>
+              <option value="oldest">Oldest first &uarr;</option>
+              <option value="title">Title (A-Z)</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+            </select>
+            <i class="ph ph-caret-down select-caret" aria-hidden="true"></i>
+          </div>
+        </div>
+
+        <!-- Catalogue Cards Grid -->
+        <div class="catalogue-cards-grid" id="catalogueGrid" aria-live="polite">
+          <!-- Dynamically populated via JS -->
+        </div>
+
+        <!-- Empty State -->
+        <div class="catalogue-empty-state" id="catalogueEmptyState" style="display: none;">
+          <i class="ph ph-image-square"></i>
+          <h3>No items match your filter</h3>
+          <p>Try resetting the search or category filters, or upload a new studio work below.</p>
+        </div>
+
+        <!-- Bottom Upload Dropzone -->
+        <section class="catalogue-upload-dropzone" id="uploadDropzone" aria-label="Upload studio works">
+          <div class="dropzone-info">
+            <i class="ph ph-image-square dropzone-icon" aria-hidden="true"></i>
+            <div class="dropzone-text">
+              <h3>Add new studio work</h3>
+              <p>Drop JPG, PNG or WebP images - Up to 10 MB each</p>
+            </div>
+          </div>
+          <button type="button" class="btn-choose-files" id="chooseFilesBtn">
+            <i class="ph ph-plus" aria-hidden="true"></i> CHOOSE FILES
+          </button>
+          <input type="file" id="fileUploadInput" accept="image/jpeg,image/png,image/webp" multiple style="display: none;">
+        </section>
+
+        <!-- Uploading progress feedback -->
+        <div class="upload-progress-card" id="uploadProgressCard" style="display: none;">
+          <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="uploadProgressBar"></div>
+          </div>
+          <span class="progress-status-text" id="uploadStatusText">Uploading works...</span>
+        </div>
+
+      </main>
+
+      <!-- RIGHT: EDIT IMAGE SIDE PANEL -->
+      <aside class="catalogue-edit-panel" id="editSidePanel" data-sheet="editSidePanel" aria-labelledby="editPanelTitle">
+        <span class="sheet-grip" data-sheet-grip aria-hidden="true"></span>
+        <button type="button" class="sheet-close" data-sheet-close aria-label="Close image editor">
+          <i class="ph ph-x" aria-hidden="true"></i>
+        </button>
+
+        <div class="edit-panel-header">
+          <h2 id="editPanelTitle">Edit image</h2>
+          <div class="edit-panel-meta">
+            <span class="selected-label" id="editSelectedLabel">Selected &bull; Chloe</span>
+            <span class="badge-status badge-published" id="editHeaderBadge">Published</span>
+          </div>
+        </div>
+
+        <!-- Image Preview Card -->
+        <div class="edit-image-preview-wrapper">
+          <img id="editImagePreview" src="../../assets/images/piercing1.png" alt="Preview">
+          <button type="button" class="edit-gallery-nav edit-gallery-prev" id="editGalleryPrev" aria-label="Previous product image">
+            <i class="ph ph-caret-left" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="edit-gallery-nav edit-gallery-next" id="editGalleryNext" aria-label="Next product image">
+            <i class="ph ph-caret-right" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <!-- Change Image Button -->
+        <button type="button" class="btn-change-image" id="changeImageBtn">
+          <i class="ph ph-image" aria-hidden="true"></i> Change Image
+        </button>
+        <input type="file" id="changeImageInput" accept="image/jpeg,image/png,image/webp" style="display: none;">
+
+        <p class="edit-spec-hint">
+          Recommended size: 1920 x 800 px (JPG, PNG, WebP)<br>
+          Mobile File Size: 5 MB
+        </p>
+
+        <!-- Product view gallery: shows all images associated with this product -->
+        <section class="edit-product-views" id="editProductViewsSection" aria-label="Product view images">
+          <h3 class="edit-product-views-title">Product views</h3>
+          <p class="edit-product-views-hint">Browse all images associated with this product while editing.</p>
+          <div class="edit-product-views-strip" id="editProductViewsStrip" role="listbox" aria-label="Product image views"></div>
+          <p class="edit-product-views-status" id="editProductViewsStatus" aria-live="polite"></p>
+        </section>
+
+        <!-- Edit Form -->
+        <form class="edit-panel-form" id="editItemForm" onsubmit="return false;">
+          <input type="hidden" id="editItemId" value="">
+
+          <div class="form-group">
+            <label for="editNameInput">NAME</label>
+            <input type="text" id="editNameInput" placeholder="Enter item name" required>
+          </div>
+
+          <div class="form-group">
+            <label>SIZES</label>
+            <div class="edit-sizes-row" id="editSizesRow">
+              <button type="button" class="edit-size-pill active" data-size="4mm">4mm</button>
+              <button type="button" class="edit-size-pill" data-size="3mm">3mm</button>
+              <button type="button" class="edit-size-pill" data-size="2mm">2mm</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="editSocialMediaSelect">SOCIAL MEDIA</label>
+            <div class="select-wrapper">
+              <select id="editSocialMediaSelect">
+                <option value="Instagram">Instagram</option>
+                <option value="TikTok">TikTok</option>
+                <option value="Facebook">Facebook</option>
+              </select>
+              <i class="ph ph-caret-down select-caret" aria-hidden="true"></i>
+            </div>
+          </div>
+
+          <!-- Visibility Toggle -->
+          <div class="form-group visibility-toggle-group">
+            <div class="visibility-text">
+              <span class="visibility-title">Visible in Catalogue</span>
+              <span class="visibility-subtitle" id="visibilitySubtitle">Published on the studio website</span>
+            </div>
+            <label class="luxury-switch" aria-label="Toggle visible in catalogue">
+              <input type="checkbox" id="editVisibilityToggle" checked>
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <!-- Notification Banner -->
+          <div class="edit-feedback-msg" id="editFeedbackMsg" role="alert" style="display: none;"></div>
+
+          <!-- Action Buttons -->
+          <div class="edit-panel-actions">
+            <button type="button" class="btn-save-changes" id="saveChangesBtn">SAVE CHANGES</button>
+            <button type="button" class="btn-discard" id="discardChangesBtn">DISCARD</button>
+          </div>
+        </form>
+      </aside>
+
+      <div class="sheet-backdrop" data-sheet-backdrop="editSidePanel" aria-hidden="true"></div>
+
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal-backdrop" id="deleteModal" role="dialog" aria-modal="true" aria-labelledby="deleteModalTitle" style="display: none;">
+    <div class="modal-dialog modal-dialog--with-grip">
+      <div class="modal-grip" aria-hidden="true"></div>
+      <h3 class="modal-title" id="deleteModalTitle">Delete Catalogue Item</h3>
+      <p class="modal-body">Are you sure you want to delete <strong id="deleteTargetTitle">this item</strong>? This will remove it from the catalogue and user website.</p>
+      <div class="modal-actions">
+        <button type="button" class="btn-modal-cancel" id="cancelDeleteBtn">Cancel</button>
+        <button type="button" class="btn-modal-delete" id="confirmDeleteBtn">Delete Item</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../js/admin-nav.js"></script>
+  <script src="../../js/admin-sheet.js"></script>
+  <script src="../../js/api-base.js"></script>
+  <script src="../../js/admin-notifications.js"></script>
+  <script src="../../js/admin-catalogue.js"></script>
+</body>
+</html>

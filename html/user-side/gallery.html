@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PAULINA Body Art Studio | Gallery</title>
+  <link rel="icon" type="image/png" href="../../assets/logos/favicon_white.png">
+
+  <!-- Icons -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+
+  <!-- Header, Footer & Global Brand Stylesheet -->
+  <link rel="stylesheet" href="../../css/header_and_footer.css">
+
+  <!-- Page-specific Stylesheets -->
+  <link rel="stylesheet" href="../../css/home.css">
+  <link rel="stylesheet" href="../../css/gallery.css">
+</head>
+<body>
+  <!-- =========================================================================
+       HEADER / NAVIGATION BAR
+       ========================================================================= -->
+  <nav class="navbar" aria-label="Main navigation">
+    <a href="home.html#hero" class="brand-logo" aria-label="PAULINA Body Art Studio home">
+      <img src="../../assets/logos/logo_2.png" alt="PAULINA Body Art Studio Logo">
+    </a>
+
+    <a href="account_settings.html" class="mobile-account-link" aria-label="Account settings" title="Account settings">
+      <i class="ph ph-user-circle" aria-hidden="true"></i>
+    </a>
+
+    <button class="nav-toggle" type="button" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <div class="nav-links" id="navMenu">
+      <a href="home.html">HOME</a>
+      <a href="gallery.html" class="active">GALLERY</a>
+      <a href="catalogue.html">CATALOGUE</a>
+      <a href="aftercare.html">AFTERCARE</a>
+      <a href="artist.html">ARTIST</a>
+      <a href="faqs.html">FAQs</a>
+      <a href="booking.html">BOOKING</a>
+      <a href="sign-in.html" class="nav-account" title="account" aria-label="account">Account</a>
+    </div>
+    <div class="nav-icons">
+      <a href="sign-in.html" class="account-trigger" title="account" aria-label="account" aria-expanded="false">
+        <i class="ph ph-user-circle account-icon-ph" aria-hidden="true"></i>
+      </a>
+      <div class="account-dropdown" id="accountDropdown">
+        <a href="sign-in.html" class="account-dropdown-item account-logout-btn" data-logout-btn role="button">Log out</a>
+        <div class="account-dropdown-divider"></div>
+        <a href="account_settings.html" class="account-dropdown-item account-settings-link" data-settings-link>Settings</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- =========================================================================
+       PAGE BANNER
+       ========================================================================= -->
+  <header class="page-banner">
+    <div class="section-florals" aria-hidden="true">
+      <img class="section-flower floral-size-large floral-right-top floral-bg2" src="../../assets/images/flower_bg2.png" alt="">
+      <img class="section-flower floral-size-medium floral-left-bottom floral-bg1" src="../../assets/images/flower_bg1.png" alt="">
+    </div>
+    <div class="page-banner-content">
+      <span class="selected-works">Selected Works</span>
+      <h1 id="galleryTitle">Piercing Gallery</h1>
+
+      <div class="gallery-tabs" id="galleryTabs" role="tablist" aria-label="Gallery categories">
+        <button type="button" class="gallery-tab is-active" role="tab" id="galleryTabPiercing"
+                aria-selected="true" aria-controls="dynamicGalleryContainer" data-gallery-tab="piercing">
+          Piercing
+        </button>
+        <button type="button" class="gallery-tab" role="tab" id="galleryTabTattoo"
+                aria-selected="false" aria-controls="dynamicGalleryContainer" data-gallery-tab="tattoo">
+          Tattoos
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       MAIN GALLERY CONTENT (Dynamic Auto-Layout Synchronized with Admin)
+       ========================================================================= -->
+  <main class="main-content">
+    <div class="section-florals" aria-hidden="true">
+      <img class="section-flower floral-size-medium floral-left-middle floral-bg1" src="../../assets/images/flower_bg1.png" alt="">
+      <img class="section-flower floral-size-small floral-right-middle floral-bg2" src="../../assets/images/flower_bg2.png" alt="">
+    </div>
+
+    <!-- DYNAMIC AUTO-LAYOUT MASONRY GALLERY -->
+    <section class="dynamic-gallery-section" aria-label="Studio Portfolio Works">
+      <div class="dynamic-gallery-masonry" id="dynamicGalleryContainer" role="tabpanel"
+           aria-labelledby="galleryTabPiercing" aria-live="polite">
+        <!-- Live works loaded dynamically via /api/gallery -->
+      </div>
+      <div id="dynamicGalleryEmpty" class="gallery-empty-notice" style="display: none;">
+        No published works in this category yet. Check back soon!
+      </div>
+    </section>
+  </main>
+
+  <!-- =========================================================================
+       FOOTER
+       ========================================================================= -->
+  <footer class="footer">
+    <div class="section-florals" aria-hidden="true">
+      <img class="section-flower floral-size-medium floral-center-top floral-bg1" src="../../assets/images/flower_bg1.png" alt="">
+      <img class="section-flower floral-size-small floral-left-bottom floral-bg2" src="../../assets/images/flower_bg2.png" alt="">
+    </div>
+    <hr class="visit-separator">
+    <div class="footer-top-logo">
+      <img src="../../assets/logos/logo_2.png" alt="Paulina Body Art Studio Logo">
+    </div>
+
+    <div class="footer-layout">
+      <a class="footer-mark" href="home.html#hero" aria-label="Return to home">
+        <img src="../../assets/logos/logomark_1.png" alt="Paulina Body Art Studio mark">
+      </a>
+
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <div>
+          <a href="home.html#hero">Home</a>
+          <a href="gallery.html">Gallery</a>
+          <a href="catalogue.html">Catalogue</a>
+        </div>
+        <div>
+          <a href="artist.html">Artist</a>
+          <a href="aftercare.html">Aftercare</a>
+          <a href="faqs.html">FAQs</a>
+        </div>
+      </nav>
+
+      <div class="footer-contact">
+        <div class="footer-contact-details">
+          <a href="https://www.google.com/maps/search/?api=1&amp;query=Paulina%20Body%20Art%20Studio%2C%20P3R6%2BWCW%2C%20Ilang-ilang%2C%20Novaliches%2C%20Caloocan%2C%20Metro%20Manila%2C%20Philippines" target="_blank" rel="noreferrer" title="Google Maps" aria-label="Google Maps">
+            <i class="ph-fill ph-map-pin accent-icon"></i>
+            <span>Paulina Body Art Studio, P3R6+WCW, Ilang-ilang, Novaliches, Caloocan, Metro Manila</span>
+          </a>
+          <a href="mailto:paulinabodyart@gmail.com">
+            <i class="ph ph-envelope-simple"></i>
+            <span>paulinabodyart@gmail.com</span>
+          </a>
+          <a href="tel:+639517417630">
+            <i class="ph-fill ph-phone"></i>
+            <span>0951 741 7630</span>
+          </a>
+        </div>
+        <div class="social-links">
+          <a href="https://www.instagram.com/paulinabodyart/" target="_blank" rel="noreferrer" title="Instagram" aria-label="Instagram"><i class="ph-fill ph-instagram-logo"></i></a>
+          <a href="https://www.facebook.com/PaulinaBodyArtStudio" target="_blank" rel="noreferrer" title="Facebook" aria-label="Facebook"><i class="ph-fill ph-facebook-logo"></i></a>
+          <a href="https://www.tiktok.com/@paulinabodyart" target="_blank" rel="noreferrer" title="TikTok" aria-label="TikTok"><i class="ph-fill ph-tiktok-logo"></i></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =========================================================================
+       MODAL PREVIEW / LIGHTBOX
+       ========================================================================= -->
+  <div class="modal-overlay" id="modalOverlay" aria-hidden="true">
+    <div class="modal-box" id="imageModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="modal-close" id="imageModalClose" type="button" aria-label="Close dialog">&times;</button>
+      <div class="modal-img-wrap">
+        <img src="" alt="" id="modalImage">
+      </div>
+      <h3 id="modalTitle"></h3>
+      <p id="modalCategory"></p>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../../js/header_and_footer.js"></script>
+  <script src="../../js/api-base.js"></script>
+  <script type="module" src="../../js/site-content.js"></script>
+  <script src="../../js/gallery.js"></script>
+</body>
+</html>

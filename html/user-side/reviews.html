@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PAULINA Body Art Studio | Reviews &amp; Testimonials</title>
+  <link rel="icon" type="image/png" href="../../assets/logos/favicon_white.png">
+
+  <!-- Phosphor Icons -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+
+  <!-- Shared brand, page, and review styles -->
+  <link rel="stylesheet" href="../../css/header_and_footer.css">
+  <link rel="stylesheet" href="../../css/reviews.css">
+  <link rel="stylesheet" href="../../css/notices.css">
+</head>
+<body class="reviews-page">
+  <div class="page-content">
+
+    <!-- Navigation Bar -->
+    <nav class="navbar" aria-label="Main navigation">
+      <a href="home.html#hero" class="brand-logo" aria-label="PAULINA Body Art Studio home">
+        <img src="../../assets/logos/logo_2.png" alt="PAULINA Body Art Studio Logo">
+      </a>
+
+      <a href="account_settings.html" class="mobile-account-link" aria-label="Account settings" title="Account settings">
+        <i class="ph ph-user-circle" aria-hidden="true"></i>
+      </a>
+
+      <button class="nav-toggle" type="button" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <div class="nav-links" id="navMenu">
+        <a href="home.html">HOME</a>
+        <a href="gallery.html">GALLERY</a>
+        <a href="catalogue.html">CATALOGUE</a>
+        <a href="aftercare.html">AFTERCARE</a>
+        <a href="artist.html">ARTIST</a>
+        <a href="faqs.html">FAQs</a>
+        <a href="booking.html">BOOKING</a>
+        <a href="sign-in.html" class="nav-account" title="account" aria-label="account">Account</a>
+      </div>
+      <div class="nav-icons">
+        <a href="sign-in.html" class="account-trigger" title="account" aria-label="account" aria-expanded="false">
+          <i class="ph ph-user-circle account-icon-ph" aria-hidden="true"></i>
+        </a>
+        <div class="account-dropdown" id="accountDropdown">
+          <a href="sign-in.html" class="account-dropdown-item account-logout-btn" data-logout-btn role="button">Log out</a>
+          <div class="account-dropdown-divider"></div>
+          <a href="account_settings.html" class="account-dropdown-item account-settings-link" data-settings-link>Settings</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Reviews Hero -->
+    <header class="reviews-hero">
+      <div class="section-florals" aria-hidden="true">
+        <img class="section-flower floral-size-medium floral-left-top floral-bg2" src="../../assets/images/flower_bg2.png" alt="">
+        <img class="section-flower floral-size-small floral-right-middle floral-bg1" src="../../assets/images/flower_bg1.png" alt="">
+        <img class="section-flower floral-size-large floral-center-bottom floral-bg1" src="../../assets/images/flower_bg1.png" alt="">
+      </div>
+
+      <div class="reviews-hero-inner">
+        <a class="reviews-back" href="home.html#reviews">&larr;</a>
+        <h1>REVIEWS &amp; TESTIMONIALS</h1>
+        <p class="reviews-intro">
+          Real words from real clients. Every review below is posted from a signed-in studio
+          account, so the name and photo you see belong to the person who shared it.
+        </p>
+      </div>
+    </header>
+
+    <!-- Reviews content -->
+    <main class="reviews-main">
+      <p class="reviews-page-status" id="reviewsPageStatus" role="status" aria-live="polite"></p>
+
+      <section class="reviews-toolbar" aria-label="Review filters and sorting">
+        <div class="reviews-controls">
+          <div class="reviews-filter" id="ratingFilter" role="group" aria-label="Filter reviews by star rating">
+            <button type="button" data-rating="all" aria-pressed="true">All</button>
+            <button type="button" data-rating="5" aria-pressed="false">
+              <span class="filter-stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+              5
+            </button>
+            <button type="button" data-rating="4" aria-pressed="false">
+              <span class="filter-stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;</span>
+              4
+            </button>
+            <button type="button" data-rating="3" aria-pressed="false">
+              <span class="filter-stars" aria-hidden="true">&#9733;&#9733;&#9733;</span>
+              3
+            </button>
+            <button type="button" data-rating="2" aria-pressed="false">
+              <span class="filter-stars" aria-hidden="true">&#9733;&#9733;</span>
+              2
+            </button>
+            <button type="button" data-rating="1" aria-pressed="false">
+              <span class="filter-stars" aria-hidden="true">&#9733;</span>
+              1
+            </button>
+          </div>
+
+          <label class="reviews-sort">
+            <span>Sort</span>
+            <select id="reviewSort">
+              <option value="newest">Newest first</option>
+              <option value="highest">Highest rated</option>
+              <option value="positive">Most positive</option>
+            </select>
+          </label>
+        </div>
+
+        <button type="button" class="btn review-write-btn" id="openReviewComposer">WRITE A REVIEW</button>
+      </section>
+
+      <p class="reviews-result-count" id="reviewsResultCount" aria-live="polite"></p>
+
+      <div class="reviews-grid" id="reviewsList" aria-live="polite">
+        <div class="review-empty">
+          <i class="ph ph-spinner-gap review-spinner" aria-hidden="true"></i>
+          <p>Loading client reviews&hellip;</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="section-florals" aria-hidden="true">
+        <img class="section-flower floral-size-medium floral-center-top floral-bg1" src="../../assets/images/flower_bg1.png" alt="">
+        <img class="section-flower floral-size-small floral-left-bottom floral-bg2" src="../../assets/images/flower_bg2.png" alt="">
+      </div>
+      <hr class="visit-separator">
+      <div class="footer-top-logo">
+        <img src="../../assets/logos/logo_2.png" alt="Paulina Body Art Studio Logo">
+      </div>
+
+      <div class="footer-layout">
+        <a class="footer-mark" href="home.html#hero" aria-label="Return to home">
+          <img src="../../assets/logos/logomark_1.png" alt="Paulina Body Art Studio mark">
+        </a>
+
+        <nav class="footer-nav" aria-label="Footer navigation">
+          <div>
+            <a href="home.html#hero">Home</a>
+            <a href="gallery.html">Gallery</a>
+            <a href="catalogue.html">Catalogue</a>
+          </div>
+          <div>
+            <a href="artist.html">Artist</a>
+            <a href="aftercare.html">Aftercare</a>
+            <a href="faqs.html">FAQs</a>
+          </div>
+        </nav>
+
+        <div class="footer-contact">
+          <div class="footer-contact-details">
+            <a href="https://www.google.com/maps/search/?api=1&amp;query=Paulina%20Body%20Art%20Studio%2C%20P3R6%2BWCW%2C%20Ilang-ilang%2C%20Novaliches%2C%20Caloocan%2C%20Metro%20Manila%2C%20Philippines" target="_blank" rel="noreferrer" title="Google Maps" aria-label="Google Maps">
+              <i class="ph-fill ph-map-pin accent-icon"></i>
+              <span>Paulina Body Art Studio, P3R6+WCW, Ilang-ilang, Novaliches, Caloocan, Metro Manila</span>
+            </a>
+            <a href="mailto:paulinabodyartstudio@gmail.com">
+              <i class="ph ph-envelope-simple"></i>
+              <span>paulinabodyartstudio@gmail.com</span>
+            </a>
+            <a href="tel:+639517417630">
+              <i class="ph-fill ph-phone"></i>
+              <span>0951 741 7630</span>
+            </a>
+          </div>
+          <div class="social-links">
+            <a href="https://www.instagram.com/paulinabodyart/" target="_blank" rel="noreferrer" title="Instagram" aria-label="Instagram"><i class="ph-fill ph-instagram-logo"></i></a>
+            <a href="https://www.facebook.com/PaulinaBodyArtStudio" target="_blank" rel="noreferrer" title="Facebook" aria-label="Facebook"><i class="ph-fill ph-facebook-logo"></i></a>
+            <a href="https://www.tiktok.com/@paulinabodyart" target="_blank" rel="noreferrer" title="TikTok" aria-label="TikTok"><i class="ph-fill ph-tiktok-logo"></i></a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Review composer modal -->
+    <div class="review-composer-overlay" id="reviewComposerOverlay" aria-hidden="true">
+      <div class="review-composer-modal" id="reviewComposerModal" role="dialog" aria-modal="true" aria-labelledby="reviewComposerTitle">
+        <button class="review-composer-close" type="button" data-review-close aria-label="Close review form">&times;</button>
+        <h2 class="review-composer-title" id="reviewComposerTitle">Share your experience</h2>
+
+        <div class="review-composer" data-review-composer>
+          <div class="review-composer-identity">
+            <img class="review-composer-avatar" data-reviewer-avatar src="" alt="">
+            <div class="review-composer-identity-text">
+              <span>Reviewing as</span>
+              <strong data-reviewer-name>Loading your account&hellip;</strong>
+            </div>
+          </div>
+
+          <p class="review-composer-auth" data-review-auth hidden>
+            Please <a href="sign-in.html" data-review-signin>sign in</a> to share your experience.
+            Your account name and profile photo will appear with your review.
+          </p>
+
+          <div class="review-composer-form" data-review-form hidden>
+            <button type="button" class="review-photo-picker" data-review-photo-box>
+              <span data-review-photo-text>Attach a photo (optional)</span>
+            </button>
+            <input type="file" accept="image/*" data-review-photo-input hidden>
+
+            <div class="review-rating">
+              <span class="review-rating-label">Rate your experience</span>
+              <div class="review-stars-input" data-review-stars role="group" aria-label="Star rating">
+                <button type="button" data-review-star="1" aria-label="1 star" aria-pressed="false">&#9733;</button>
+                <button type="button" data-review-star="2" aria-label="2 stars" aria-pressed="false">&#9733;</button>
+                <button type="button" data-review-star="3" aria-label="3 stars" aria-pressed="false">&#9733;</button>
+                <button type="button" data-review-star="4" aria-label="4 stars" aria-pressed="false">&#9733;</button>
+                <button type="button" data-review-star="5" aria-label="5 stars" aria-pressed="false">&#9733;</button>
+              </div>
+            </div>
+
+            <label class="review-field-label" for="reviewsPageBody">Your review</label>
+            <textarea class="review-composer-textarea" id="reviewsPageBody" data-review-body rows="6"
+                      maxlength="2000" placeholder="Share your experience..."></textarea>
+            <span class="review-character-count" data-review-count>0/2000</span>
+
+            <p class="review-composer-status" data-review-status role="status" aria-live="polite"></p>
+
+            <button class="btn review-composer-submit" type="button" data-review-submit>POST REVIEW</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- External JavaScript Files -->
+  <script src="../../js/api-base.js"></script>
+  <script src="../../js/header_and_footer.js"></script>
+  <script type="module" src="../../js/site-content.js"></script>
+  <script type="module" src="../../js/reviews-page.js"></script>
+</body>
+</html>

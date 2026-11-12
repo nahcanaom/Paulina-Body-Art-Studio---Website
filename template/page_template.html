@@ -1,0 +1,163 @@
+<!-- ==========================================================================
+     PAULINA BODY ART STUDIO — NEW PAGE STARTER TEMPLATE
+     ==========================================================================
+     HOW TO USE THIS TEMPLATE:
+     1. Copy this file into your project root (e.g. name it 'catalogue.html' or 'gallery.html').
+     2. Update the <title> in the <head>.
+     3. Write your new page content inside the <main class="main-content"> tags.
+     4. The navigation header, footer, brand fonts, styling, and mobile toggle script
+        are already fully wired and functional!
+     ========================================================================== -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PAULINA Body Art Studio — Page Title</title>
+  <link rel="icon" type="image/png" href="../assets/logos/favicon_red.png">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+  
+  <!-- Header, Footer & Global Brand Stylesheet -->
+  <link rel="stylesheet" href="../css/header_and_footer.css">
+
+  <!-- (Optional) Add your page-specific stylesheet here -->
+  <!-- <link rel="stylesheet" href="../css/my-new-page.css"> -->
+</head>
+<body>
+
+  <!-- =========================================================================
+       HEADER / NAVIGATION BAR
+       ========================================================================= -->
+  <nav class="navbar" aria-label="Main navigation">
+    <a href="../html/user-side/home.html#hero" class="brand-logo" aria-label="PAULINA Body Art Studio home">
+      <img src="../assets/logos/logo_2.png" alt="PAULINA Body Art Studio Logo">
+    </a>
+
+    <a href="../html/user-side/account_settings.html" class="mobile-account-link" aria-label="Account settings" title="Account settings">
+      <i class="ph ph-user-circle" aria-hidden="true"></i>
+    </a>
+
+    <button class="nav-toggle" type="button" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <div class="nav-links" id="navMenu">
+      <a href="../html/user-side/home.html">HOME</a>
+      <a href="../html/user-side/gallery.html">GALLERY</a>
+      <a href="../html/user-side/catalogue.html">CATALOGUE</a>
+      <a href="../html/user-side/aftercare.html">AFTERCARE</a>
+      <a href="../html/user-side/artist.html">ARTIST</a>
+      <a href="../html/user-side/faqs.html">FAQs</a>
+      <a href="../html/user-side/booking.html">BOOKING</a>
+      <a href="../html/user-side/sign-in.html" class="nav-account" title="account" aria-label="account">Account</a>
+    </div>
+    <div class="nav-icons">
+      <a href="../html/user-side/sign-in.html" class="account-trigger" title="account" aria-label="account" aria-expanded="false">
+        <i class="ph ph-user-circle account-icon-ph" aria-hidden="true"></i>
+      </a>
+      <div class="account-dropdown" id="accountDropdown">
+        <a href="../html/user-side/sign-in.html" class="account-dropdown-item account-logout-btn" data-logout-btn role="button">Log out</a>
+        <div class="account-dropdown-divider"></div>
+        <a href="../html/user-side/account_settings.html" class="account-dropdown-item account-settings-link" data-settings-link>Settings</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- =========================================================================
+       PAGE BODY CONTENT (Customize this section for your new page)
+       ========================================================================= -->
+  <main class="main-content">
+    
+    <!-- Hero / Banner Section -->
+    <header class="page-banner">
+      <h1>PAGE TITLE</h1>
+      <p>“Fearfully and wonderfully made.” — Psalm 139:14</p>
+    </header>
+
+    <!-- Main Section -->
+    <section class="section">
+      <h2 class="section-title">SECTION TITLE</h2>
+      
+      <!-- Your page content goes here -->
+      <div style="text-align: center; max-width: 800px; margin: 0 auto; color: var(--color-offwhite);">
+        <p style="font-size: 1.1rem; line-height: 1.8;">
+          Start adding your text, images, cards, or custom components here.
+          All brand typography, colors, and header/footer interactivity are already set up.
+        </p>
+      </div>
+
+      <!-- Action Button -->
+      <div class="btn-container">
+        <a href="../html/user-side/booking.html" class="btn">BOOK YOUR EXPERIENCE</a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================================
+       FOOTER
+       ========================================================================= -->
+  <footer class="footer">
+    <div class="section-florals" aria-hidden="true">
+      <img class="section-flower floral-size-medium floral-center-top floral-bg1" src="../assets/images/flower_bg1.png" alt="">
+      <img class="section-flower floral-size-small floral-left-bottom floral-bg2" src="../assets/images/flower_bg2.png" alt="">
+    </div>
+    <hr class="visit-separator">
+    <div class="footer-top-logo">
+      <img src="../assets/logos/logo_2.png" alt="Paulina Body Art Studio Logo">
+    </div>
+    
+    <div class="footer-layout">
+      <a class="footer-mark" href="../html/user-side/home.html#hero" aria-label="Return to home">
+        <img src="../assets/logos/logomark_1.png" alt="Paulina Body Art Studio mark">
+      </a>
+
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <div>
+          <a href="../html/user-side/home.html#hero">Home</a>
+          <a href="../html/user-side/gallery.html">Gallery</a>
+          <a href="../html/user-side/catalogue.html">Catalogue</a>
+        </div>
+        <div>
+          <a href="../html/user-side/artist.html">Artist</a>
+          <a href="../html/user-side/aftercare.html">Aftercare</a>
+          <a href="../html/user-side/faqs.html">FAQs</a>
+        </div>
+      </nav>
+
+      <div class="footer-contact">
+        <div class="footer-contact-details">
+          <a href="https://www.google.com/maps/search/?api=1&amp;query=Paulina%20Body%20Art%20Studio%2C%20P3R6%2BWCW%2C%20Ilang-ilang%2C%20Novaliches%2C%20Caloocan%2C%20Metro%20Manila%2C%20Philippines" target="_blank" rel="noreferrer" title="Google Maps" aria-label="Google Maps">
+            <i class="ph-fill ph-map-pin accent-icon"></i>
+            <span>Paulina Body Art Studio 1118 Quezon City, Philippines</span>
+          </a>
+          <a href="mailto:paulinabodyart@gmail.com">
+            <i class="ph ph-envelope-simple"></i>
+            <span>paulinabodyart@gmail.com</span>
+          </a>
+          <a href="tel:+639517417630">
+            <i class="ph-fill ph-phone"></i>
+            <span>0951 741 7630</span>
+          </a>
+        </div>
+        <div class="social-links">
+          <a href="https://www.instagram.com/paulinabodyart/" target="_blank" rel="noreferrer" title="Instagram" aria-label="Instagram"><i class="ph-fill ph-instagram-logo"></i></a>
+          <a href="https://www.facebook.com/PaulinaBodyArtStudio" target="_blank" rel="noreferrer" title="Facebook" aria-label="Facebook"><i class="ph-fill ph-facebook-logo"></i></a>
+          <a href="https://www.tiktok.com/@paulinabodyart" target="_blank" rel="noreferrer" title="TikTok" aria-label="TikTok"><i class="ph-fill ph-tiktok-logo"></i></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Header & Footer Mobile Menu / Glass Scroll Script -->
+  <script src="../js/header_and_footer.js"></script>
+
+  <!-- (Optional) Add your page-specific script here -->
+  <!-- <script src="../js/my-new-page.js"></script> -->
+</body>
+</html>

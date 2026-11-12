@@ -1,0 +1,2452 @@
+/* ==========================================================================
+   PAULINA BODY ART STUDIO - AFTERCARE STYLESHEET
+   ==========================================================================
+   Relies on shared brand tokens and fonts from css/header_and_footer.css.
+   Only aftercare-specific styles live here. Uses the custom burgundy
+   background and typography scale of the aftercare page.
+   ========================================================================== */
+
+:root {
+  --aftercare-burgundy: #351417;
+  --aftercare-cream: #F6F2F0;
+  --aftercare-red: #80151A;
+  --aftercare-muted: #d5b9bf;
+  --aftercare-pink: #F6D0D6;
+  --aftercare-display: 'Tan Pearl', Georgia, serif;
+  --aftercare-body: 'Footlight MT Pro', Georgia, serif;
+  --aftercare-nav: 'Couture', sans-serif;
+  --aftercare-section-gap: 80px;
+}
+
+/* ==========================================================================
+   BASE RESET (aftercare custom)
+   ========================================================================== */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 30px;
+}
+
+body {
+  margin: 0;
+  padding-top: 108px;
+  background: var(--aftercare-burgundy) url('../assets/images/background.png') top center/100% auto no-repeat;
+  color: var(--aftercare-cream);
+  font-family: var(--aftercare-body);
+  font-size: 20px;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  background: none;
+  border: 0;
+}
+
+a, button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--aftercare-cream);
+  outline-offset: 6px;
+}
+
+a:hover {
+  color: #fff;
+}
+
+p, h1, h2, h3 {
+  margin: 0;
+}
+
+.page-content {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - var(--navbar-total-height));
+}
+
+/* ==========================================================================
+   NAVIGATION BAR (handled by css/header_and_footer.css for consistency)
+   ========================================================================== */
+
+/* ==========================================================================
+   MAIN & HERO
+   ========================================================================== */
+#main {
+  max-width: 1130px;
+  width: calc(100% - 80px);
+  margin: auto;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 475px 1fr;
+  gap: 40px;
+  padding-top: 100px;
+  align-items: start;
+}
+
+.hero-copy {
+  padding-top: 25px;
+}
+
+.hero h1 {
+  font-family: var(--aftercare-display);
+  font-size: 64px;
+  line-height: 1.05;
+  font-weight: 400;
+  letter-spacing: -2px;
+  color: var(--aftercare-cream);
+}
+
+.hero-copy > p {
+  font-size: 25px;
+  line-height: 1.22;
+  letter-spacing: 1.2px;
+  margin-top: 20px;
+  max-width: 475px;
+  color: var(--aftercare-cream);
+}
+
+.care-selector {
+  display: flex;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.care-selector button {
+  width: 50%;
+  font: 700 16px var(--aftercare-nav);
+  text-transform: uppercase;
+  border: 2px solid var(--aftercare-red);
+  padding: 10px 6px;
+  text-align: center;
+  min-height: 40px;
+  border-radius: 8px;
+}
+
+.care-selector button:hover {
+  background: #a3232b;
+}
+
+.care-selector [aria-pressed="false"] {
+  background: transparent;
+  color: var(--aftercare-cream);
+}
+
+.care-selector [aria-pressed="true"] {
+  background: var(--aftercare-red);
+  color: var(--aftercare-cream);
+  box-shadow: inset 0 0 0 1px var(--aftercare-red);
+}
+
+.hero-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1.015;
+  object-fit: contain;
+}
+
+.hero-artwork {
+  display: block;
+  position: relative;
+  justify-self: end;
+  align-self: center;
+  width: min(100%, calc(68vh * 595 / 604));
+  height: auto;
+  aspect-ratio: 595 / 604;
+  overflow: hidden;
+  border-radius: 9px;
+  filter: drop-shadow(0 10px 12px rgba(0, 0, 0, 0.3));
+}
+
+.hero-artwork .hero-image {
+  position: absolute;
+  left: -5.042%;
+  top: -3.3113%;
+  width: 110.084%;
+  height: 109.934%;
+  max-height: none;
+  max-width: none;
+  margin: 0;
+  object-fit: fill;
+  aspect-ratio: auto;
+}
+
+/* ==========================================================================
+   TATTOO CARE SECTION
+   ========================================================================== */
+.care {
+  margin-top: 110px;
+  scroll-margin-top: 30px;
+}
+
+.care h2 {
+  font-weight: 700;
+  font-size: 25px;
+  color: var(--aftercare-cream);
+  border-bottom: 2px solid #cbbdc0;
+  padding-bottom: 14px;
+}
+
+.care-columns {
+  display: grid;
+  grid-template-columns: 1.08fr 1fr;
+  gap: 48px;
+  margin-top: 22px;
+}
+
+.steps {
+  padding-top: 30px;
+}
+
+.steps article + article {
+  margin-top: 40px;
+}
+
+.steps h3 {
+  font-family: var(--aftercare-display);
+  font-size: 20px;
+  font-weight: 400;
+  margin-bottom: 16px;
+  color: var(--aftercare-cream);
+}
+
+.steps p {
+  font-size: 21px;
+  line-height: 1.42;
+  color: var(--aftercare-cream);
+}
+
+.healing {
+  overflow: auto;
+  min-height: 0;
+}
+
+.healing-card {
+  border: 3px solid var(--aftercare-red);
+  border-radius: 10px;
+  padding: 18px 18px 20px;
+  background: rgba(53, 20, 23, 0.55);
+}
+
+.healing-card h2 {
+  font: 400 25px/1.3 var(--aftercare-display);
+  white-space: nowrap;
+  letter-spacing: -0.9px;
+  color: var(--aftercare-cream);
+}
+
+.timeline {
+  padding: 0;
+  margin: 24px 0 0;
+  list-style: none;
+  counter-reset: stage;
+}
+
+.timeline li {
+  counter-increment: stage;
+  position: relative;
+  padding-left: 28px;
+}
+
+.timeline li::before {
+  content: counter(stage);
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 20px;
+  color: #FFFFFF;
+}
+
+/* Pure-white numerals (see the numeral-wrapping logic in js/aftercare.js). */
+.numeral {
+  color: #FFFFFF;
+}
+
+.timeline li + li {
+  margin-top: 22px;
+}
+
+.timeline h3 {
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--aftercare-cream);
+}
+
+.timeline p {
+  position: relative;
+  font-size: 20px;
+  line-height: 1.18;
+  margin-top: 26px;
+  text-align: justify;
+  color: var(--aftercare-cream);
+}
+
+.timeline p::before {
+  content: '';
+  position: absolute;
+  left: -23px;
+  top: -14px;
+  bottom: 4px;
+  border-left: 2px solid var(--aftercare-muted);
+}
+
+.healing-note {
+  font-size: 17px;
+  line-height: 1.1;
+  margin-top: 22px;
+  color: var(--aftercare-cream);
+}
+
+.healing-sources {
+  font-size: 15px;
+  line-height: 1.6;
+  margin-top: 24px;
+  color: var(--aftercare-muted);
+}
+
+.healing-sources a {
+  color: var(--aftercare-pink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.healing-sources a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+/* ==========================================================================
+   DOS AND DON'TS
+   ========================================================================== */
+.dos-donts {
+  margin: var(--aftercare-section-gap) 24px 0;
+}
+
+.dos-donts h2 {
+  text-align: center;
+  font: 400 30px/1.5 var(--aftercare-display);
+  letter-spacing: -1px;
+  color: var(--aftercare-cream);
+}
+
+.advice-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 46px;
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.advice-card {
+  border: 3px solid var(--aftercare-red);
+  border-radius: 10px;
+  padding: 25px;
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  min-height: 183px;
+  background: rgba(53, 20, 23, 0.35);
+}
+
+.advice-card .do-icon,
+.advice-card .dont-icon {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  font-size: 32px;
+}
+
+.do-icon {
+  color: #6edf00;
+}
+
+.dont-icon {
+  color: #ff2424;
+}
+
+.advice-card h3 {
+  font: 400 32px/1.2 var(--aftercare-display);
+  color: var(--aftercare-cream);
+}
+
+.advice-card p {
+  font-size: 20px;
+  line-height: 1.2;
+  margin-top: 15px;
+  text-align: justify;
+  color: var(--aftercare-cream);
+}
+
+/* ==========================================================================
+   PIERCING VIEW (toggled via body class)
+   ========================================================================== */
+body.piercing-view .hero {
+  grid-template-columns: 475px 1fr;
+  align-items: center;
+}
+
+body.piercing-view .hero .hero-copy {
+  padding: 0 0 0 40px;
+}
+
+body.piercing-view .hero .hero-image {
+  filter: drop-shadow(0 10px 12px rgba(0, 0, 0, 0.3));
+}
+
+body.piercing-view .hero-copy > p {
+  font-size: 25px;
+  line-height: 1.25;
+  letter-spacing: 1px;
+}
+
+.piercing-view .hero {
+  grid-template-columns: 475px 1fr;
+}
+
+.piercing-view .hero-copy {
+  padding: 0;
+}
+
+.hero-copy > p,
+.piercing-view .hero-copy > p {
+  font-size: clamp(18px, 2.8vh, 25px);
+  line-height: 1.3;
+  letter-spacing: 1.2px;
+}
+
+/* ==========================================================================
+   SQUARE SECTIONS (piercing guide, neilmed, downsizing)
+   ========================================================================== */
+main section[data-square-section] {
+  height: auto;
+  min-height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 24px;
+  padding-block: clamp(24px, 4vh, 48px);
+  margin: 0;
+  overflow: auto;
+}
+
+main section[data-square-section] > h2 {
+  flex: 0 0 auto;
+  width: 100%;
+  text-align: left;
+  font: 700 clamp(22px, 2.8vh, 28px) / 1.3 var(--aftercare-body);
+  letter-spacing: 0;
+  border-bottom: 2px solid #cbbdc0;
+  padding-bottom: 14px;
+  color: var(--aftercare-cream);
+}
+
+.square-row {
+  --square-size: min(calc((100% - 40px) / 2), 70vh);
+  display: grid;
+  grid-template-columns: var(--square-size) var(--square-size);
+  justify-content: space-between;
+  gap: 40px;
+  flex: 0 0 auto;
+  width: 100%;
+  min-height: 0;
+  align-items: start;
+}
+
+.square-image,
+.square-text {
+  width: 100%;
+  aspect-ratio: 1;
+  min-width: 0;
+  min-height: 0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.square-image {
+  display: block;
+}
+
+.square-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.square-text {
+  border: 2px solid var(--aftercare-red);
+  padding: clamp(18px, 2.4vw, 30px);
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #805157 transparent;
+  font-size: clamp(17px, 1.4vw, 21px);
+  line-height: 1.4;
+}
+
+.square-text:focus-visible {
+  outline: 2px solid var(--aftercare-muted);
+  outline-offset: 4px;
+}
+
+.square-text .care-columns {
+  display: block;
+  margin: 0;
+  overflow: visible;
+}
+
+.square-text .steps {
+  display: block;
+  padding: 0;
+  margin: 0;
+}
+
+.square-text .steps article + article {
+  margin-top: 22px;
+}
+
+.square-text .steps h3 {
+  font-size: 1.05em;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.square-text .steps p {
+  font-size: 1em;
+  line-height: 1.4;
+}
+
+.square-text .healing {
+  margin-top: 30px;
+  overflow: visible;
+}
+
+.square-text .healing-card {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.square-text .healing-card h2 {
+  font: 400 22px / 1.4 var(--aftercare-display);
+}
+
+.square-text .timeline p,
+.square-text .timeline h3 {
+  font-size: 1em;
+}
+
+.square-text .healing-note {
+  font-size: 0.9em;
+  line-height: 1.4;
+}
+
+.square-text .piercing-healing {
+  height: 100%;
+  padding: 0;
+  border: 0;
+  overflow: visible;
+}
+
+.square-text .piercing-healing h3 {
+  font-size: clamp(20px, 1.7vw, 25px);
+}
+
+.square-text .piercing-healing p {
+  font-size: 0.9em;
+}
+
+.square-text .piercing-healing ul {
+  gap: 8px;
+  margin: 16px 0;
+  font-size: 1em;
+  line-height: 1.35;
+}
+
+.square-text .piercing-healing-note {
+  font-size: 0.85em;
+  line-height: 1.35;
+}
+
+.square-text .neilmed-copy p,
+.square-text .neilmed-copy ul {
+  font-size: 1em;
+  line-height: 1.4;
+}
+
+.square-text .neilmed-copy h3 {
+  font-size: 1.05em;
+  margin: 18px 0 12px;
+}
+
+.square-text .neilmed-copy .product-heading {
+  font: 400 22px / 1.4 var(--aftercare-display);
+  margin-top: 10px;
+}
+
+.square-text .section-eyebrow {
+  font-size: 0.75em;
+  letter-spacing: 1px;
+}
+
+.square-text .neilmed-copy li + li {
+  margin-top: 10px;
+}
+
+.square-text .product-sizes {
+  margin-top: 10px;
+}
+
+.square-text .instagram-order {
+  margin: 8px 0 0;
+  font-size: 12px;
+}
+
+.square-text .downsizing-faq {
+  padding: 0;
+  overflow: visible;
+  max-height: none;
+  gap: 8px;
+}
+
+.square-text .downsizing-faq .faq-header {
+  font-size: 1em;
+  min-height: 44px;
+  padding: 10px 34px 10px 12px;
+}
+
+.square-text .downsizing-faq .faq-text {
+  font-size: 0.95em;
+  line-height: 1.4;
+  padding: 14px;
+  min-height: 0;
+}
+
+.square-text .advice-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin: 0;
+}
+
+.square-text .advice-card {
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  min-height: 0;
+  gap: 14px;
+}
+
+.square-text .advice-card + article {
+  border-top: 1px solid #805157;
+  padding-top: 24px;
+}
+
+.square-text .advice-card h3 {
+  font-size: 28px;
+}
+
+.square-text .advice-card p {
+  font-size: 1em;
+  line-height: 1.45;
+  text-align: left;
+  margin-top: 12px;
+}
+
+.square-text .advice-card .do-icon,
+.square-text .advice-card .dont-icon {
+  width: 32px;
+  height: 32px;
+  font-size: 24px;
+}
+
+/* ==========================================================================
+   PIERCING HEALING SPECIFIC
+   ========================================================================== */
+.piercing-healing {
+  border: 3px solid var(--aftercare-red);
+  border-radius: 10px;
+  padding: 38px 55px;
+  display: flex;
+  flex-direction: column;
+  background: rgba(53, 20, 23, 0.3);
+}
+
+.piercing-healing h3 {
+  font: 400 25px / 1.5 var(--aftercare-display);
+  color: var(--aftercare-cream);
+}
+
+.piercing-healing p {
+  font-size: 19px;
+  line-height: 1.4;
+  margin-top: 12px;
+  color: var(--aftercare-cream);
+}
+
+.piercing-healing ul {
+  padding-left: 27px;
+  margin: 30px 0;
+  font-size: 21px;
+  line-height: 1.45;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 20px;
+  flex: 1;
+}
+
+.piercing-healing .piercing-healing-note {
+  font-size: 18px;
+  line-height: 1.3;
+  margin-top: auto;
+  color: var(--aftercare-cream);
+}
+
+.healing-group {
+  margin-top: 26px;
+}
+
+.healing-group h4 {
+  font-size: 1.1em;
+  line-height: 1.35;
+  margin: 0 0 12px;
+  color: var(--aftercare-cream);
+}
+
+.healing-times {
+  list-style: none;
+  padding-left: 26px;
+  margin: 14px 0;
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.healing-times li + li {
+  margin-top: 12px;
+}
+
+.healing-sources-small,
+.healing-footnote {
+  font-size: 0.85em;
+  line-height: 1.5;
+  margin-top: 12px;
+  color: var(--aftercare-pink);
+}
+
+.healing-sources-small a,
+.healing-footnote a {
+  color: var(--aftercare-pink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.healing-sources-small a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+/* ==========================================================================
+   NEILMED SECTION
+   ========================================================================== */
+.neilmed-section {
+  margin-top: 100px;
+}
+
+.neilmed-section > img,
+.neilmed-section .square-image img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.section-eyebrow {
+  display: block;
+  font-size: 16px;
+  text-transform: uppercase;
+  line-height: 1.5;
+  color: var(--aftercare-pink);
+}
+
+.neilmed-copy h2 {
+  font: 400 27px / 1.5 var(--aftercare-display);
+  margin: 8px 0 30px;
+  color: var(--aftercare-cream);
+}
+
+.neilmed-copy p {
+  font-size: 22px;
+  line-height: 1.45;
+  letter-spacing: 0.6px;
+  color: var(--aftercare-cream);
+}
+
+.neilmed-copy h3 {
+  font-size: 21px;
+  margin: 28px 0 22px;
+  font-weight: 400;
+  color: var(--aftercare-cream);
+}
+
+.neilmed-copy ul {
+  font-size: 21px;
+  line-height: 1.5;
+  padding-left: 27px;
+}
+
+.neilmed-copy li + li {
+  margin-top: 18px;
+}
+
+.neilmed-copy .product-sizes {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 20px;
+}
+
+.instagram-order {
+  display: inline-block;
+  font: 700 14px / 1.4 var(--aftercare-nav);
+  text-transform: uppercase;
+  background: var(--aftercare-red);
+  border-radius: 7px;
+  padding: 10px 25px;
+  margin: 10px 0 0 35px;
+  color: var(--aftercare-cream);
+  cursor: pointer;
+  transition: background 0.25s ease;
+}
+
+.instagram-order:hover {
+  background: #a3232b;
+}
+
+/* ==========================================================================
+   DOWNSIZING SECTION
+   ========================================================================== */
+.piercing-downsize {
+  margin-top: 40px;
+}
+
+.piercing-downsize h2 {
+  font-size: 25px;
+  border-bottom: 2px solid #cbbdc0;
+  padding-bottom: 14px;
+  color: var(--aftercare-cream);
+}
+
+.downsizing-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.06fr;
+  gap: clamp(24px, 5vw, 40px);
+  align-items: center;
+  margin-top: 50px;
+}
+
+.downsizing-grid img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 12px;
+  filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.25));
+}
+
+.downsizing-faq {
+  --faq-title-size: 20px;
+  --faq-icon-size: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-right: 35px;
+}
+
+.downsizing-faq .faq-item {
+  background-color: var(--aftercare-cream);
+  color: var(--aftercare-burgundy);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--aftercare-muted);
+  transition: box-shadow 0.3s ease;
+}
+
+.downsizing-faq .faq-item.active {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+
+.downsizing-faq .faq-header {
+  width: 100%;
+  padding: 16px 24px;
+  background: none;
+  border: none;
+  text-align: left;
+  font-family: var(--aftercare-display);
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--aftercare-burgundy);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  transition: background-color 0.2s ease;
+  outline: none;
+}
+
+.downsizing-faq .faq-header:hover {
+  background-color: rgba(246, 208, 214, 0.2);
+}
+
+.downsizing-faq .faq-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-size: var(--faq-icon-size);
+  color: var(--aftercare-burgundy);
+}
+
+.downsizing-faq .faq-title {
+  flex: 1;
+  text-align: left;
+  font-family: var(--aftercare-body); /* Footlight MT Pro */
+  font-size: var(--faq-title-size);
+}
+
+.downsizing-faq .chevron-icon {
+  flex-shrink: 0;
+  font-size: var(--faq-icon-size);
+  color: var(--aftercare-burgundy);
+  transition: transform 0.3s ease;
+}
+
+.downsizing-faq .faq-item.active .chevron-icon {
+  transform: rotate(180deg);
+}
+
+.downsizing-faq .faq-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0, 1, 0, 1), padding 0.4s ease;
+  border-top: 0 solid var(--aftercare-muted);
+  padding: 0 24px;
+}
+
+.downsizing-faq .faq-item.active .faq-content {
+  max-height: 600px;
+  border-top-width: 1px;
+  padding: 16px 24px 22px;
+}
+
+.downsizing-faq .faq-text {
+  font-family: var(--aftercare-body);
+  font-size: 20px;
+  line-height: 1.45;
+  color: var(--aftercare-burgundy);
+}
+
+/* ==========================================================================
+   DIALOGS
+   ========================================================================== */
+dialog {
+  background: var(--aftercare-burgundy);
+  color: var(--aftercare-cream);
+  border: 2px solid var(--aftercare-red);
+  border-radius: 12px;
+  padding: 40px;
+  max-width: 480px;
+  width: calc(100% - 40px);
+  margin: auto;
+}
+
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.65);
+}
+
+dialog h2 {
+  font: 400 25px / 1.5 var(--aftercare-display);
+  margin-right: 20px;
+  color: var(--aftercare-cream);
+}
+
+dialog p {
+  line-height: 1.5;
+  margin-top: 18px;
+  color: var(--aftercare-cream);
+}
+
+.dialog-close {
+  position: absolute;
+  right: 8px;
+  top: 5px;
+  font-size: 32px;
+  width: 44px;
+  height: 44px;
+  color: var(--aftercare-cream);
+}
+
+.contact-link {
+  display: inline-block;
+  margin-top: 24px;
+  font-family: var(--aftercare-body);
+  color: var(--aftercare-pink);
+  border-bottom: 1px solid var(--aftercare-cream);
+  padding-bottom: 5px;
+}
+
+/* ==========================================================================
+   SHARED IMAGE LIGHTBOX
+   ========================================================================== */
+.square-image,
+.hero-artwork {
+  cursor: zoom-in;
+}
+
+.hero-artwork:focus-visible {
+  outline: 2px solid var(--aftercare-cream);
+  outline-offset: 6px;
+}
+
+body.image-preview-open {
+  overflow: hidden;
+}
+
+#image-dialog {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 28px 24px 20px;
+  max-width: 96vw;
+  max-height: 96vh;
+  width: max-content;
+  overflow: hidden;
+  margin: auto;
+  box-shadow: none;
+}
+
+#image-dialog::backdrop {
+  background: rgba(22, 5, 8, 0.78);
+  backdrop-filter: blur(9px);
+  -webkit-backdrop-filter: blur(9px);
+}
+
+#enlarged-image {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(85vw, 1100px);
+  max-height: 86vh;
+  object-fit: contain;
+  border-radius: 12px;
+}
+
+.image-close {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 44px;
+  height: 44px;
+  color: #fff;
+  font: 32px / 1 Arial, sans-serif;
+  display: grid;
+  place-items: center;
+  z-index: 1;
+  text-shadow: 0 1px 5px #000;
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN
+   ========================================================================== */
+@media (min-width: 1400px) {
+  body {
+    min-height: 2819px;
+  }
+}
+
+@media (max-width: 1199px) {
+  .navbar {
+    width: calc(100% - 48px);
+    padding-inline: 24px;
+  }
+
+  .nav-links {
+    gap: 14px;
+  }
+
+  .account-button {
+    margin-left: 0;
+  }
+
+  .hero {
+    grid-template-columns: 42% 1fr;
+    gap: 35px;
+  }
+
+  .hero h1 {
+    font-size: clamp(40px, 4.6vw, 64px);
+  }
+
+  .hero-copy > p {
+    font-size: 22px;
+  }
+
+  .healing-card h2 {
+    font-size: clamp(18px, 1.8vw, 25px);
+    white-space: normal;
+  }
+
+  .care-columns {
+    gap: 30px;
+  }
+
+  .steps p {
+    font-size: 20px;
+  }
+
+  .footer-row {
+    grid-template-columns: 90px 200px 1fr;
+    gap: 30px;
+  }
+
+  .neilmed-section {
+    gap: 45px;
+  }
+}
+
+@media (max-width: 900px) {
+  .navbar {
+    position: relative;
+    min-height: 76px;
+    margin-top: 20px;
+  }
+
+  .brand-logo img {
+    width: 120px;
+  }
+
+  .nav-toggle {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 44px;
+    height: 44px;
+    padding: 10px;
+  }
+
+  .nav-toggle span {
+    width: 24px;
+    height: 2px;
+    background: var(--aftercare-cream);
+  }
+
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 85px;
+    right: 0;
+    left: 0;
+    background: var(--aftercare-burgundy);
+    border: 1px solid #947b7e;
+    border-radius: 20px;
+    padding: 20px;
+    z-index: 5;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    flex-wrap: wrap;
+    gap: 8px 25px;
+  }
+
+  .nav-links.is-open {
+    display: flex;
+  }
+
+  #main {
+    width: calc(100% - 40px);
+  }
+
+  .hero {
+    padding-top: 65px;
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .hero-copy {
+    padding-top: 10px;
+  }
+
+  .hero-copy > p {
+    font-size: 20px;
+    letter-spacing: 0.4px;
+  }
+
+  .care-selector button {
+    font-size: 13px;
+  }
+
+  .care {
+    margin-top: 65px;
+  }
+
+  .care-columns {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .steps {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    padding-top: 10px;
+  }
+
+  .steps article + article {
+    margin-top: 0;
+  }
+
+  .steps h3 {
+    margin-bottom: 18px;
+  }
+
+  .healing-card h2 {
+    font-size: 26px;
+  }
+
+  .timeline p {
+    text-align: left;
+  }
+
+  .healing-note {
+    line-height: 1.35;
+  }
+
+  .dos-donts {
+    margin: 85px 0 0;
+  }
+
+  .dos-donts h2 {
+    font-size: 26px;
+  }
+
+  .advice-card {
+    padding: 20px;
+    gap: 12px;
+  }
+
+  .advice-card .do-icon,
+  .advice-card .dont-icon {
+    width: 34px;
+    height: 34px;
+    font-size: 26px;
+  }
+
+  .advice-card p {
+    text-align: left;
+  }
+
+  .footer-row {
+    grid-template-columns: 70px 1fr;
+    gap: 30px;
+    margin-top: 50px;
+  }
+
+  .footer-row address {
+    grid-column: 1 / -1;
+  }
+
+  .piercing-guide-grid {
+    gap: 24px;
+  }
+}
+
+@media (max-width: 600px) {
+  body {
+    background-size: auto 1800px;
+  }
+
+  .navbar {
+    width: calc(100% - 32px);
+    padding: 12px 20px;
+  }
+
+  #main {
+    width: calc(100% - 40px);
+  }
+
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding-top: 44px;
+  }
+
+  .hero h1 {
+    font-size: 52px;
+    letter-spacing: -1.5px;
+  }
+
+  .hero-copy > p {
+    font-size: 23px;
+    line-height: 1.3;
+    margin-top: 20px;
+  }
+
+  .care-selector {
+    margin-top: 24px;
+  }
+
+  .care-selector button {
+    font-size: 14px;
+    min-height: 44px;
+  }
+
+  .hero-image {
+    max-width: 480px;
+    margin: auto;
+  }
+
+  .care {
+    margin-top: 50px;
+  }
+
+  .care h2 {
+    font-size: 23px;
+    line-height: 1.3;
+  }
+
+  .steps {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .steps h3 {
+    font-size: 21px;
+    margin-bottom: 15px;
+  }
+
+  .steps p {
+    font-size: 21px;
+  }
+
+  .healing-card {
+    padding: 20px 16px;
+  }
+
+  .healing-card h2 {
+    font-size: 23px;
+    line-height: 1.4;
+    letter-spacing: -0.6px;
+  }
+
+  .timeline h3 {
+    font-size: 20px;
+  }
+
+  .timeline p {
+    font-size: 20px;
+    line-height: 1.35;
+    margin-top: 20px;
+  }
+
+  .healing-note {
+    font-size: 16px;
+  }
+
+  .dos-donts {
+    margin-top: 65px;
+  }
+
+  .dos-donts h2 {
+    font-size: 24px;
+    line-height: 1.5;
+  }
+
+  .advice-grid {
+    grid-template-columns: 1fr;
+    margin-top: 28px;
+  }
+
+  .advice-card {
+    min-height: 0;
+    padding: 23px 20px;
+  }
+
+  .advice-card h3 {
+    font-size: 28px;
+  }
+
+  .advice-card p {
+    font-size: 21px;
+    line-height: 1.35;
+  }
+
+  .piercing-guide-grid,
+  .neilmed-section,
+  .downsizing-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .piercing-healing {
+    padding: 25px;
+  }
+
+  .piercing-healing h3 {
+    font-size: 24px;
+  }
+
+  .piercing-healing ul {
+    font-size: 21px;
+    gap: 16px;
+  }
+
+  .piercing-healing p,
+  .piercing-healing .piercing-healing-note {
+    font-size: 19px;
+  }
+
+  .neilmed-section {
+    margin-top: 60px;
+  }
+
+  .neilmed-copy h2 {
+    font-size: 24px;
+  }
+
+  .neilmed-copy p,
+  .neilmed-copy ul {
+    font-size: 21px;
+  }
+
+  .neilmed-section .square-image,
+  .neilmed-section > img {
+    max-width: 480px;
+    margin: auto;
+    display: block;
+  }
+
+  .instagram-order {
+    margin-left: 0;
+    min-height: 44px;
+    padding-top: 14px;
+  }
+
+  .piercing-downsize {
+    margin-top: 50px;
+  }
+
+  .piercing-downsize h2 {
+    font-size: 23px;
+  }
+
+  .downsizing-grid {
+    margin-top: 28px;
+  }
+
+  .downsizing-grid img {
+    max-width: 480px;
+    margin: auto;
+  }
+
+  .downsizing-faq .faq-header {
+    font-size: 19px;
+    min-height: 48px;
+  }
+
+  .downsizing-faq .faq-text {
+    font-size: 20px;
+  }
+
+  dialog {
+    padding: 30px;
+  }
+
+  #image-dialog {
+    max-width: 100vw;
+    padding: 40px 12px 12px;
+  }
+
+  #enlarged-image {
+    max-width: calc(100vw - 24px);
+    max-height: 82vh;
+  }
+
+  .image-close {
+    right: 4px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* ==========================================================================
+   VIEWPORT-SIZED CONTENT SECTIONS
+   ========================================================================== */
+main section {
+  min-height: auto;
+  margin: 0;
+  padding: clamp(24px, 5vh, 64px) 0;
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #805157 transparent;
+}
+
+main section.hero {
+  height: 80vh;
+  padding-block: clamp(20px, 4vh, 48px);
+  align-items: center;
+  grid-template-rows: minmax(0, 1fr);
+}
+
+.hero-copy {
+  padding-top: 0;
+}
+
+.hero h1 {
+  font-size: clamp(38px, 7.3vh, 64px);
+}
+
+.hero-copy > p {
+  font-size: clamp(18px, 2.8vh, 25px);
+  line-height: 1.3;
+}
+
+.hero-image {
+  max-height: 68vh;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  object-fit: contain;
+}
+
+main section.care {
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 2.5vh, 28px);
+}
+
+.care h2,
+.piercing-downsize h2 {
+  flex: 0 0 auto;
+}
+
+.care-columns {
+  margin-top: 0;
+  flex: 1;
+  min-height: 0;
+  align-items: stretch;
+}
+
+.piercing-grid {
+  gap: clamp(24px, 5vw, 70px);
+}
+
+.square-image {
+  min-height: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.square-image img,
+.downsizing-grid img {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  max-height: 80vh;
+  object-fit: contain;
+}
+
+.piercing-healing {
+  min-height: 0;
+  padding: clamp(18px, 3vh, 38px) clamp(20px, 3vw, 50px);
+  overflow: auto;
+}
+
+.piercing-healing h3 {
+  font-size: clamp(20px, 2.8vh, 25px);
+}
+
+.piercing-healing ul {
+  gap: clamp(6px, 1.2vh, 16px);
+  margin: clamp(12px, 2vh, 24px) 0;
+  font-size: clamp(17px, 2.3vh, 21px);
+  line-height: 1.3;
+}
+
+.piercing-healing p,
+.piercing-healing .piercing-healing-note {
+  font-size: clamp(16px, 2vh, 19px);
+}
+
+main section.neilmed-section {
+  height: auto;
+  grid-template-rows: auto;
+  gap: clamp(24px, 5vw, 70px);
+}
+
+.neilmed-section .square-image {
+  height: 100%;
+  max-height: 80vh;
+  min-height: 0;
+  width: 100%;
+}
+
+.neilmed-section .square-image img {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+  max-height: 80vh;
+}
+
+.neilmed-copy h2 {
+  margin: 8px 0 clamp(14px, 2.5vh, 30px);
+  font-size: clamp(22px, 3vh, 27px);
+}
+
+.neilmed-copy p,
+.neilmed-copy ul {
+  font-size: clamp(18px, 2.4vh, 22px);
+  line-height: 1.4;
+}
+
+.neilmed-copy h3 {
+  margin: clamp(14px, 2.5vh, 28px) 0 16px;
+}
+
+.neilmed-copy li + li {
+  margin-top: clamp(8px, 1.5vh, 18px);
+}
+
+.downsizing-grid {
+  align-items: center;
+}
+
+.downsizing-faq {
+  max-height: 100%;
+  overflow: auto;
+  padding: 6px 12px 6px 6px;
+}
+
+.downsizing-faq .faq-text {
+  min-height: 0;
+  font-size: clamp(17px, 2.3vh, 20px);
+  padding: clamp(12px, 2vh, 20px);
+}
+
+main section.dos-donts {
+  height: auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding-bottom: 40px;
+}
+
+.advice-grid {
+  margin-top: clamp(24px, 5vh, 46px);
+}
+
+.steps {
+  padding-top: 0;
+}
+
+.steps article + article {
+  margin-top: clamp(16px, 3vh, 36px);
+}
+
+.steps h3 {
+  margin-bottom: clamp(10px, 2vh, 24px);
+}
+
+.steps p {
+  font-size: clamp(18px, 2.35vh, 21px);
+  line-height: 1.35;
+}
+
+.healing {
+  overflow: auto;
+  min-height: 0;
+}
+
+.healing-card h2 {
+  white-space: normal;
+}
+
+.timeline {
+  margin-top: 18px;
+}
+
+.timeline li + li {
+  margin-top: 16px;
+}
+
+.timeline p {
+  margin-top: 16px;
+  font-size: clamp(17px, 2.2vh, 20px);
+  text-align: left;
+}
+
+/* Keep the complete piercing guide inside its scrollable square panel */
+.piercing-care .square-text {
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
+  scrollbar-color: #b78087 #351518;
+}
+
+.piercing-care .square-text::-webkit-scrollbar {
+  width: 10px;
+}
+
+.piercing-care .square-text::-webkit-scrollbar-track {
+  background: #351518;
+  border-radius: 8px;
+}
+
+.piercing-care .square-text::-webkit-scrollbar-thumb {
+  background: #b78087;
+  border: 2px solid #351518;
+  border-radius: 8px;
+}
+
+.piercing-care .square-text .piercing-healing {
+  height: auto;
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .care-columns {
+    display: block;
+    overflow: auto;
+    padding-right: 8px;
+  }
+
+  .steps {
+    margin-bottom: 28px;
+  }
+
+  .steps article + article {
+    margin-top: 0;
+  }
+
+  .healing {
+    overflow: visible;
+  }
+
+  .piercing-grid {
+    gap: 24px;
+  }
+}
+
+@media (max-width: 600px) {
+  main section {
+    padding-block: 24px;
+    scroll-padding-block: 20px;
+  }
+
+  main section.hero {
+    height: 100vh;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 20px;
+  }
+
+  .hero h1 {
+    font-size: clamp(32px, 6vh, 48px);
+  }
+
+  .hero-copy > p,
+  .piercing-view .hero-copy > p {
+    font-size: clamp(17px, 2.4vh, 21px);
+    margin-top: 16px;
+    letter-spacing: 0.3px;
+  }
+
+  .care-selector {
+    margin-top: 18px;
+  }
+
+  .hero-image {
+    max-height: 42vh;
+  }
+
+  .piercing-guide-grid,
+  .neilmed-section,
+  .downsizing-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    overflow: auto;
+    align-items: start;
+    gap: 24px;
+    padding-right: 6px;
+  }
+
+  .square-image {
+    height: auto;
+    width: 100%;
+    max-width: 380px;
+    margin: auto;
+  }
+
+  .square-image img {
+    height: 100%;
+    max-height: 65vh;
+    width: 100%;
+    object-fit: contain;
+  }
+
+  .piercing-healing {
+    overflow: visible;
+  }
+
+  .piercing-healing ul {
+    gap: 14px;
+    font-size: 19px;
+  }
+
+  .piercing-healing p,
+  .piercing-healing .piercing-healing-note {
+    font-size: 18px;
+  }
+
+  main section.neilmed-section {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 24px;
+  }
+
+  .neilmed-copy {
+    flex: 0 0 auto;
+  }
+
+  .neilmed-copy p,
+  .neilmed-copy ul {
+    font-size: 18px;
+  }
+
+  .neilmed-copy h2 {
+    font-size: 23px;
+  }
+
+  .neilmed-section .square-image {
+    height: auto;
+    max-height: 52vh;
+    flex: 0 0 auto;
+  }
+
+  .downsizing-grid img {
+    height: auto;
+    max-height: 65vh;
+  }
+
+  .downsizing-faq {
+    max-height: none;
+    overflow: visible;
+    padding: 6px;
+  }
+
+  .downsizing-faq .faq-header {
+    font-size: 18px;
+  }
+
+  .steps {
+    display: block;
+  }
+
+  .steps article + article {
+    margin-top: 24px;
+  }
+
+  .dos-donts h2 {
+    font-size: clamp(20px, 3vh, 26px);
+  }
+
+  .advice-card {
+    padding: 20px 16px;
+  }
+
+  .advice-card p {
+    font-size: 18px;
+    line-height: 1.35;
+  }
+
+  .advice-card h3 {
+    font-size: 26px;
+  }
+}
+
+/* ==========================================================================
+   AFTERCARE SPECIFIC TOGGLES
+   ========================================================================== */
+[hidden] {
+  display: none !important;
+}
+
+/* Tattoo view: hero artwork uses a block container to crop gutters */
+.hero-artwork {
+  display: block;
+  position: relative;
+  justify-self: end;
+  align-self: center;
+  width: min(100%, calc(68vh * 595 / 604));
+  height: auto;
+  aspect-ratio: 595 / 604;
+  overflow: hidden;
+  border-radius: 9px;
+  filter: drop-shadow(0 10px 12px rgba(0, 0, 0, 0.3));
+}
+
+.hero-artwork .hero-image {
+  position: absolute;
+  left: -5.042%;
+  top: -3.3113%;
+  width: 110.084%;
+  height: 109.934%;
+  max-height: none;
+  max-width: none;
+  margin: 0;
+  object-fit: fill;
+  aspect-ratio: auto;
+}
+
+/* Piercing view: hero artwork crops the piercing PNG gutters */
+body.piercing-view .hero-artwork {
+  display: block;
+  position: relative;
+  justify-self: end;
+  align-self: center;
+  width: min(100%, calc(68vh * 549 / 516));
+  height: auto;
+  aspect-ratio: 549 / 516;
+  overflow: hidden;
+  border-radius: 9px;
+  filter: drop-shadow(0 10px 12px rgba(0, 0, 0, 0.3));
+}
+
+body.piercing-view .hero-artwork .hero-image {
+  position: absolute;
+  left: -5.4645%;
+  top: -3.876%;
+  width: 110.929%;
+  height: 111.628%;
+  max-height: none;
+  max-width: none;
+  margin: 0;
+  object-fit: fill;
+  aspect-ratio: auto;
+}
+
+@media (max-width: 600px) {
+  .hero-artwork {
+    width: min(100%, calc(42vh * 595 / 604));
+    justify-self: end;
+  }
+
+  body.piercing-view .hero-artwork {
+    width: min(100%, calc(42vh * 549 / 516));
+    justify-self: end;
+  }
+}
+
+/* One shared gap between sections */
+:root {
+  --aftercare-section-gap: 80px;
+}
+
+main section.hero,
+main section[data-square-section] {
+  margin: 0;
+  padding-block: 0;
+  justify-content: flex-start;
+}
+
+main section.hero {
+  margin-top: 48px;
+  align-items: center;
+}
+
+#main > #tattoo-panel,
+#main > #piercing-panel {
+  margin-top: var(--aftercare-section-gap) !important;
+}
+
+#tattoo-panel > section,
+#piercing-panel > section {
+  margin-top: var(--aftercare-section-gap);
+}
+
+#tattoo-panel > section + section,
+#piercing-panel > section + section {
+  margin-top: var(--aftercare-section-gap) !important;
+}
+
+@media (max-width: 600px) {
+  :root {
+    --aftercare-section-gap: 40px;
+  }
+
+  main section.hero {
+    margin-top: 32px;
+  }
+}
+
+main section.care,
+main section[data-square-section] {
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  overflow: visible;
+}
+
+/* Square section image/text positioning for neilmed and downsizing */
+.neilmed-section .square-image {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.neilmed-section .square-text {
+  grid-column: 1;
+  grid-row: 1;
+  border: 0;
+  overflow: visible;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.piercing-downsize .square-text {
+  border: 0;
+  overflow: visible;
+  padding: 0;
+}
+
+.piercing-downsize .square-image {
+  justify-content: flex-start;
+  max-width: 100%;
+}
+
+.piercing-downsize .square-text {
+  border: 0;
+  overflow: visible;
+  padding: 0;
+}
+
+.piercing-downsize .square-text .downsizing-faq {
+  height: auto;
+  max-height: none;
+  overflow: visible;
+}
+
+.downsizing-grid .square-image {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.downsizing-grid .square-text {
+  grid-column: 2;
+  grid-row: 1;
+  border: 0;
+  overflow: visible;
+  padding: 0;
+}
+
+/* Piercing guide square layout */
+.piercing-care .square-image {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.piercing-care .square-text {
+  grid-column: 2;
+  grid-row: 1;
+  border: 2px solid var(--aftercare-red);
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #805157 transparent;
+}
+
+.square-text .neilmed-copy {
+  width: 100%;
+}
+
+@media (max-width: 700px) {
+  .neilmed-section .square-text,
+  .downsizing-grid .square-text {
+    order: 0;
+  }
+
+  .neilmed-section .square-image,
+  .downsizing-grid .square-image {
+    order: 1;
+  }
+
+  .neilmed-section .square-text,
+  .downsizing-grid .square-text {
+    display: block;
+  }
+}
+
+body:not(.piercing-view) {
+  min-height: 0;
+}
+
+@media (max-width: 600px) {
+  :root {
+    --aftercare-section-gap: 48px;
+  }
+
+
+}
+
+/* Tattoo healing guidance expands naturally */
+#tattoo-panel .care-columns {
+  overflow: visible;
+  min-height: auto;
+}
+
+#tattoo-panel .healing {
+  overflow: visible;
+  height: auto;
+  max-height: none;
+  min-height: auto;
+}
+
+/* Bring tattoo Do/Don't cards closer to the care instructions above */
+#tattoo-panel .dos-donts {
+  justify-content: flex-start;
+  padding-top: 24px;
+}
+
+/* Remove unused space after the final tattoo cards (tattoo view only) */
+
+  #tattoo-panel .dos-donts {
+  margin-top: 24px;
+}
+
+#tattoo-panel .dos-donts {
+  height: auto;
+  min-height: 0;
+  padding-bottom: 40px;
+}
+
+@media (max-width: 600px) {
+
+}
+
+/* ==========================================================================
+   DOWNSIZING SECTION — VISUAL REFRESH (mockup match)
+   Presentation-only overrides. The accordion still relies on
+   .active + aria-expanded managed by js/aftercare.js; no markup or
+   behaviour changes are required for this layout.
+   ========================================================================== */
+.piercing-downsize h2 {
+  width: 100%;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(246, 242, 240, 0.55);
+  font-size: 25px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--aftercare-cream);
+}
+
+.piercing-downsize .downsizing-grid {
+  grid-template-columns: minmax(0, 1.024fr) minmax(0, 1fr);
+  gap: clamp(24px, 3.4vw, 38px);
+  align-items: center;
+  margin-top: 38px;
+}
+
+.piercing-downsize .downsizing-grid .square-image {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: auto;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.piercing-downsize .downsizing-grid img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: none;
+  aspect-ratio: 528 / 660;
+  object-fit: cover;
+  border-radius: 10px;
+  filter: none;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.28);
+}
+
+/* FAQ column — sizes scale with the card width so the compact mockup
+   rhythm holds from tablet through wide desktop. */
+.piercing-downsize .downsizing-grid .square-text {
+  height: auto;
+  aspect-ratio: auto;
+  padding: 0;
+  border: 0;
+  overflow: visible;
+  container-type: inline-size;
+}
+
+.piercing-downsize .downsizing-grid .downsizing-faq {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 2.6cqw, 15px);
+  max-height: none;
+  padding: 0;
+  overflow: visible;
+}
+
+.piercing-downsize .downsizing-faq .faq-item {
+  background-color: var(--aftercare-cream);
+  border: 1px solid rgba(53, 20, 23, 0.16);
+  border-radius: clamp(8px, 1.7cqw, 10px);
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.16);
+  transition: box-shadow 0.25s ease;
+}
+
+.piercing-downsize .downsizing-faq .faq-item.active {
+  box-shadow: 0 9px 22px rgba(0, 0, 0, 0.3);
+}
+
+.piercing-downsize .downsizing-faq .faq-header {
+  min-height: 0;
+  padding: clamp(13px, 3cqw, 18px) clamp(16px, 4.2cqw, 24px);
+  gap: clamp(12px, 3.4cqw, 19px);
+  font-family: var(--aftercare-display);
+  font-size: clamp(15.5px, 3.6cqw, 21px);
+  font-weight: 400;
+  line-height: 1.15;
+  color: var(--aftercare-burgundy);
+}
+
+.piercing-downsize .downsizing-faq .faq-header:hover {
+  background-color: rgba(128, 21, 26, 0.05);
+}
+
+.piercing-downsize .downsizing-faq .faq-icon {
+  width: clamp(20px, 4.2cqw, 25px);
+  height: clamp(20px, 4.2cqw, 25px);
+  font-size: var(--faq-icon-size);
+  color: #4a3434;
+}
+
+.piercing-downsize .downsizing-faq .faq-title {
+  padding-right: 0;
+}
+
+.piercing-downsize .downsizing-faq .chevron-icon {
+  font-size: var(--faq-icon-size);
+  color: #4a3434;
+}
+
+/* Answer panel */
+.piercing-downsize .downsizing-faq .faq-content {
+  padding: 0;
+  border-top: 0 solid rgba(53, 20, 23, 0.16);
+}
+
+.piercing-downsize .downsizing-faq .faq-item.active .faq-content {
+  max-height: 600px;
+  padding: 0;
+  border-top-width: 1px;
+}
+
+.piercing-downsize .downsizing-faq .faq-text {
+  padding: clamp(11px, 3cqw, 16px) clamp(18px, 4.5cqw, 24px) clamp(14px, 4cqw, 20px) clamp(30px, 8.5cqw, 46px);
+  font-family: var(--aftercare-body);
+  font-size: clamp(12.5px, 2.9cqw, 16px);
+  line-height: 1.45;
+  color: #3d2323;
+}
+
+@media (max-width: 900px) {
+  .piercing-downsize h2 {
+    font-size: 22px;
+  }
+
+  .piercing-downsize .downsizing-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+    margin-top: 28px;
+    padding-right: 0;
+  }
+
+  .piercing-downsize .downsizing-grid .square-image {
+    width: 100%;
+    max-width: 480px;
+    margin-inline: auto;
+  }
+
+  .piercing-downsize .downsizing-grid img {
+    max-height: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .piercing-downsize h2 {
+    font-size: 20px;
+    padding-bottom: 9px;
+  }
+
+  .piercing-downsize .downsizing-grid .downsizing-faq {
+    gap: 12px;
+  }
+
+  .piercing-downsize .downsizing-faq .faq-header {
+    padding: 14px 16px;
+    gap: 11px;
+    font-size: 17px;
+  }
+
+  .piercing-downsize .downsizing-faq .faq-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .piercing-downsize .downsizing-faq .faq-text {
+    padding: 12px 16px 16px 40px;
+    font-size: 14.5px;
+  }
+}
+
+/* ==========================================================================
+   RESPONSIVE FIXES — TABLET & MOBILE
+   ========================================================================== */
+@media (max-width: 980px) {
+  /* The navbar sits in normal flow at this width, so the fixed-navbar
+     offset from the shared stylesheet would otherwise double the gap. */
+  body {
+    padding-top: 0;
+  }
+}
+
+@media (max-width: 900px) {
+  /* Match the sticky header used on the other pages so navigation stays
+     reachable while scrolling the long aftercare guide. */
+  .navbar {
+    position: sticky;
+    top: var(--navbar-margin-top, 12px);
+    margin-top: var(--navbar-margin-top, 12px);
+  }
+
+  /* Let the stacked hero size to its content. The fixed 80vh height used
+     on desktop would otherwise squeeze the copy into the artwork row. */
+  main section.hero {
+    height: auto;
+    min-height: 0;
+    grid-template-rows: auto;
+    overflow: visible;
+  }
+
+  /* In the stacked layout the artwork sits on its own row, so it should
+     fill the column instead of staying right-aligned under the copy. */
+  .hero-artwork,
+  body.piercing-view .hero-artwork {
+    justify-self: stretch;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* The piercing toggle forces a 475px/1fr desktop grid that outranks the
+     base hero rule; reset it so the view stacks like the tattoo one. */
+  body.piercing-view .hero,
+  .piercing-view .hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  body.piercing-view .hero .hero-copy,
+  .piercing-view .hero-copy {
+    padding: 0;
+  }
+
+  /* Stack the square image/text guides instead of squeezing both
+     columns into the narrow content width. */
+  .square-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(20px, 4vw, 32px);
+  }
+
+  .square-image,
+  .square-text {
+    aspect-ratio: auto;
+    height: auto;
+    max-height: none;
+  }
+
+  .square-text,
+  .piercing-care .square-text {
+    overflow: visible;
+  }
+
+  /* Reset the explicit desktop grid placement, otherwise the text column
+     is pushed into an implicit second column on narrow screens. */
+  .square-row .square-image,
+  .square-row .square-text,
+  .piercing-care .square-image,
+  .piercing-care .square-text,
+  .neilmed-section .square-image,
+  .neilmed-section .square-text,
+  .piercing-downsize .downsizing-grid .square-image,
+  .piercing-downsize .downsizing-grid .square-text,
+  .downsizing-grid .square-image,
+  .downsizing-grid .square-text {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .square-image img {
+    max-height: 70vh;
+    object-fit: contain;
+  }
+
+  .neilmed-section .square-text,
+  .piercing-downsize .square-text,
+  .downsizing-grid .square-text {
+    display: block;
+  }
+}
+
+@media (max-width: 600px) {
+  #main {
+    width: calc(100% - 32px);
+  }
+
+  .care-selector button {
+    min-height: 46px;
+  }
+}
+
+

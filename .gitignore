@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+
+# Environment secrets
+.env
+.env.local
+.env.*.local
+
+# Local booking database fallback
+data/
+
+# Logs and OS files
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+
+# Build output
+build/
+dist/
+out/
+.next/
+coverage/
+.cache/
+*.tsbuildinfo
+
+# Private keys and certificates
+*.pem
+*.key
+id_rsa*
+id_ed25519*

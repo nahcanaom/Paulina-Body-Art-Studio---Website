@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAULINA Body Art Studio | Booking</title>
+    <link rel="icon" type="image/png" href="../../assets/logos/favicon_white.png">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+
+    <!-- Header, Footer & Global Brand Stylesheet -->
+    <link rel="stylesheet" href="../../css/header_and_footer.css">
+
+    <!-- Page-specific Stylesheet -->
+    <link rel="stylesheet" href="../../css/booking.css">
+</head>
+<body>
+
+    <!-- =========================================================================
+         HEADER / NAVIGATION BAR
+         ========================================================================= -->
+    <nav class="navbar" aria-label="Main navigation">
+        <a href="home.html#hero" class="brand-logo" aria-label="PAULINA Body Art Studio home">
+            <img src="../../assets/logos/logo_2.png" alt="PAULINA Body Art Studio Logo">
+        </a>
+
+        <a href="account_settings.html" class="mobile-account-link" aria-label="Account settings" title="Account settings">
+            <i class="ph ph-user-circle" aria-hidden="true"></i>
+        </a>
+
+        <button class="nav-toggle" type="button" aria-controls="navMenu" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <div class="nav-links" id="navMenu">
+            <a href="home.html">HOME</a>
+            <a href="gallery.html">GALLERY</a>
+            <a href="catalogue.html">CATALOGUE</a>
+            <a href="aftercare.html">AFTERCARE</a>
+            <a href="artist.html">ARTIST</a>
+            <a href="faqs.html">FAQs</a>
+            <a href="booking.html" class="active">BOOKING</a>
+            <a href="sign-in.html" class="nav-account" title="account" aria-label="account">
+                Account
+            </a>
+        </div>
+
+            <div class="nav-icons">
+      <a href="sign-in.html" class="account-trigger" title="account" aria-label="account" aria-expanded="false">
+        <i class="ph ph-user-circle account-icon-ph" aria-hidden="true"></i>
+      </a>
+      <div class="account-dropdown" id="accountDropdown">
+        <a href="sign-in.html" class="account-dropdown-item account-logout-btn" data-logout-btn role="button">Log out</a>
+        <div class="account-dropdown-divider"></div>
+        <a href="account_settings.html" class="account-dropdown-item account-settings-link" data-settings-link>Settings</a>
+      </div>
+    </div>
+  </nav>
+
+    <!-- =========================================================================
+         MAIN BOOKING AREA
+         ========================================================================= -->
+    <main class="main-content">
+        <div class="heading-group">
+            <h1 class="page-title">Book your Appointment</h1>
+            <p class="page-subtitle" id="stepSubtitle">Tell us a little about yourself and the service you'd like to book.</p>
+            <section class="booking-info-panel" id="bookingInfoPanel" aria-label="Booking policies" hidden>
+                <h2 class="booking-info-title">Before you book</h2>
+                <ul class="booking-policy-list" id="bookingPolicyList"></ul>
+            </section>
+        </div>
+
+        <div class="booking-card-container">
+            <!-- Progress Bar / Tabs -->
+            <div class="tab-bar">
+                <button class="tab-btn active" id="tab-details" onclick="navigateToStep('details')">Your Details</button>
+                <button class="tab-btn" id="tab-datetime" onclick="navigateToStep('datetime')" disabled title="Complete Your Details to proceed">Date & Time</button>
+                <button class="tab-btn" id="tab-payment" onclick="navigateToStep('payment')" disabled title="Complete Date & Time to proceed">Payment</button>
+                <button class="tab-btn" id="tab-review" onclick="navigateToStep('review')" disabled title="Confirm a booking to view the review">Review</button>
+            </div>
+
+            <!-- STEP 1: Your Details -->
+            <div class="tab-content active" id="step-details">
+                <div class="two-col-layout">
+                    <div class="form-side">
+                        <div class="form-group">
+                            <label for="fullName">Full Name</label>
+                            <input type="text" id="fullName" placeholder="John Doe" class="input-field" required />
+                            <p class="field-error" id="fullName-error"></p>
+                        </div>
+                        <div class="form-group">
+                            <label for="age">Age</label>
+                            <input type="number" id="age" placeholder="18" class="input-field" min="18" max="120" inputmode="numeric" aria-describedby="age-error" required />
+                            <p class="field-error" id="age-error" role="alert" aria-live="polite"></p>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" placeholder="johndoe@gmail.com" class="input-field" required />
+                            <p class="field-error" id="email-error"></p>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone</label>
+                            <div class="phone-input-group">
+                                <span class="country-code">63+</span>
+                                <input type="tel" id="phone" placeholder="912 3456 789" class="input-field" required />
+                            </div>
+                            <p class="field-error" id="phone-error"></p>
+                        </div>
+                        <div class="form-group">
+                            <label for="serviceType">Services</label>
+                            <select id="serviceType" class="input-field" required onchange="handleServiceTypeChange()">
+                                <option value="">Select a service...</option>
+                                <option value="Piercing">Piercing</option>
+                                <option value="Tattoo">Tattoo</option>
+                                <option value="Troubleshooting">Troubleshooting</option>
+                            </select>
+                            <p class="field-error" id="serviceType-error"></p>
+                        </div>
+                        <button class="btn-primary" onclick="validateAndNavigate('datetime')">CHOOSE DATE & TIME &rarr;</button>
+                    </div>
+
+                    <div class="image-side" data-view-photo data-view-title="Studio"
+                        data-view-caption="Paulina Body Art Studio" aria-haspopup="dialog">
+                        <img id="sideDisplayImage" src="../../assets/images/stud_1.png" alt="Studio Art Wall" data-site-image="booking-side" data-site-image-fallback="true" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: Date & Time -->
+            <div class="tab-content" id="step-datetime">
+                <div class="datetime-card">
+                    <div class="calendar-pane">
+                        <div class="selected-date-status" id="selectedDateText">Choose your preferred date and time.</div>
+
+                        <div class="calendar-month-nav">
+                            <button class="cal-nav-btn" onclick="changeMonth(-1)">&lt;</button>
+                            <span id="calendarMonthYear"></span>
+                            <button class="cal-nav-btn" onclick="changeMonth(1)">&gt;</button>
+                        </div>
+
+                        <div class="calendar-grid" id="calendarGrid">
+                            <div class="day-name">Sun</div><div class="day-name">Mon</div><div class="day-name">Tue</div><div class="day-name">Wed</div><div class="day-name">Thu</div><div class="day-name">Fri</div><div class="day-name">Sat</div>
+                        </div>
+                    </div>
+
+                    <div class="time-pane">
+                        <div class="time-buttons-grid">
+                            <button class="time-btn active-time" data-time="09:00 AM" onclick="selectTimeSlot(this, '09:00 AM')">09:00 AM</button>
+                            <button class="time-btn" data-time="09:15 AM" onclick="selectTimeSlot(this, '09:15 AM')">09:15 AM</button>
+                            <button class="time-btn" data-time="09:30 AM" onclick="selectTimeSlot(this, '09:30 AM')">09:30 AM</button>
+                            <button class="time-btn" data-time="09:45 AM" onclick="selectTimeSlot(this, '09:45 AM')">09:45 AM</button>
+                            <button class="time-btn" data-time="10:00 AM" onclick="selectTimeSlot(this, '10:00 AM')">10:00 AM</button>
+                            <button class="time-btn" data-time="10:15 AM" onclick="selectTimeSlot(this, '10:15 AM')">10:15 AM</button>
+                            <button class="time-btn" data-time="10:30 AM" onclick="selectTimeSlot(this, '10:30 AM')">10:30 AM</button>
+                            <button class="time-btn" data-time="10:45 AM" onclick="selectTimeSlot(this, '10:45 AM')">10:45 AM</button>
+                            <button class="time-btn" data-time="11:00 AM" onclick="selectTimeSlot(this, '11:00 AM')">11:00 AM</button>
+                            <button class="time-btn" data-time="11:15 AM" onclick="selectTimeSlot(this, '11:15 AM')">11:15 AM</button>
+                            <button class="time-btn" data-time="11:30 AM" onclick="selectTimeSlot(this, '11:30 AM')">11:30 AM</button>
+                            <button class="time-btn" data-time="11:45 AM" onclick="selectTimeSlot(this, '11:45 AM')">11:45 AM</button>
+                            <button class="time-btn" data-time="12:00 PM" onclick="selectTimeSlot(this, '12:00 PM')">12:00 PM</button>
+                            <button class="time-btn" data-time="12:15 PM" onclick="selectTimeSlot(this, '12:15 PM')">12:15 PM</button>
+                            <button class="time-btn" data-time="12:30 PM" onclick="selectTimeSlot(this, '12:30 PM')">12:30 PM</button>
+                            <button class="time-btn" data-time="12:45 PM" onclick="selectTimeSlot(this, '12:45 PM')">12:45 PM</button>
+                            <button class="time-btn" data-time="01:00 PM" onclick="selectTimeSlot(this, '01:00 PM')">01:00 PM</button>
+                            <button class="time-btn" data-time="01:15 PM" onclick="selectTimeSlot(this, '01:15 PM')">01:15 PM</button>
+                            <button class="time-btn" data-time="01:30 PM" onclick="selectTimeSlot(this, '01:30 PM')">01:30 PM</button>
+                            <button class="time-btn" data-time="01:45 PM" onclick="selectTimeSlot(this, '01:45 PM')">01:45 PM</button>
+                            <button class="time-btn" data-time="02:00 PM" onclick="selectTimeSlot(this, '02:00 PM')">02:00 PM</button>
+                            <button class="time-btn" data-time="02:15 PM" onclick="selectTimeSlot(this, '02:15 PM')">02:15 PM</button>
+                            <button class="time-btn" data-time="02:30 PM" onclick="selectTimeSlot(this, '02:30 PM')">02:30 PM</button>
+                            <button class="time-btn" data-time="02:45 PM" onclick="selectTimeSlot(this, '02:45 PM')">02:45 PM</button>
+                            <button class="time-btn" data-time="03:00 PM" onclick="selectTimeSlot(this, '03:00 PM')">03:00 PM</button>
+                            <button class="time-btn" data-time="03:15 PM" onclick="selectTimeSlot(this, '03:15 PM')">03:15 PM</button>
+                            <button class="time-btn" data-time="03:30 PM" onclick="selectTimeSlot(this, '03:30 PM')">03:30 PM</button>
+                            <button class="time-btn" data-time="03:45 PM" onclick="selectTimeSlot(this, '03:45 PM')">03:45 PM</button>
+                            <button class="time-btn" data-time="04:00 PM" onclick="selectTimeSlot(this, '04:00 PM')">04:00 PM</button>
+                        </div>
+                    </div>
+
+                    <div class="datetime-actions">
+                        <button class="btn-secondary" onclick="navigateToStep('details')">BACK</button>
+                        <button class="btn-primary" onclick="validateAndNavigate('payment')">CONTINUE TO PAYMENT &rarr;</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 3: Payment -->
+            <div class="tab-content" id="step-payment">
+                <div class="two-col-layout">
+                    <div class="form-side">
+                        <!-- Dynamic Fields for Piercing -->
+                        <div id="piercingPaymentFields">
+                            <div class="form-group">
+                                <label for="piercingType">Type</label>
+                                <select id="piercingType" class="input-field">
+                                    <option value="Ear Piercing">Ear Piercing</option>
+                                    <option value="Nose Piercing">Nose Piercing</option>
+                                    <option value="Navel Piercing">Navel Piercing</option>
+                                </select>
+                                <p class="field-error" id="piercingType-error"></p>
+                            </div>
+                            <div class="form-group">
+                                <label for="piercingNotes">Notes</label>
+                                <textarea id="piercingNotes" class="input-field textarea-field" placeholder="Message here"></textarea>
+                                <small class="field-note">NOTE: For group bookings, book under one name & include all names in notes. Late arrival fees apply.</small>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Fields for Troubleshooting -->
+                        <div id="troubleshootingPaymentFields" class="hidden-field">
+                            <div class="form-group">
+                                <label for="troubleshootingNotes">Notes</label>
+                                <textarea id="troubleshootingNotes" class="input-field textarea-field" placeholder="Message here"></textarea>
+                                <small class="field-note">NOTE: Please describe the issue you're experiencing so we can assist you accordingly.</small>
+                            </div>
+                        </div>
+
+                         <!-- Dynamic Fields for Tattoo -->
+                         <div id="tattooPaymentFields" class="hidden-field">
+                             <!-- Booking Form Type Selector -->
+                             <div class="form-group">
+                                 <label>Booking Type</label>
+                                 <div class="tattoo-form-type-selector">
+                                     <button type="button" class="tattoo-form-type-btn active" data-form-type="standard" onclick="selectTattooFormType('standard')">Standard Booking Form</button>
+                                     <button type="button" class="tattoo-form-type-btn" data-form-type="custom" onclick="selectTattooFormType('custom')">Custom Tattoo Booking Form</button>
+                                 </div>
+                             </div>
+
+                             <!-- Placement -->
+                             <div class="form-group">
+                                 <label for="tattooPlacement">Placement</label>
+                                 <select id="tattooPlacement" class="input-field">
+                                     <option value="Back">Back</option>
+                                     <option value="Arm / Forearm">Arm / Forearm</option>
+                                     <option value="Leg / Calves">Leg / Calves</option>
+                                     <option value="Chest">Chest</option>
+                                 </select>
+                                 <p class="field-error" id="tattooPlacement-error"></p>
+                             </div>
+
+                             <!-- Style (Custom Tattoo Booking Form only) -->
+                             <div class="form-group hidden-field" id="tattooStyleField">
+                                 <label for="tattooStyle">Style</label>
+                                 <select id="tattooStyle" class="input-field">
+                                     <option value="Realism Portrait">Realism Portrait</option>
+                                     <option value="Fine Line">Fine Line</option>
+                                     <option value="Blackwork">Blackwork</option>
+                                     <option value="Traditional">Traditional</option>
+                                     <option value="Script / Lettering">Script / Lettering</option>
+                                     <option value="Other">Other</option>
+                                 </select>
+                             </div>
+
+                             <!-- Picture of Tattoo (Custom Tattoo Booking Form only) -->
+                             <div class="form-group" id="tattooImageField">
+                                 <label for="tattooImageInput">Picture of Tattoo</label>
+                                 <div class="upload-dropzone tattoo-upload" onclick="document.getElementById('tattooImageInput').click()">
+                                     <span id="tattooImageLabel">Upload or Drag your document here</span>
+                                     <input type="file" id="tattooImageInput" accept="image/*" style="display:none;" onchange="handleFileChange(this, 'tattooImageLabel')" />
+                                 </div>
+                                 <p class="field-error" id="tattooImage-error"></p>
+                             </div>
+
+                             <!-- Sizes -->
+                             <div class="form-group">
+                                 <label for="tattooSize">Sizes</label>
+                                 <select id="tattooSize" class="input-field">
+                                     <option value="Micro (Under 1 inch / 2.5 cm)">Micro (Under 1 inch / 2.5 cm)</option>
+                                     <option value="Small (2 - 3 inches)">Small (2 - 3 inches)</option>
+                                     <option value="Medium (4 - 6 inches)">Medium (4 - 6 inches)</option>
+                                 </select>
+                                 <p class="field-error" id="tattooSize-error"></p>
+                             </div>
+                             <div class="form-group">
+                                 <label for="tattooNotes">Notes</label>
+                                 <textarea id="tattooNotes" class="input-field textarea-field" placeholder="Message here"></textarea>
+                             </div>
+                         </div>
+
+                        <!-- Shared Payment Details -->
+                        <div class="form-group">
+                            <label for="paymentMethod">Payment Method</label>
+                            <select id="paymentMethod" class="input-field">
+                                <option value="GCash">GCash</option>
+                                <option value="Maya">Maya</option>
+                                <option value="BPI">BPI</option>
+                                <option value="Maribank">Maribank</option>
+                                <option value="GoTyme">GoTyme</option>
+                            </select>
+                            <small class="field-note">NOTE: ₱500 down payment required to secure your slot. Deductible from your final bill.</small>
+                            <p class="field-error" id="paymentMethod-error"></p>
+                            <button type="button" class="qr-mobile-trigger" id="openQrModal" aria-haspopup="dialog" aria-controls="qrModal">
+                                <i class="ph ph-qr-code" aria-hidden="true"></i>
+                                View deposit QR code
+                            </button>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="receiptInput">Proof</label>
+                            <div class="upload-dropzone receipt-upload" onclick="document.getElementById('receiptInput').click()">
+                                <span id="receiptLabel">Upload or Drag your document here</span>
+                                <input type="file" id="receiptInput" accept="image/*" style="display:none;" onchange="handleFileChange(this, 'receiptLabel')" />
+                            </div>
+                            <p class="field-error" id="receipt-error"></p>
+                        </div>
+
+                        <div class="btn-group">
+                            <button class="btn-secondary" onclick="navigateToStep('datetime')">BACK</button>
+                            <button class="btn-primary" onclick="validateAndSubmit()">SUBMIT</button>
+                        </div>
+                    </div>
+
+                    <div class="qr-side">
+                        <img src="../../assets/images/stud_1.png" alt="Studio Art Wall" class="stud-bg" data-site-image="booking-payment-side" data-site-image-fallback="true" />
+                        <div class="qr-overlay">
+                            <div class="qr-card">
+                                <img
+                                    id="paymentQrImage"
+                                    src="../../assets/images/qr-gcash.jpeg"
+                                    alt="GCash QR code"
+                                    class="qr-image"
+                                    data-site-image="booking-qr"
+                                    data-site-image-fallback="true"
+                                    data-site-qr
+                                />
+                                <button type="button" class="qr-download-btn" id="paymentQrDownload" data-qr-download>
+                                    <i class="ph ph-download-simple" aria-hidden="true"></i>
+                                    Save QR Code
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 4: Review & Confirmation -->
+            <div class="tab-content" id="step-review">
+                <div class="confirm-box">
+                    <div class="check-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12.7 9.6 17.3 19 7.6" />
+                        </svg>
+                    </div>
+                    <h2 class="confirm-title">Booking Request Received</h2>
+                    <p class="confirm-subtitle">Your appointment request has been submitted. We'll confirm it after reviewing your payment.</p>
+
+                    <div class="summary-list" aria-live="polite">
+                        <div class="summary-row"><span>Date:</span><strong id="sumDate">&mdash;</strong></div>
+                        <div class="summary-row"><span>Time:</span><strong id="sumTime">&mdash;</strong></div>
+                        <div class="summary-row"><span>Service:</span><strong id="sumService">&mdash;</strong></div>
+                        <div class="summary-row"><span>Full Name:</span><strong id="sumName">&mdash;</strong></div>
+                        <div class="summary-row"><span>Email:</span><strong id="sumEmail">&mdash;</strong></div>
+                        <div class="summary-row"><span>Phone:</span><strong id="sumPhone">&mdash;</strong></div>
+                    </div>
+
+                    <div class="notice-pink">
+                        <p><strong>Your booking request has been received!</strong></p>
+                        <p>Your appointment is currently pending confirmation from our studio. Once approved, we'll send the booking details to <strong id="noticeEmail">&mdash;</strong>.<span id="emailStatusNote"></span></p>
+                        <p class="reference-note">Reference: <strong id="sumReference">Pending</strong></p>
+                    </div>
+
+                    <div class="confirm-actions">
+                        <button class="btn-secondary" onclick="startNewBooking()">BOOK ANOTHER APPOINTMENT</button>
+                        <button class="btn-primary" onclick="window.location.href='home.html'">GO BACK TO HOMEPAGE</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- =========================================================================
+         FOOTER
+         ========================================================================= -->
+    <footer class="footer">
+        <div class="section-florals" aria-hidden="true">
+            <img class="section-flower floral-size-medium floral-center-top floral-bg1"
+                src="../../assets/images/flower_bg1.png" alt="">
+            <img class="section-flower floral-size-small floral-left-bottom floral-bg2"
+                src="../../assets/images/flower_bg2.png" alt="">
+        </div>
+        <hr class="visit-separator">
+        <div class="footer-top-logo">
+            <img src="../../assets/logos/logo_2.png" alt="PAULINA Body Art Studio Logo">
+        </div>
+
+        <div class="footer-layout">
+            <a class="footer-mark" href="home.html#hero" aria-label="Return to home">
+                <img src="../../assets/logos/logomark_1.png" alt="Paulina Body Art Studio mark">
+            </a>
+
+            <nav class="footer-nav" aria-label="Footer navigation">
+                <div>
+                    <a href="home.html#hero">Home</a>
+                    <a href="gallery.html">Gallery</a>
+                    <a href="catalogue.html">Catalogue</a>
+                </div>
+                <div>
+                    <a href="artist.html">Artist</a>
+                    <a href="aftercare.html">Aftercare</a>
+                    <a href="faqs.html">FAQs</a>
+                </div>
+            </nav>
+
+            <div class="footer-contact">
+                <div class="footer-contact-details">
+                    <a href="https://www.google.com/maps/search/?api=1&amp;query=Paulina%20Body%20Art%20Studio%2C%20P3R6%2BWCW%2C%20Ilang-ilang%2C%20Novaliches%2C%20Caloocan%2C%20Metro%20Manila%2C%20Philippines"
+                        target="_blank" rel="noreferrer" title="Google Maps" aria-label="Google Maps">
+                        <i class="ph-fill ph-map-pin accent-icon"></i>
+                        <span>Paulina Body Art Studio, P3R6+WCW, Ilang-ilang, Novaliches, Caloocan, Metro Manila</span>
+                    </a>
+                    <a href="mailto:paulinabodyart@gmail.com">
+                        <i class="ph ph-envelope-simple"></i>
+                        <span>paulinabodyart@gmail.com</span>
+                    </a>
+                    <a href="tel:+639517417630">
+                        <i class="ph-fill ph-phone"></i>
+                        <span>0951 741 7630</span>
+                    </a>
+                </div>
+                <div class="social-links">
+                    <a href="https://www.instagram.com/paulinabodyart/" target="_blank" rel="noreferrer"
+                        title="Instagram" aria-label="Instagram"><i class="ph-fill ph-instagram-logo"></i></a>
+                    <a href="https://www.facebook.com/PaulinaBodyArtStudio" target="_blank" rel="noreferrer"
+                        title="Facebook" aria-label="Facebook"><i class="ph-fill ph-facebook-logo"></i></a>
+                    <a href="https://www.tiktok.com/@paulinabodyart" target="_blank" rel="noreferrer" title="TikTok"
+                        aria-label="TikTok"><i class="ph-fill ph-tiktok-logo"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- =========================================================================
+         MOBILE DEPOSIT QR MODAL
+         Only opened when a payment method is selected on a phone viewport.
+         ========================================================================= -->
+    <div class="qr-modal-overlay" id="qrModal" aria-hidden="true">
+        <div class="qr-modal" role="dialog" aria-modal="true" aria-labelledby="qrModalTitle">
+            <button type="button" class="qr-modal-close" id="qrModalClose" aria-label="Close QR code">&times;</button>
+            <span class="qr-modal-eyebrow">₱500 Deposit</span>
+            <h2 class="qr-modal-title" id="qrModalTitle">GCash QR code</h2>
+            <div class="qr-modal-media">
+                <img id="qrModalImage" src="../../assets/images/qr-gcash.jpeg" alt="GCash QR code">
+            </div>
+            <p class="qr-modal-instructions" id="qrModalInstructions"></p>
+            <button type="button" class="qr-download-btn qr-download-btn--modal" id="qrModalDownload" data-qr-download>
+                <i class="ph ph-download-simple" aria-hidden="true"></i>
+                Save QR Code
+            </button>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../js/header_and_footer.js"></script>
+    <script type="module" src="../../js/site-content.js"></script>
+    <script src="../../js/booking.js?v=11"></script>
+</body>
+</html>
