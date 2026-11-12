@@ -1,5 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "express",
-  "buildCommand": "node scripts/build-vercel-public.js"
+  "buildCommand": "node scripts/build-vercel-public.js",
+  "outputDirectory": "public"
 }
