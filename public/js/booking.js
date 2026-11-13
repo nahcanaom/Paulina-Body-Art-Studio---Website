@@ -100,7 +100,7 @@ function getUpcomingTimeButton() {
   return upcoming || buttons[0];
 }
 
-// Refresh the "Your meeting is booked for ..." status line
+// Show the selected time without implying the request is confirmed.
 function updateSelectedDateText() {
   const statusEl = document.getElementById('selectedDateText');
   if (!statusEl) return;
@@ -109,7 +109,7 @@ function updateSelectedDateText() {
   const monthName = monthNames[bookingState.selectedMonth] || monthNames[today.month];
   const dayNum = bookingState.selectedDayNum || today.day;
   const timeStr = bookingState.selectedTime || '09:00 AM';
-  statusEl.innerText = `Your meeting is booked for ${monthName} ${dayNum} at ${timeStr}`;
+  statusEl.innerText = `Selected: ${monthName} ${dayNum} at ${timeStr}`;
   statusEl.classList.remove('error');
 }
 
@@ -402,7 +402,7 @@ function validatePayment() {
 }
 
 // Validate and navigate to next step
-function validateAndNavigate(stepId) {
+async function validateAndNavigate(stepId) {
   let isValid = true;
   
   if (stepId === 'datetime') {
@@ -422,6 +422,25 @@ function validateAndNavigate(stepId) {
     // Validate datetime first
     isValid = validateDatetime();
     if (isValid) {
+      let bookingServerAvailable = false;
+      for (const endpoint of getBookingApiEndpoints('/api/health')) {
+        try {
+          const response = await fetch(endpoint, { cache: 'no-store', signal: AbortSignal.timeout(5000) });
+          if (response.ok && (await response.json()).success === true) {
+            bookingServerAvailable = true;
+            break;
+          }
+        } catch (_) { /* Try the next configured endpoint. */ }
+      }
+      if (!bookingServerAvailable) {
+        const statusEl = document.getElementById('selectedDateText');
+        if (statusEl) {
+          statusEl.innerText = 'Online booking is unavailable right now. Please contact the studio before making a deposit.';
+          statusEl.classList.add('error');
+          statusEl.setAttribute('role', 'alert');
+        }
+        return;
+      }
       // Save datetime before navigating
       const selectedDate = document.querySelector('.day.active-day');
       const selectedTime = document.querySelector('.time-btn.active-time');

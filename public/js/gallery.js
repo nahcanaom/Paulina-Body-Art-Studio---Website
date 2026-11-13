@@ -134,7 +134,7 @@
       if (data.demo && !document.getElementById('demoNotice')) {
         const notice = document.createElement('p');
         notice.id = 'demoNotice';
-        notice.textContent = 'Demo portfolio — bundled studio photos; sample records.';
+        notice.textContent = 'Portfolio images shown are examples.';
         document.getElementById('galleryTitle')?.after(notice);
       }
 
