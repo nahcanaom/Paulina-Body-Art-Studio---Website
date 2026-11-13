@@ -1,3 +1,5 @@
+import { readPublicContent } from './services/publicContent.js';
+
 /**
  * PAULINA BODY ART STUDIO - CATALOGUE SCRIPT
  * Dynamic catalogue rendering with search, filters, and order modal.
@@ -5,12 +7,11 @@
  * Products come from /api/catalogue, the same Express store the admin
  * Catalogue page writes to. Reading Supabase directly here used to show a
  * different (admin-only) dataset than the public site.
- * If the API is unavailable the page falls back to the static products array
- * so the UI remains functional during development.
+ * Demo catalogue records are supplied by Express only when PAULINA_ENV=demo.
  */
 
 // -------------------------------------------------------------------------
-// 1. Load products from Supabase (or fall back to static data)
+// 1. Load products from the public API
 // -------------------------------------------------------------------------
 
 let products = [];
@@ -45,19 +46,23 @@ function normalizeCatalogProduct(item) {
 
 async function loadProducts() {
   try {
-    const res = await fetch(window.paulinaApiUrl('/api/catalogue'));
-    if (res.ok) {
-      const data = await res.json();
-      // An empty published catalogue is a valid response: render it instead of
-      // falling back to demo products that do not exist on the live site.
-      if (data.success && Array.isArray(data.items)) {
-        products = data.items.map(normalizeCatalogProduct).filter(Boolean);
-        liveMode = true;
-        window.__PAULINA_CATALOGUE_LIVE = true;
-        window.__PAULINA_PRODUCTS = products;
-        renderProducts();
-        return;
+    const data = await readPublicContent('catalogue');
+    // An empty published catalogue is a valid response: render it instead of
+    // falling back to demo products that do not exist on the live site.
+    if (data.success && Array.isArray(data.items)) {
+      if (data.demo && !document.getElementById('demoNotice')) {
+        const notice = document.createElement('p');
+        notice.id = 'demoNotice';
+        notice.style.cssText = 'color:#faf6f0;padding:12px 0;grid-column:1/-1';
+        notice.textContent = 'Demo catalogue — bundled jewellery photos; prices, sizes and placement are samples.';
+        document.getElementById('productGrid')?.before(notice);
       }
+      products = data.items.map(normalizeCatalogProduct).filter(Boolean);
+      liveMode = true;
+      window.__PAULINA_CATALOGUE_LIVE = true;
+      window.__PAULINA_PRODUCTS = products;
+      renderProducts();
+      return;
     }
   } catch (err) {
     console.warn('[catalogue] Local API unavailable, checking alternatives:', err.message);
@@ -77,14 +82,12 @@ function initRealtimeSync() {
     const evtSource = new EventSource(window.paulinaApiUrl('/api/catalogue/stream'));
     evtSource.addEventListener('catalogue_change', async () => {
       console.log('[SSE] Synchronizing catalogue updates from admin...');
-      const res = await fetch(window.paulinaApiUrl('/api/catalogue'));
-      if (res.ok) {
-        const data = await res.json();
-        if (data.success && Array.isArray(data.items)) {
-          const activeMap = new Map();
-          products.forEach((p) => {
-            if (p.activeSize) activeMap.set(String(p.id), p.activeSize);
-          });
+      const data = await readPublicContent('catalogue');
+      if (data.success && Array.isArray(data.items)) {
+        const activeMap = new Map();
+        products.forEach((p) => {
+          if (p.activeSize) activeMap.set(String(p.id), p.activeSize);
+        });
           products = data.items.map((item) => {
             const norm = normalizeCatalogProduct(item);
             if (activeMap.has(String(norm.id))) {
@@ -100,7 +103,6 @@ function initRealtimeSync() {
             }
           }
         }
-      }
     });
   } catch (err) {
     console.warn('[SSE] Catalogue sync not supported:', err);
@@ -1098,4 +1100,4 @@ toggleBackToTop();
 // -------------------------------------------------------------------------
 
 renderProducts();
-updateFilterBadge();
+updateFilterBadge();
