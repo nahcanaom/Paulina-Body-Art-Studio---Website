@@ -652,6 +652,7 @@ async function sendConfirmationEmail(payload) {
     }
 
     bookingState.reference = data.reference || '';
+    bookingState.status = data.status || (data.confirmationDeferred ? 'pending_confirmation' : 'confirmed');
     bookingState.emailDeferred = Boolean(data.confirmationDeferred);
     bookingState.emailSent = Boolean(data.emailSent);
     bookingState.emailError = data.emailError || '';
@@ -665,7 +666,7 @@ async function sendConfirmationEmail(payload) {
 
   console.error('Booking API could not be reached:', lastError);
   throw new Error(
-    'We could not reach the booking server. Make sure it is running with "npm start", then try again.'
+    'We could not reach the booking service. Please try again shortly or contact the studio.'
   );
 }
 
