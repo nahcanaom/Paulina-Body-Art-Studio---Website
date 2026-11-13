@@ -22,7 +22,6 @@
   // opened through Live Server instead of the site server.
   const API_ORIGIN =
     typeof window !== 'undefined' && window.PAULINA_API_BASE ? window.PAULINA_API_BASE : '';
-  const API_ENDPOINT = `${API_ORIGIN}/api/gallery`;
   const SSE_ENDPOINT = `${API_ORIGIN}/api/gallery/stream`;
 
   // DOM Elements.
@@ -129,14 +128,13 @@
     if (showSkeleton) renderLoadingSkeletons();
 
     try {
-      const res = await fetch(API_ENDPOINT, { cache: 'no-store' });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
+      const { readPublicContent, normalizeGalleryImage } = await import('./services/publicContent.js');
+      const data = await readPublicContent('gallery');
       const images = data.success && Array.isArray(data.images) ? data.images : null;
       if (data.demo && !document.getElementById('demoNotice')) {
         const notice = document.createElement('p');
         notice.id = 'demoNotice';
-        notice.textContent = 'Local demo — bundled portfolio photos; sample records.';
+        notice.textContent = 'Demo portfolio — bundled studio photos; sample records.';
         document.getElementById('galleryTitle')?.after(notice);
       }
 
@@ -144,7 +142,7 @@
       if (requestId !== refreshRequestId) return;
 
       if (Array.isArray(images)) {
-        publishedWorks = images;
+        publishedWorks = images.map(normalizeGalleryImage);
         renderActiveCategory();
         syncOpenModal();
       }

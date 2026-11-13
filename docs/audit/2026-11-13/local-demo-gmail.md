@@ -32,3 +32,15 @@ This workstation's ignored `.env` selects Gmail, retains Resend for a later laun
 - Actual Gmail consent and delivery require separate verification. No test customer booking or real test email was sent during implementation.
 
 The baseline audit's admin authorization, database policy and persistence findings remain open. Do not expose this server publicly or enable privileged database access before those are repaired.
+
+## Hosted publication follow-up
+
+At the user's request, published all current demo fixtures: six catalogue rows and seven gallery rows, plus the 13 associated image files, to project `celusvfynfnszmhjgqwj`. Used the supplied owner key only in ignored `.secrets/supabase-publish.env`, separate from application configuration. Existing public `jewelry-catalogue` and `studio-gallery` buckets were reused. No schema, RLS policy, customer record, or existing studio row was changed.
+
+`scripts/publish-demo-content.js` defaults to dry run; `--execute` publishes. It reserves numeric catalogue IDs starting at 900000001 to match the actual hosted bigint schema, uses deterministic gallery UUIDs, rejects existing-ID/title collisions, never overwrites existing rows, uses content-addressed storage objects without overwrite, verifies exact remote image bytes, and checks every published record anonymously. A second run completed without duplicates. Public counts: catalogue 6, gallery 7. All rows are labelled `[Demo]`; sample prices are not verified studio prices. This upload covers the current 13 demo fixtures, not every unused image in the repository.
+
+The deployed `https://paulina-studio.vercel.app/gallery.html` now reads the published rows but its old direct Supabase path passes snake_case fields to a camelCase renderer. Cards therefore show broken images; both deployed content API endpoints also return 404. Prepared a shared public reader that prefers the API, treats an empty successful API response as authoritative, falls back to published-only Supabase reads on HTTP 404, and normalizes gallery fields before rendering. The catalogue uses the same reader. Tests verify the query boundary, API authority and normalization.
+
+Verified the pending frontend against hosted Supabase using a local static server with no Express API: five piercing images, two tattoo images and all six catalogue images loaded. See [piercing](fixes/supabase-static-gallery.png), [tattoos](fixes/supabase-static-tattoos.png), [catalogue](fixes/supabase-static-catalogue.png), and [deployed failure before fix](fixes/deployed-before-data-normalization.png). This does not establish live deployment of the prepared code.
+
+Git push failed because no GitHub authentication was available. Generated a dedicated SSH key at `C:/Users/Admin/.ssh/id_ed25519_paulina_codex`; the user said they will add its public key later. Push and GitHub-triggered deployment are pending that step. No Vercel setting was changed. Google authorization was postponed at the user's request and its helper stopped; no email was sent.
