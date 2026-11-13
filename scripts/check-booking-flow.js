@@ -1,6 +1,8 @@
 'use strict';
 const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
+const fs = require('node:fs');
+assert.match(fs.readFileSync(require('node:path').join(__dirname,'../html/user-side/booking.html'),'utf8'), /api-base\.js[\s\S]*booking\.js/);
 const {bookingDate,bookingTime,validateSchedule}=require('../services/bookingSchedule');
 assert.equal(bookingDate('February 29, 2026'),'');
 assert.equal(bookingDate('February 29, 2028'),'2028-02-29');

@@ -456,7 +456,7 @@ function normalizeBooking(body) {
   if (!fullName) fields.push('fullName');
   if (!EMAIL_PATTERN.test(email)) fields.push('email');
   if (!service) fields.push('service');
-  if (!['tattoo', 'piercing'].includes(serviceType.toLowerCase())) fields.push('serviceType');
+  if (!['tattoo', 'piercing', 'troubleshooting'].includes(serviceType.toLowerCase())) fields.push('serviceType');
   if (String(payload.tattooFormType || payload.tattoo_form_type || '').toLowerCase() === 'custom' && !REFERENCE_DATA_URL_PATTERN.test(String(payload.tattooReferenceImage || ''))) fields.push('tattooReferenceImage');
   if (!date) fields.push('date');
   if (!time) fields.push('time');
@@ -2089,3 +2089,4 @@ if (require.main === module) {
 // Vercel imports this file from the project root entrypoint and expects the
 // Express app itself; `npm start` keeps using the listen block above.
 module.exports = app;
+
