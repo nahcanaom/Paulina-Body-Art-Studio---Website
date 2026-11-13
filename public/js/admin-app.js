@@ -53,7 +53,7 @@ const STATUS_CLASSES = {
 };
 
 const REVENUE_STORAGE_PREFIX = 'paulina.dashboard.revenue';
-const REFRESH_INTERVAL_MS = 5000;
+const REFRESH_INTERVAL_MS = 2000;
 const SERIF_FONT = "'FootlightMTPro', 'TAN-Pearl', 'Times New Roman', serif";
 
 const numberFormatter = new Intl.NumberFormat('en-PH');

@@ -58,7 +58,14 @@
       throw new Error('Admin requests must target the studio API.');
     }
     var client = window.paulinaSupabase || (await import('./supabase-config.js')).supabase;
-    var result = await client.auth.getSession();
+    var sessionTimer;
+    var result;
+    try {
+      result = await Promise.race([
+        client.auth.getSession(),
+        new Promise((_, reject) => { sessionTimer = setTimeout(() => reject(new Error('Sign-in verification timed out. Please retry.')), 10000); })
+      ]);
+    } finally { clearTimeout(sessionTimer); }
     var token = result.data?.session?.access_token;
     if (!token) {
       window.location.assign('/sign-in.html');
@@ -66,6 +73,8 @@
     }
     var headers = new Headers(options?.headers);
     headers.set('Authorization', 'Bearer ' + token);
-    return fetch(input, { ...options, headers });
+    var timeout = AbortSignal.timeout(12000);
+    var signal = options?.signal ? AbortSignal.any([options.signal, timeout]) : timeout;
+    return fetch(input, { ...options, headers, signal });
   };
 })();

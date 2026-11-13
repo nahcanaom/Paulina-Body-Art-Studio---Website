@@ -634,8 +634,8 @@ async function apiRequest(url, options = {}) {
       res = await window.paulinaAdminFetch(url, options);
       break;
     } catch (error) {
-      if (attempt === 1) {
-        throw new Error('Could not reach the site server. Start the local server with npm start, then try again.');
+      if (attempt === 1 || error.name === 'TimeoutError' || /timed out/i.test(error.message || '')) {
+        throw new Error('The server took too long to respond. Please retry.');
       }
       await new Promise((resolve) => window.setTimeout(resolve, 700));
     }
@@ -1443,13 +1443,17 @@ async function saveBannerOrder(ids) {
 // Guards against a slow save/SSE refresh landing after a newer gallery read.
 let galleryLoadRequest = 0;
 
-async function loadAdminGallery(force = false) {
-  if (state.loaded['gallery-tab'] && !force) return;
+let galleryLoading = false;
+async function loadAdminGallery(force = false, background = false) {
+  if (galleryLoading) return;
+  galleryLoading = true;
+  if (state.loaded['gallery-tab'] && !force) { galleryLoading = false; return; }
   state.loaded['gallery-tab'] = true;
   const requestId = ++galleryLoadRequest;
   setContentStatus('connecting');
-  showGridLoading('adminGalleryGrid', 'Loading gallery...');
+  if (!background) showGridLoading('adminGalleryGrid', 'Loading gallery...');
 
+  const previousSnapshot = JSON.stringify(state.gallery);
   try {
     const data = await apiRequest(GALLERY_API);
     if (requestId !== galleryLoadRequest) return;
@@ -1458,15 +1462,16 @@ async function loadAdminGallery(force = false) {
       .map(normalizeGallery)
       .filter((item) => item.id)
       .sort((a, b) => a.displayOrder - b.displayOrder || String(b.createdAt).localeCompare(String(a.createdAt)));
-    renderGallery();
+    if (!background || JSON.stringify(state.gallery) !== previousSnapshot) renderGallery();
     setContentStatus('connected');
   } catch (error) {
     if (requestId !== galleryLoadRequest) return;
-    state.loaded['gallery-tab'] = false;
+    state.loaded['gallery-tab'] = background;
+    if (background) { setContentStatus('error'); return; }
     byId('galleryEmpty').classList.add('hidden');
     setContentStatus('error');
     showGridError('adminGalleryGrid', friendlyError(error), 'gallery');
-  }
+  } finally { galleryLoading = false; }
 }
 
 function galleryMatchesFilters(item) {
@@ -2091,12 +2096,16 @@ function initGalleryRealtime() {
    CATALOGUE TAB
    ========================================================================== */
 
-async function loadAdminCatalogue(force = false) {
-  if (state.loaded['catalogue-tab'] && !force) return;
+let catalogueLoading = false;
+async function loadAdminCatalogue(force = false, background = false) {
+  if (catalogueLoading) return;
+  catalogueLoading = true;
+  if (state.loaded['catalogue-tab'] && !force) { catalogueLoading = false; return; }
   state.loaded['catalogue-tab'] = true;
   setContentStatus('connecting');
-  showGridLoading('adminCatalogueGrid', 'Loading catalogue...');
+  if (!background) showGridLoading('adminCatalogueGrid', 'Loading catalogue...');
 
+  const previousSnapshot = JSON.stringify(state.catalogue);
   try {
     const data = await apiRequest(CATALOGUE_API);
 
@@ -2104,14 +2113,15 @@ async function loadAdminCatalogue(force = false) {
       .map(normalizeCatalogue)
       .filter((item) => item.id)
       .sort((a, b) => a.displayOrder - b.displayOrder || String(b.createdAt).localeCompare(String(a.createdAt)));
-    renderCatalogue();
+    if (!background || JSON.stringify(state.catalogue) !== previousSnapshot) renderCatalogue();
     setContentStatus('connected');
   } catch (error) {
-    state.loaded['catalogue-tab'] = false;
+    state.loaded['catalogue-tab'] = background;
+    if (background) { setContentStatus('error'); return; }
     byId('catalogueEmpty').classList.add('hidden');
     setContentStatus('error');
     showGridError('adminCatalogueGrid', friendlyError(error), 'catalogue');
-  }
+  } finally { catalogueLoading = false; }
 }
 
 function filteredCatalogue() {
@@ -4515,6 +4525,6 @@ if (document.readyState === 'loading') {
 
 window.setInterval(() => {
   if (document.hidden || Array.from(document.querySelectorAll('[role="dialog"]')).some(node => node.getClientRects().length > 0)) return;
-  if (!byId('gallery-tab')?.classList.contains('hidden') && state.loaded['gallery-tab']) loadAdminGallery(true);
-  if (!byId('catalogue-tab')?.classList.contains('hidden') && state.loaded['catalogue-tab']) loadAdminCatalogue(true);
+  if (!byId('gallery-tab')?.classList.contains('hidden') && state.loaded['gallery-tab']) loadAdminGallery(true, true);
+  if (!byId('catalogue-tab')?.classList.contains('hidden') && state.loaded['catalogue-tab']) loadAdminCatalogue(true, true);
 }, 5000);
