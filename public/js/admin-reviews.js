@@ -54,7 +54,7 @@ async function getAdminSession() {
     const user = data?.session?.user;
     if (!user) return null;
 
-    const role = String(user.app_metadata?.role || user.user_metadata?.role || '').toLowerCase();
+    const role = String(user.app_metadata?.role || '').toLowerCase();
     if (role === 'admin' || isAdminEmail(user.email)) return user;
     return null;
   } catch (error) {

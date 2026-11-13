@@ -51,7 +51,7 @@ async function waitForUser(timeoutMs = SESSION_WAIT_MS) {
 
 function redirectFor(user) {
   const role = String(
-    user?.userMetadata?.role || user?.raw?.app_metadata?.role || ""
+    user?.raw?.app_metadata?.role || ""
   ).toLowerCase();
   const email = String(user?.email || "").toLowerCase();
   const isAdmin = role === "admin" || ADMIN_EMAILS.has(email);

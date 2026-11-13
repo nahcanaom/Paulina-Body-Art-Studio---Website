@@ -23,8 +23,7 @@ AS $$
     SELECT coalesce(lower(auth.jwt() ->> 'email'), '') IN (
         'paulinabodyartstudio@gmail.com'
     )
-    OR coalesce(lower(auth.jwt() -> 'app_metadata' ->> 'role'), '') = 'admin'
-    OR coalesce(lower(auth.jwt() -> 'user_metadata' ->> 'role'), '') = 'admin';
+    OR coalesce(lower(auth.jwt() -> 'app_metadata' ->> 'role'), '') = 'admin';
 $$;
 
 -- Email existence checker for client auth
