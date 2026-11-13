@@ -1,4 +1,5 @@
 'use strict';
+const demo = require('./demoContent');
 
 const crypto = require('node:crypto');
 const { createClient } = require('@supabase/supabase-js');
@@ -149,6 +150,7 @@ async function getAllCatalogueAdmin(filters = {}) {
  * Get only published items for public catalogue page
  */
 async function getPublishedCatalogue(category = 'all') {
+  if (demo.isDemo()) return demo.filter(demo.catalogue(), category);
   const client = getSupabase();
   let query = client
     .from(CATALOGUE_TABLE)

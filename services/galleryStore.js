@@ -1,4 +1,5 @@
 'use strict';
+const demo = require('./demoContent');
 
 const crypto = require('node:crypto');
 const { createClient } = require('@supabase/supabase-js');
@@ -138,6 +139,7 @@ async function getAllImagesAdmin(filters = {}) {
  * Get published images for public gallery
  */
 async function getPublishedImages(category = 'all') {
+  if (demo.isDemo()) return demo.filter(demo.gallery(), category);
   const client = getSupabase();
   let query = client
     .from(GALLERY_TABLE)

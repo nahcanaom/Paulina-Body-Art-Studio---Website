@@ -5,12 +5,11 @@
  * Products come from /api/catalogue, the same Express store the admin
  * Catalogue page writes to. Reading Supabase directly here used to show a
  * different (admin-only) dataset than the public site.
- * If the API is unavailable the page falls back to the static products array
- * so the UI remains functional during development.
+ * Local demo records are supplied by Express only when PAULINA_ENV=demo.
  */
 
 // -------------------------------------------------------------------------
-// 1. Load products from Supabase (or fall back to static data)
+// 1. Load products from the public API
 // -------------------------------------------------------------------------
 
 let products = [];
@@ -51,6 +50,13 @@ async function loadProducts() {
       // An empty published catalogue is a valid response: render it instead of
       // falling back to demo products that do not exist on the live site.
       if (data.success && Array.isArray(data.items)) {
+        if (data.demo && !document.getElementById('demoNotice')) {
+          const notice = document.createElement('p');
+          notice.id = 'demoNotice';
+          notice.style.cssText = 'color:#faf6f0;padding:12px 0;grid-column:1/-1';
+          notice.textContent = 'Local demo — bundled jewellery photos; prices, sizes and placement are samples.';
+          document.getElementById('productGrid')?.before(notice);
+        }
         products = data.items.map(normalizeCatalogProduct).filter(Boolean);
         liveMode = true;
         window.__PAULINA_CATALOGUE_LIVE = true;
@@ -1098,4 +1104,4 @@ toggleBackToTop();
 // -------------------------------------------------------------------------
 
 renderProducts();
-updateFilterBadge();
+updateFilterBadge();

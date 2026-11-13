@@ -38,7 +38,7 @@ async function main() {
   printConfiguration(config);
 
   const recipient = String(
-    process.argv[2] || (config.provider === 'smtp' ? config.smtp.user : '') || config.supportEmail || ''
+    process.argv[2] || (config.provider === 'gmail' ? config.fromEmail : config.provider === 'smtp' ? config.smtp.user : '') || config.supportEmail || ''
   ).trim();
 
   if (!recipient) {

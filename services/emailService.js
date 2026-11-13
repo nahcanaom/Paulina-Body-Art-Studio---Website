@@ -1,4 +1,5 @@
 'use strict';
+const gmail = require('./gmailProvider');
 
 const fs = require('node:fs');
 const path = require('node:path');
@@ -39,7 +40,7 @@ const DEFAULT_SUPPORT_EMAIL = 'paulinabodyartstudio@gmail.com';
 // the PNG is embedded inline (CID) and referenced by the header <img>, so it
 // renders inside the template instead of appearing as a downloadable file.
 const LOGO_CID = 'paulina-logo';
-const LOGO_PATH = path.join(__dirname, '..', 'assets', 'logos', 'logo_2.png');
+const LOGO_PATH = path.join(__dirname, '..', 'public', 'assets', 'logos', 'logo_2.png');
 
 // Every rendered message carries one of these. The value is written to the
 // X-Email-Template header and logged for each delivery, so a report about an
@@ -380,14 +381,15 @@ function getEmailConfig() {
   const useSmtp =
     providerPreference === 'smtp'
       ? true
-      : providerPreference === 'resend'
+      : ['resend', 'gmail'].includes(providerPreference)
         ? false
         : smtpConfigured;
 
-  const fromEmail = useSmtp ? smtpFromEmail : resendFromEmail;
-  const fromName = useSmtp ? smtpFromName : resendFromName;
-  const provider = useSmtp ? 'smtp' : 'resend';
-  const sandboxSender = !useSmtp && resendFromEmail.toLowerCase() === 'onboarding@resend.dev';
+  const useGmail = providerPreference === 'gmail';
+  const fromEmail = useGmail ? readEnv('GMAIL_FROM_EMAIL') : useSmtp ? smtpFromEmail : resendFromEmail;
+  const fromName = useGmail ? readEnv('GMAIL_FROM_NAME', resendFromName) : useSmtp ? smtpFromName : resendFromName;
+  const provider = useGmail ? 'gmail' : useSmtp ? 'smtp' : 'resend';
+  const sandboxSender = !useGmail && !useSmtp && resendFromEmail.toLowerCase() === 'onboarding@resend.dev';
   const smtpPasswordChars = smtpPass.replace(/\s+/g, '').length;
   const smtpPasswordFormatValid =
     !/gmail\.com$/i.test(smtpHost) || smtpPasswordChars === 16;
@@ -403,7 +405,7 @@ function getEmailConfig() {
   return {
     provider,
     providerPreference,
-    configured: useSmtp ? smtpConfigured : Boolean(apiKey),
+    configured: useGmail ? gmail.configured() : useSmtp ? smtpConfigured : Boolean(apiKey),
     apiKey,
     fromEmail,
     fromName,
@@ -414,7 +416,7 @@ function getEmailConfig() {
     mapsUrl: STUDIO_MAPS_URL,
     logoUrl: readEnv('EMAIL_LOGO_URL'),
     sandboxSender,
-    externalDelivery: useSmtp ? smtpConfigured && smtpReachable : !sandboxSender,
+    externalDelivery: useGmail ? gmail.configured() : useSmtp ? smtpConfigured && smtpReachable : !sandboxSender,
     smtp: {
       configured: smtpConfigured,
       host: smtpHost,
@@ -1161,11 +1163,13 @@ async function sendBookingConfirmation(bookingInput) {
 
   if (!config.configured) {
     const error = new Error(
-      config.provider === 'smtp'
+      config.provider === 'gmail'
+        ? 'Gmail is not authorized. Run npm run email:authorize.'
+        : config.provider === 'smtp'
         ? 'SMTP is not fully configured. Add SMTP_HOST, SMTP_USER, and SMTP_PASS to your .env file.'
         : 'Resend is not configured. Add RESEND_API_KEY to your .env file.'
     );
-    error.code = config.provider === 'smtp' ? 'SMTP_NOT_CONFIGURED' : 'RESEND_NOT_CONFIGURED';
+    error.code = `${config.provider.toUpperCase()}_NOT_CONFIGURED`;
     throw error;
   }
 
@@ -1218,6 +1222,15 @@ async function deliverEmail(config, template, recipient) {
     'Auto-Submitted': 'auto-generated',
     'X-Auto-Response-Suppress': 'OOF, AutoReply'
   };
+
+  if (config.provider === 'gmail') {
+    const id = await gmail.send({ from, to, replyTo: config.supportEmail,
+      subject: template.subject, html: template.html, text: template.text, headers,
+      attachments: logo ? [{ filename: 'paulina-logo.png', content: logo.content,
+        contentType: logo.contentType, cid: logo.contentId, contentDisposition: 'inline' }] : []
+    });
+    return { sent: true, id, recipient: to, from, provider: 'gmail', templateVersion };
+  }
 
   if (config.provider === 'smtp') {
     const attachments = logo
@@ -1471,11 +1484,13 @@ async function sendStudioNotification(notification = {}) {
 
   if (!config.configured) {
     const error = new Error(
-      config.provider === 'smtp'
+      config.provider === 'gmail'
+        ? 'Gmail is not authorized. Run npm run email:authorize.'
+        : config.provider === 'smtp'
         ? 'SMTP is not fully configured. Add SMTP_HOST, SMTP_USER, and SMTP_PASS to your .env file.'
         : 'Resend is not configured. Add RESEND_API_KEY to your .env file.'
     );
-    error.code = config.provider === 'smtp' ? 'SMTP_NOT_CONFIGURED' : 'RESEND_NOT_CONFIGURED';
+    error.code = `${config.provider.toUpperCase()}_NOT_CONFIGURED`;
     throw error;
   }
 
@@ -1489,11 +1504,13 @@ async function sendCustomRequestDecision({ booking: bookingInput, decision, reas
 
   if (!config.configured) {
     const error = new Error(
-      config.provider === 'smtp'
+      config.provider === 'gmail'
+        ? 'Gmail is not authorized. Run npm run email:authorize.'
+        : config.provider === 'smtp'
         ? 'SMTP is not fully configured. Add SMTP_HOST, SMTP_USER, and SMTP_PASS to your .env file.'
         : 'Resend is not configured. Add RESEND_API_KEY to your .env file.'
     );
-    error.code = config.provider === 'smtp' ? 'SMTP_NOT_CONFIGURED' : 'RESEND_NOT_CONFIGURED';
+    error.code = `${config.provider.toUpperCase()}_NOT_CONFIGURED`;
     throw error;
   }
 

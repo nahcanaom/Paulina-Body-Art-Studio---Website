@@ -1,4 +1,5 @@
 'use strict';
+const { isDemo } = require('./services/demoContent');
 
 const path = require('node:path');
 // server.js now sits at the project root, beside the directories it serves.
@@ -588,7 +589,9 @@ app.get('/api/health', (req, res) => {
       warnings: Array.isArray(email.senderWarnings) ? email.senderWarnings : [],
       deliveryHint: email.externalDelivery
         ? null
-        : email.provider === 'smtp'
+        : email.provider === 'gmail'
+          ? 'Run npm run email:authorize to authorize the configured Gmail sender.'
+          : email.provider === 'smtp'
           ? email.configured
             ? 'SMTP authentication failed. Regenerate the Gmail App Password and update SMTP_PASS.'
             : 'Add SMTP_HOST, SMTP_USER, and SMTP_PASS to send to every customer.'
@@ -1457,7 +1460,7 @@ app.get('/api/gallery', async (req, res) => {
     const category = req.query.category || 'all';
     const images = await getPublishedImages(category);
     res.setHeader('Cache-Control', 'no-store');
-    return res.json({ success: true, count: images.length, images });
+    return res.json({ success: true, demo: isDemo(), count: images.length, images });
   } catch (error) {
     console.error('[gallery] Could not fetch published gallery:', error.message);
     return res.status(500).json({ success: false, error: 'Could not fetch gallery works.' });
@@ -1694,7 +1697,7 @@ app.get('/api/catalogue', async (req, res) => {
     const category = req.query.category || 'all';
     const items = await getPublishedCatalogue(category);
     res.setHeader('Cache-Control', 'public, max-age=15, stale-while-revalidate=60');
-    return res.json({ success: true, count: items.length, items });
+    return res.json({ success: true, demo: isDemo(), count: items.length, items });
   } catch (error) {
     console.error('[catalogue] Could not fetch published catalogue:', error.message);
     return res.status(500).json({ success: false, error: 'Could not fetch catalogue items.' });
@@ -2126,13 +2129,13 @@ app.use((error, req, res, next) => {
 // Startup
 // ---------------------------------------------------------------------------
 if (require.main === module) {
-  const server = app.listen(LISTEN_PORT, () => {
+  const server = app.listen(LISTEN_PORT, isDemo() ? '127.0.0.1' : undefined, () => {
     const email = getEmailConfig();
     const emailStatus = email.configured ? 'configured' : 'NOT configured';
 
     console.log(`PAULINA booking server: http://localhost:${LISTEN_PORT}`);
     console.log(
-      `Email: ${email.provider === 'smtp' ? 'SMTP' : 'Resend'} ${emailStatus} | from ${email.fromEmail} | confirmations go to the customer email`
+      `Email: ${email.provider.toUpperCase()} ${emailStatus} | from ${email.fromEmail} | confirmations go to the customer email`
     );
     if (email.sandboxSender) {
       console.warn(

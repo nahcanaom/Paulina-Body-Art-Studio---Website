@@ -129,31 +129,15 @@
     if (showSkeleton) renderLoadingSkeletons();
 
     try {
-      let images = null;
-
-      if (typeof window !== 'undefined' && window.paulinaSupabase) {
-        try {
-          const { data, error } = await window.paulinaSupabase
-            .from('gallery_images')
-            .select('*')
-            .eq('is_published', true)
-            .order('display_order', { ascending: true });
-
-          if (!error && Array.isArray(data)) {
-            images = data;
-          }
-        } catch (err) {
-          console.warn('[gallery] Supabase direct query notice:', err);
-        }
-      }
-
-      if (!images) {
-        const res = await fetch(API_ENDPOINT, { cache: 'no-store' });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
-        if (data.success && Array.isArray(data.images)) {
-          images = data.images;
-        }
+      const res = await fetch(API_ENDPOINT, { cache: 'no-store' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      const images = data.success && Array.isArray(data.images) ? data.images : null;
+      if (data.demo && !document.getElementById('demoNotice')) {
+        const notice = document.createElement('p');
+        notice.id = 'demoNotice';
+        notice.textContent = 'Local demo — bundled portfolio photos; sample records.';
+        document.getElementById('galleryTitle')?.after(notice);
       }
 
       // Ignore a response that a newer refresh has already superseded.
