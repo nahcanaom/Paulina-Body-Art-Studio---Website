@@ -116,7 +116,7 @@
         params.set('sort', activeFilter.sort);
       }
 
-      const res = await fetch(`${API_BASE}?${params.toString()}`);
+      const res = await window.paulinaAdminFetch(`${API_BASE}?${params.toString()}`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
 
@@ -227,7 +227,7 @@
             renderEditSizes();
           }
           try {
-            await fetch(`${API_BASE}/${item.id}`, {
+            await window.paulinaAdminFetch(`${API_BASE}/${item.id}`, {
               method: 'PUT',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ activeSize: chosen })
@@ -505,7 +505,7 @@
     saveChangesBtn.textContent = 'SAVING...';
 
     try {
-      const res = await fetch(`${API_BASE}/${id}`, {
+      const res = await window.paulinaAdminFetch(`${API_BASE}/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -568,7 +568,7 @@
     changeImageBtn.innerHTML = '<i class="ph ph-spinner ph-spin"></i> Replacing...';
 
     try {
-      const res = await fetch(`${API_BASE}/${id}/change-image`, {
+      const res = await window.paulinaAdminFetch(`${API_BASE}/${id}/change-image`, {
         method: 'POST',
         body: formData
       });
@@ -621,7 +621,7 @@
       formData.append('isPublished', 'true');
 
       try {
-        const res = await fetch(`${API_BASE}/upload`, {
+        const res = await window.paulinaAdminFetch(`${API_BASE}/upload`, {
           method: 'POST',
           body: formData
         });
@@ -667,7 +667,7 @@
     confirmDeleteBtn.textContent = 'Deleting...';
 
     try {
-      const res = await fetch(`${API_BASE}/${deleteCandidateId}`, {
+      const res = await window.paulinaAdminFetch(`${API_BASE}/${deleteCandidateId}`, {
         method: 'DELETE'
       });
 
@@ -896,4 +896,5 @@
 
   // Start on DOM ready
   document.addEventListener('DOMContentLoaded', init);
+  window.setInterval(() => { if (!document.hidden && !editItemId?.value) fetchCatalogue(); }, 5000);
 })();

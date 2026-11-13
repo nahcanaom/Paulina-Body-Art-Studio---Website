@@ -631,7 +631,7 @@ async function apiRequest(url, options = {}) {
 
   for (let attempt = 0; attempt < 2; attempt += 1) {
     try {
-      res = await fetch(url, options);
+      res = await window.paulinaAdminFetch(url, options);
       break;
     } catch (error) {
       if (attempt === 1) {
@@ -4512,3 +4512,9 @@ if (document.readyState === 'loading') {
 } else {
   init();
 }
+
+window.setInterval(() => {
+  if (document.hidden || Array.from(document.querySelectorAll('[role="dialog"]')).some(node => node.getClientRects().length > 0)) return;
+  if (!byId('gallery-tab')?.classList.contains('hidden') && state.loaded['gallery-tab']) loadAdminGallery(true);
+  if (!byId('catalogue-tab')?.classList.contains('hidden') && state.loaded['catalogue-tab']) loadAdminCatalogue(true);
+}, 5000);

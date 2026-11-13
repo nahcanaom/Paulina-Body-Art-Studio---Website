@@ -88,7 +88,7 @@ async function addNotification(input = {}) {
 
   if (error) {
     console.error('[notificationStore] Could not insert notification to Supabase:', error.message);
-    return formatNotification(entry);
+    throw error;
   }
 
   return formatNotification(data || entry);
@@ -109,7 +109,7 @@ async function listNotifications({ limit = 30 } = {}) {
 
   if (error) {
     console.warn('[notificationStore] Failed to list notifications from Supabase:', error.message);
-    return [];
+    throw error;
   }
 
   return (data || []).map(formatNotification);
@@ -127,7 +127,7 @@ async function countUnread() {
 
   if (error) {
     console.warn('[notificationStore] Could not count unread notifications:', error.message);
-    return 0;
+    throw error;
   }
 
   return count || 0;
@@ -155,7 +155,7 @@ async function markRead(ids = null) {
   const { data, error } = await query.select();
   if (error) {
     console.error('[notificationStore] Failed to mark read:', error.message);
-    return 0;
+    throw error;
   }
 
   return Array.isArray(data) ? data.length : 0;

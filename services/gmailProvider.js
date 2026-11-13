@@ -2,21 +2,30 @@ const fs = require('node:fs');
 const nodemailer = require('nodemailer');
 
 function credentials() {
+  if (process.env.GMAIL_CLIENT_ID && process.env.GMAIL_CLIENT_SECRET) {
+    return { client_id: process.env.GMAIL_CLIENT_ID, client_secret: process.env.GMAIL_CLIENT_SECRET };
+  }
   const json = JSON.parse(fs.readFileSync(process.env.GMAIL_CLIENT_FILE, 'utf8'));
   return json.web || json.installed;
+}
+
+function authorization() {
+  return process.env.GMAIL_REFRESH_TOKEN
+    ? { refresh_token: process.env.GMAIL_REFRESH_TOKEN, sender: process.env.GMAIL_TOKEN_SENDER }
+    : JSON.parse(fs.readFileSync(process.env.GMAIL_TOKEN_FILE, 'utf8'));
 }
 
 function configured() {
   try {
     const client = credentials();
-    const token = JSON.parse(fs.readFileSync(process.env.GMAIL_TOKEN_FILE, 'utf8'));
+    const token = authorization();
     return Boolean(client.client_id && client.client_secret && token.refresh_token && token.sender === process.env.GMAIL_FROM_EMAIL);
   } catch { return false; }
 }
 
 async function send(message) {
   const client = credentials();
-  const token = JSON.parse(fs.readFileSync(process.env.GMAIL_TOKEN_FILE, 'utf8'));
+  const token = authorization();
   if (!configured()) throw new Error('Gmail authorization is missing or does not match the configured sender. Run npm run email:authorize.');
   const refreshed = await fetch('https://oauth2.googleapis.com/token', {
     method: 'POST', signal: AbortSignal.timeout(15000),

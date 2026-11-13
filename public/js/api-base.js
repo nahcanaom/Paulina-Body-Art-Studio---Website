@@ -51,4 +51,21 @@
   window.PAULINA_API_BASE = API_BASE;
   window.paulinaApiUrl = apiUrl;
   window.paulinaMediaUrl = mediaUrl;
+  window.paulinaAdminFetch = async function (input, options) {
+    var url = new URL(input, window.location.href);
+    var origin = new URL(API_BASE || window.location.origin).origin;
+    if (url.origin !== origin || !url.pathname.startsWith('/api/')) {
+      throw new Error('Admin requests must target the studio API.');
+    }
+    var client = window.paulinaSupabase || (await import('./supabase-config.js')).supabase;
+    var result = await client.auth.getSession();
+    var token = result.data?.session?.access_token;
+    if (!token) {
+      window.location.assign('/sign-in.html');
+      throw new Error('Sign in to the studio admin account.');
+    }
+    var headers = new Headers(options?.headers);
+    headers.set('Authorization', 'Bearer ' + token);
+    return fetch(input, { ...options, headers });
+  };
 })();

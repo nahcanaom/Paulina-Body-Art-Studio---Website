@@ -131,12 +131,7 @@
       const { readPublicContent, normalizeGalleryImage } = await import('./services/publicContent.js');
       const data = await readPublicContent('gallery');
       const images = data.success && Array.isArray(data.images) ? data.images : null;
-      if (data.demo && !document.getElementById('demoNotice')) {
-        const notice = document.createElement('p');
-        notice.id = 'demoNotice';
-        notice.textContent = 'Portfolio images shown are examples.';
-        document.getElementById('galleryTitle')?.after(notice);
-      }
+
 
       // Ignore a response that a newer refresh has already superseded.
       if (requestId !== refreshRequestId) return;
@@ -517,7 +512,7 @@
 
     document.addEventListener('visibilitychange', refreshIfVisible);
     window.addEventListener('focus', refreshIfVisible);
-    window.setInterval(refreshIfVisible, 30000);
+    window.setInterval(refreshIfVisible, 5000);
   }
 
   function escapeHtml(str) {

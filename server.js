@@ -1,4 +1,5 @@
 'use strict';
+const { bookingDate, bookingTime, validateSchedule } = require('./services/bookingSchedule');
 const { isDemo } = require('./services/demoContent');
 
 const path = require('node:path');
@@ -32,7 +33,6 @@ const {
   sendCustomRequestDecision,
   sendStudioNotification,
   getEmailConfig,
-  getSmtpVerification,
   verifySmtpTransport
 } = require('./services/emailService');
 const {
@@ -44,15 +44,15 @@ const {
   readAllBookings,
   updateBooking,
   deleteBooking,
-  getLockedSlots
+  getLockedSlots,
+  bookingReady
 } = require('./services/bookingStore');
 const {
   listCustomRequests,
   getCustomRequest,
-  recordSubmittedRequest,
   updateRequestStatus,
-  deleteRequestStatus,
-  markRequestReviewed
+  markRequestReviewed,
+  decideRequest
 } = require('./services/customRequestStore');
 const {
   getAllImagesAdmin,
@@ -83,7 +83,7 @@ const {
 const PORT = Number.parseInt(process.env.PORT || '3000', 10);
 const LISTEN_PORT = Number.isInteger(PORT) && PORT > 0 ? PORT : 3000;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const CLIENT_REQUEST_ID_PATTERN = /^[A-Za-z0-9_-]{8,100}$/;
+const CLIENT_REQUEST_ID_PATTERN = /^[A-Za-z0-9_-]{32,100}$/;
 const BOOKING_REFERENCE_PATTERN = /^[A-Za-z0-9-]{4,64}$/;
 
 // Reference pictures for the Custom Tattoo form are stored beside the local
@@ -156,7 +156,7 @@ app.use('/api', (req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Vary', 'Origin');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept, Authorization');
     res.setHeader('Access-Control-Max-Age', '600');
 
     // Chrome's Private Network Access preflight for localhost APIs.
@@ -214,6 +214,19 @@ rateLimitCleanup.unref?.();
 // ---------------------------------------------------------------------------
 // Validation helpers
 // ---------------------------------------------------------------------------
+// Every private API uses the same verified Supabase admin identity.
+const requireAdmin = require('./services/adminAuth').createAdminAuth(getSupabaseServer);
+app.use((req, res, next) => {
+  if (!req.path.startsWith('/api/')) return next();
+  res.setHeader('Cache-Control', 'no-store');
+  const publicRead = req.method === 'GET' && (
+    ['/api/health', '/api/gallery', '/api/catalogue', '/api/catalogue/suggest', '/api/bookings/locked-slots', '/api/gallery/stream', '/api/catalogue/stream'].includes(req.path)
+    || /^\/api\/bookings\/status\/[A-Za-z0-9_-]+$/.test(req.path)
+  );
+  if (publicRead || (req.method === 'POST' && req.path === '/api/send-booking-email')) return next();
+  return requireAdmin(req, res, next);
+});
+
 function cleanSingleLine(value, maxLength) {
   if (typeof value !== 'string' && typeof value !== 'number') return '';
   return String(value)
@@ -278,7 +291,7 @@ function readPayloadField(payload, keys) {
 }
 
 function generateBookingReference() {
-  const number = crypto.randomInt(100000, 1000000);
+  const number = crypto.randomBytes(8).toString('hex');
   return `PLN-${number}`;
 }
 
@@ -288,18 +301,18 @@ function generateBookingReference() {
 async function persistReferenceImage(reference, dataUrl, originalName = '') {
   const raw = typeof dataUrl === 'string' ? dataUrl.trim() : '';
   if (!raw) return '';
-  if (/^https?:\/\//i.test(raw)) return raw;
+
 
   const match = REFERENCE_DATA_URL_PATTERN.exec(raw);
   if (!match) {
     console.warn(`[booking] Ignored an unsupported reference image for ${reference}.`);
-    return '';
+    throw new Error('The uploaded image is invalid or exceeds 3 MB.');
   }
 
   const buffer = Buffer.from(match[2].replace(/\s+/g, ''), 'base64');
   if (!buffer.length || buffer.length > MAX_REFERENCE_BYTES) {
     console.warn(`[booking] Ignored a reference image with size ${buffer.length} for ${reference}.`);
-    return '';
+    throw new Error('The uploaded image is invalid or exceeds 3 MB.');
   }
 
   const extension = match[1].toLowerCase() === 'jpeg' ? 'jpg' : match[1].toLowerCase();
@@ -307,19 +320,10 @@ async function persistReferenceImage(reference, dataUrl, originalName = '') {
   const storagePath = `references/${fileName}`;
   const contentType = `image/${extension === 'jpg' ? 'jpeg' : extension}`;
 
-  try {
-    const supa = getSupabaseServer();
-    await supa.storage.from('custom-requests').upload(storagePath, buffer, {
-      contentType,
-      upsert: true
-    });
-    const { data } = supa.storage.from('custom-requests').getPublicUrl(storagePath);
-    console.log(`[booking] Stored reference picture in Supabase Storage for ${reference}: ${data.publicUrl}`);
-    return data.publicUrl;
-  } catch (error) {
-    console.warn(`[booking] Storage upload failed for reference ${reference}:`, error.message);
-    return '';
-  }
+  const supa = getSupabaseServer();
+  const { error } = await supa.storage.from('custom-requests').upload(storagePath, buffer, { contentType, upsert: false });
+  if (error) throw new Error('The image could not be stored. Please retry.');
+  return `storage://custom-requests/${storagePath}`;
 }
 
 /**
@@ -328,18 +332,18 @@ async function persistReferenceImage(reference, dataUrl, originalName = '') {
 async function persistReceiptImage(reference, dataUrl, originalName = '') {
   const raw = typeof dataUrl === 'string' ? dataUrl.trim() : '';
   if (!raw) return '';
-  if (/^https?:\/\//i.test(raw)) return raw;
+
 
   const match = RECEIPT_DATA_URL_PATTERN.exec(raw);
   if (!match) {
     console.warn(`[booking] Ignored an unsupported payment receipt for ${reference}.`);
-    return '';
+    throw new Error('The uploaded image is invalid or exceeds 3 MB.');
   }
 
   const buffer = Buffer.from(match[2].replace(/\s+/g, ''), 'base64');
   if (!buffer.length || buffer.length > MAX_REFERENCE_BYTES) {
     console.warn(`[booking] Ignored a payment receipt with size ${buffer.length} for ${reference}.`);
-    return '';
+    throw new Error('The uploaded image is invalid or exceeds 3 MB.');
   }
 
   const extension = match[1].toLowerCase() === 'jpeg' ? 'jpg' : match[1].toLowerCase();
@@ -347,35 +351,28 @@ async function persistReceiptImage(reference, dataUrl, originalName = '') {
   const storagePath = `receipts/${fileName}`;
   const contentType = `image/${extension === 'jpg' ? 'jpeg' : extension}`;
 
-  try {
-    const supa = getSupabaseServer();
-    await supa.storage.from('custom-requests').upload(storagePath, buffer, {
-      contentType,
-      upsert: true
-    });
-    const { data } = supa.storage.from('custom-requests').getPublicUrl(storagePath);
-    console.log(`[booking] Stored payment receipt in Supabase Storage for ${reference}: ${data.publicUrl}`);
-    return data.publicUrl;
-  } catch (error) {
-    console.warn(`[booking] Storage upload failed for receipt ${reference}:`, error.message);
-    return '';
-  }
+  const supa = getSupabaseServer();
+  const { error } = await supa.storage.from('custom-requests').upload(storagePath, buffer, { contentType, upsert: false });
+  if (error) throw new Error('The image could not be stored. Please retry.');
+  return `storage://custom-requests/${storagePath}`;
 }
 
-// URLs for admin viewing: if already a full Supabase HTTPS URL, return directly.
-function withReferenceUrls(req, request) {
-  const origin = `${req.protocol}://${req.get('host')}`;
-
-  return {
-    ...request,
-    referenceUrls: (request.referenceFiles || []).map((file) => {
-      if (/^https?:\/\//i.test(file)) return file;
-      return `${origin}/api/references/${encodeURIComponent(file)}`;
-    }),
-    receiptUrls: (request.receiptFiles || []).map((file) => {
-      if (/^https?:\/\//i.test(file)) return file;
-      return `${origin}/api/receipts/${encodeURIComponent(file)}`;
-    })
+// Private attachments are signed only after admin identity was verified.
+async function withReferenceUrls(req, request) {
+  async function sign(file, folder) {
+    const prefix = 'storage://custom-requests/';
+    const legacyPrefix = `${getSupabaseServer().supabaseUrl}/storage/v1/object/public/custom-requests/`;
+    let key = file.startsWith(prefix) ? file.slice(prefix.length)
+      : file.startsWith(legacyPrefix) ? file.slice(legacyPrefix.length)
+        : !/^https?:/i.test(file) ? `${folder}/${path.basename(file)}` : '';
+    if (!key || !/^(references|receipts)\/PLN-[A-Za-z0-9-]+-(reference|receipt)\.(jpg|png|webp)$/.test(key)) return '';
+    const { data, error } = await getSupabaseServer().storage.from('custom-requests').createSignedUrl(key, 900);
+    if (error) throw new Error('The attachment could not be opened.');
+    return data.signedUrl;
+  }
+  return { ...request,
+    referenceUrls: (await Promise.all((request.referenceFiles || []).map(file => sign(file, 'references')))).filter(Boolean),
+    receiptUrls: (await Promise.all((request.receiptFiles || []).map(file => sign(file, 'receipts')))).filter(Boolean)
   };
 }
 
@@ -423,7 +420,7 @@ function normalizeBooking(body) {
       readPayloadField(payload, ['service', 'serviceName', 'service_name', 'appointmentType', 'appointment_type']),
       160
     ) || serviceType;
-  const date = cleanSingleLine(
+  const date = bookingDate(cleanSingleLine(
     readPayloadField(payload, [
       'date',
       'scheduledDate',
@@ -434,8 +431,8 @@ function normalizeBooking(body) {
       'booking_date'
     ]),
     80
-  );
-  const time = cleanSingleLine(
+  ));
+  const time = bookingTime(cleanSingleLine(
     readPayloadField(payload, [
       'time',
       'scheduledTime',
@@ -447,7 +444,7 @@ function normalizeBooking(body) {
       'slot'
     ]),
     40
-  );
+  ));
   const rawClientRequestId = cleanSingleLine(
     readPayloadField(payload, ['clientRequestId', 'client_request_id']),
     100
@@ -459,8 +456,15 @@ function normalizeBooking(body) {
   if (!fullName) fields.push('fullName');
   if (!EMAIL_PATTERN.test(email)) fields.push('email');
   if (!service) fields.push('service');
+  if (!['tattoo', 'piercing'].includes(serviceType.toLowerCase())) fields.push('serviceType');
+  if (String(payload.tattooFormType || payload.tattoo_form_type || '').toLowerCase() === 'custom' && !REFERENCE_DATA_URL_PATTERN.test(String(payload.tattooReferenceImage || ''))) fields.push('tattooReferenceImage');
   if (!date) fields.push('date');
   if (!time) fields.push('time');
+  if (!validateSchedule(date, time)) fields.push('schedule');
+  const age = Number(payload.age);
+  if (!Number.isInteger(age) || age < 18 || age > 120) fields.push('age');
+  if (!clientRequestId) fields.push('clientRequestId');
+  if (!RECEIPT_DATA_URL_PATTERN.test(String(payload.receiptImage || ''))) fields.push('receiptImage');
 
   if (fields.length) {
     return { fields, booking: null };
@@ -564,44 +568,19 @@ function normalizeBooking(body) {
 // ---------------------------------------------------------------------------
 // API routes
 // ---------------------------------------------------------------------------
-app.get('/api/health', (req, res) => {
+app.get('/api/health', async (req, res) => {
   const email = getEmailConfig();
-  const smtpVerification = getSmtpVerification();
 
-  res.json({
-    success: true,
-    status: 'ok',
-    email: {
-      provider: email.provider,
-      providerPreference: email.providerPreference,
-      configured: email.configured,
-      from: email.fromEmail,
-      fromMatchesUser: email.fromEmailMatchesUser,
-      recipientSource: 'customer-email',
-      externalDelivery: email.externalDelivery,
-      sandboxSender: email.sandboxSender,
-      smtpVerification:
-        email.provider === 'smtp' ? smtpVerification.status : 'not-applicable',
-      smtpVerificationError:
-        email.provider === 'smtp' ? smtpVerification.error || null : null,
-      smtpPasswordFormatValid:
-        email.provider === 'smtp' ? email.smtp.passwordFormatValid : null,
-      warnings: Array.isArray(email.senderWarnings) ? email.senderWarnings : [],
-      deliveryHint: email.externalDelivery
-        ? null
-        : email.provider === 'gmail'
-          ? 'Run npm run email:authorize to authorize the configured Gmail sender.'
-          : email.provider === 'smtp'
-          ? email.configured
-            ? 'SMTP authentication failed. Regenerate the Gmail App Password and update SMTP_PASS.'
-            : 'Add SMTP_HOST, SMTP_USER, and SMTP_PASS to send to every customer.'
-          : 'Resend is using its sandbox sender. Verify a domain at resend.com/domains and update RESEND_FROM_EMAIL, or configure SMTP_* in .env.'
-    },
-    storage: getStorageMode()
+  const ready = await bookingReady();
+  return res.status(ready ? 200 : 503).json({
+    success: ready, status: ready ? 'ok' : 'setup_required',
+    bookingReady: ready, emailConfigured: email.configured,
+    error: ready ? undefined : 'The booking database setup is incomplete. Please contact the studio.'
   });
 });
 
 app.post('/api/send-booking-email', bookingRateLimit, async (req, res) => {
+  if (!(await bookingReady())) return res.status(503).json({ success: false, error: 'Online booking setup is incomplete. Please contact the studio before making a deposit.' });
   const { fields, booking } = normalizeBooking(req.body);
 
   if (!booking) {
@@ -642,6 +621,7 @@ app.post('/api/send-booking-email', bookingRateLimit, async (req, res) => {
       }
     } catch (error) {
       console.error('[booking] Could not check the existing booking token:', error.message);
+      return res.status(503).json({ success: false, error: 'We could not check your existing request. Please retry shortly.' });
     }
   }
 
@@ -666,92 +646,48 @@ app.post('/api/send-booking-email', bookingRateLimit, async (req, res) => {
     }
   } catch (err) {
     console.warn('[booking] Could not check slot locks:', err.message);
+    return res.status(503).json({ success: false, error: 'Availability could not be checked. Please retry shortly.' });
   }
 
   // Every service type is an appointment *request* until the studio accepts
   // it. Piercings, standard tattoos and custom tattoo requests all start in
   // the review queue and are emailed only after a decision is recorded.
   const initialStatus = 'pending_confirmation';
-
-  const record = {
-    ...bookingFields,
-    reference,
-    status: initialStatus
-  };
-
-  let storage;
+  let storedReferenceFile = '', storedReceiptFile = '';
   try {
-    storage = await saveBooking(record);
-  } catch (error) {
-    console.error('[booking] Failed to persist booking:', error);
-    return res.status(500).json({
-      success: false,
-      error: 'We could not save your booking. Please try again in a moment.'
-    });
-  }
-
-  // New request: connected dashboards refetch so the feed is current even
-  // before the studio confirms it.
-  broadcastBookingsChanged('created', { reference });
-
-  // Step one of every notification is the studio alert email; the dashboard
-  // record is written afterwards so it can carry the delivery result.
-  await notifyStudio({
-    type: 'booking',
-    title: `New booking from ${record.fullName || 'a client'}`,
-    message: 'A new booking request is waiting in the review queue.',
-    reference,
-    customerName: record.fullName || '',
-    details: [
-      ['Service', record.service || ''],
-      ['Requested date', record.date || ''],
-      ['Requested time', record.time || ''],
-      ['Payment method', record.paymentMethod || ''],
-      ['Email', record.email || ''],
-      ['Phone', record.phone || ''],
-      ['Payment proof', record.receiptFileName || 'Not attached']
-    ]
-  });
-
-  // Every submission enters the admin review queue. The extra form details are
-  // kept outside the bookings record so existing storage schemas stay untouched.
-  let storedReferenceFile = '';
-
-  if (tattooReferenceFileName && !tattooReferenceImage) {
-    console.warn(
-      '[booking] ' + reference + ' arrived with reference file name "' + tattooReferenceFileName + '" but no image data.'
-    );
-  }
-  try {
-    storedReferenceFile = await persistReferenceImage(
-      reference,
-      tattooReferenceImage,
-      tattooReferenceFileName
-    );
-  } catch (error) {
-    console.warn(`[booking] Could not store the reference picture for ${reference}:`, error.message);
-  }
-
-  let storedReceiptFile = '';
-  try {
+    storedReferenceFile = await persistReferenceImage(reference, tattooReferenceImage, tattooReferenceFileName);
     storedReceiptFile = await persistReceiptImage(reference, receiptImage, bookingFields.receiptFileName);
   } catch (error) {
-    console.warn(`[booking] Could not store the payment receipt for ${reference}:`, error.message);
+    return res.status(503).json({ success: false, error: error.message });
   }
-
+  const record = { ...bookingFields, reference, status: initialStatus,
+    tattooFormType, tattooStyle, referenceFileName: tattooReferenceFileName,
+    referenceImageUrl: storedReferenceFile, receiptUrl: storedReceiptFile,
+    depositStatus: 'pending_verification'
+  };
+  let storage;
   try {
-    await recordSubmittedRequest({
-      ...record,
-      tattooFormType,
-      tattooStyle,
-      tattooReferenceFileName,
-      tattooReferenceStoredFile: storedReferenceFile,
-      receiptFileName: bookingFields.receiptFileName,
-      receiptStoredFile: storedReceiptFile
-    });
+    // The database trigger inserts the review queue row in this same transaction.
+    storage = await saveBooking(record);
   } catch (error) {
-    console.error(`[booking] Could not queue custom request ${reference}:`, error.message);
+    const uploaded = [storedReferenceFile, storedReceiptFile].filter(Boolean)
+      .map(value => value.replace('storage://custom-requests/', ''));
+    if (uploaded.length) await getSupabaseServer().storage.from('custom-requests').remove(uploaded);
+    if (error.code === '23505') {
+      const existing = await findBookingByClientRequestId(record.clientRequestId);
+      if (existing) return res.status(200).json({ success: true, duplicate: true,
+        reference: existing.reference, bookingId: existing.reference, confirmationDeferred: existing.status === 'pending_confirmation',
+        emailSent: existing.emailSent, sentTo: existing.email, storage: getStorageMode() });
+      return res.status(409).json({ success: false, error: 'This time slot has just been reserved. Please select another time.' });
+    }
+    console.error('[booking] Failed to persist booking:', error.message);
+    return res.status(503).json({ success: false, error: 'We could not save your booking. Please retry with the same request.' });
   }
+  broadcastBookingsChanged('created', { reference });
+  await notifyStudio({ type: 'booking', title: `New booking from ${record.fullName}`,
+    message: 'A new booking request is waiting in the review queue.', reference,
+    customerName: record.fullName, details: [['Service', record.service], ['Requested date', record.date], ['Requested time', record.time]]
+  });
 
   // Nothing is emailed at submission time. The confirmation template is sent
   // by the decision route when an admin accepts the booking, so the customer
@@ -830,7 +766,7 @@ app.get('/api/bookings/locked-slots', async (req, res) => {
   try {
     const date = req.query.date;
     const artist = req.query.artist;
-    if (!date) {
+    if (!bookingDate(date)) {
       return res.status(400).json({ success: false, error: 'Date is required.' });
     }
     const lockedSlots = await getLockedSlots(date, artist);
@@ -956,6 +892,7 @@ app.post('/api/notifications/review', async (req, res) => {
 });
 
 app.get('/api/bookings/stream', (req, res) => {
+  if (process.env.VERCEL) return res.status(204).end();
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache, no-transform');
   res.setHeader('Connection', 'keep-alive');
@@ -972,31 +909,9 @@ app.get('/api/bookings/stream', (req, res) => {
 app.get('/api/bookings', async (req, res) => {
   try {
     const rawBookings = await readAllBookings();
-    let statusMap = {};
-    try {
-      const statusFilePath = path.join(PROJECT_ROOT, 'data', 'custom-request-status.json');
-      if (fs.existsSync(statusFilePath)) {
-        statusMap = JSON.parse(fs.readFileSync(statusFilePath, 'utf8')) || {};
-      }
-    } catch {
-      // ignore status read errors
-    }
-
-    const FINALIZED_STATUSES = new Set(['completed', 'cancelled', 'canceled', 'noshow', 'late', 'latearrival']);
-
     const bookings = rawBookings.map((b) => {
       const ref = b.reference || b.id;
       let status = (b.status || 'confirmed').toLowerCase();
-      const storedStatus = String(b.status || '').toLowerCase().replace(/[\s-_]/g, '');
-
-      // A custom-request decision seeds the appointment status, but it must not
-      // overwrite a status the admin has since finalized from the dashboard or
-      // the Master Calendar (completed, cancelled, no-show, late).
-      if (statusMap[ref] && !FINALIZED_STATUSES.has(storedStatus)) {
-        if (statusMap[ref].status === 'accepted') status = 'confirmed';
-        else if (statusMap[ref].status === 'declined') status = 'cancelled';
-        else if (statusMap[ref].status === 'pending') status = 'pending_confirmation';
-      }
 
       return {
         ...b,
@@ -1067,8 +982,14 @@ app.patch('/api/bookings/:reference', async (req, res) => {
   if (req.body.serviceType) patch.serviceType = cleanSingleLine(req.body.serviceType, 50);
   if (req.body.service) patch.service = cleanSingleLine(req.body.service, 100);
   if (req.body.artist) patch.artist = cleanSingleLine(req.body.artist, 100);
-  if (req.body.date) patch.date = cleanSingleLine(req.body.date, 50);
-  if (req.body.time) patch.time = cleanSingleLine(req.body.time, 50);
+  if (req.body.date) {
+    patch.date = bookingDate(req.body.date);
+    if (!patch.date) return res.status(400).json({ success: false, error: 'Choose a valid booking date.' });
+  }
+  if (req.body.time) {
+    patch.time = bookingTime(req.body.time);
+    if (!patch.time) return res.status(400).json({ success: false, error: 'Choose a valid booking time.' });
+  }
   if (req.body.notes !== undefined) patch.notes = cleanNotes(req.body.notes, 500);
 
   try {
@@ -1080,7 +1001,7 @@ app.patch('/api/bookings/:reference', async (req, res) => {
     return res.json({ success: true, reference, patch });
   } catch (error) {
     console.error(`[bookings] Could not update ${reference}:`, error.message);
-    return res.status(500).json({ success: false, error: 'Failed to update booking.' });
+    return res.status(error.code === '23505' ? 409 : 500).json({ success: false, error: error.code === '23505' ? 'That time slot is already reserved.' : 'Failed to update booking.' });
   }
 });
 
@@ -1106,7 +1027,7 @@ app.delete('/api/bookings/:reference', async (req, res) => {
 // ---------------------------------------------------------------------------
 // Custom tattoo requests (admin)
 // ---------------------------------------------------------------------------
-app.get('/api/references/:fileName', (req, res) => {
+app.get('/api/references/:fileName', async (req, res) => {
   const fileName = path.basename(String(req.params.fileName || ''));
 
   if (!REFERENCE_FILE_PATTERN.test(fileName)) {
@@ -1119,11 +1040,12 @@ app.get('/api/references/:fileName', (req, res) => {
   }
 
   const supa = getSupabaseServer();
-  const { data } = supa.storage.from('custom-requests').getPublicUrl(`references/${fileName}`);
-  return res.redirect(302, data.publicUrl);
+  const { data, error } = await supa.storage.from('custom-requests').createSignedUrl(`references/${fileName}`, 900);
+  if (error || !data?.signedUrl) return res.status(404).json({ success: false, error: 'Image not found.' });
+  return res.redirect(302, data.signedUrl);
 });
 
-app.get('/api/receipts/:fileName', (req, res) => {
+app.get('/api/receipts/:fileName', async (req, res) => {
   const fileName = path.basename(String(req.params.fileName || ''));
 
   if (!RECEIPT_FILE_PATTERN.test(fileName)) {
@@ -1136,8 +1058,9 @@ app.get('/api/receipts/:fileName', (req, res) => {
   }
 
   const supa = getSupabaseServer();
-  const { data } = supa.storage.from('custom-requests').getPublicUrl(`receipts/${fileName}`);
-  return res.redirect(302, data.publicUrl);
+  const { data, error } = await supa.storage.from('custom-requests').createSignedUrl(`receipts/${fileName}`, 900);
+  if (error || !data?.signedUrl) return res.status(404).json({ success: false, error: 'Image not found.' });
+  return res.redirect(302, data.signedUrl);
 });
 
 app.get('/api/custom-requests', async (req, res) => {
@@ -1146,7 +1069,7 @@ app.get('/api/custom-requests', async (req, res) => {
     return res.json({
       success: true,
       storage: getStorageMode(),
-      requests: requests.map((request) => withReferenceUrls(req, request))
+      requests: await Promise.all(requests.map((request) => withReferenceUrls(req, request)))
     });
   } catch (error) {
     console.error('[custom-requests] Could not list requests:', error.message);
@@ -1179,7 +1102,7 @@ app.post('/api/custom-requests/:reference/view', async (req, res) => {
       request = { ...existing, reviewedAt: state?.reviewedAt || new Date().toISOString() };
     }
 
-    return res.json({ success: true, request: withReferenceUrls(req, request) });
+    return res.json({ success: true, request: await withReferenceUrls(req, request) });
   } catch (error) {
     console.error(`[custom-requests] Could not mark ${reference} as reviewed:`, error.message);
     return res.status(500).json({
@@ -1222,31 +1145,15 @@ app.post('/api/custom-requests/:reference/decision', async (req, res) => {
       return res.status(409).json({
         success: false,
         error: `This request was already ${existing.status}.`,
-        request: withReferenceUrls(req, existing)
+        request: await withReferenceUrls(req, existing)
       });
     }
 
     const decidedAt = new Date().toISOString();
     const requestStatus = decision === 'accept' ? 'accepted' : 'declined';
 
-    await updateRequestStatus(reference, {
-      status: requestStatus,
-      reviewedAt: existing.reviewedAt || decidedAt,
-      decidedAt,
-      declineReason: decision === 'decline' ? reason : ''
-    });
-
-    // Synchronize to Master Calendar: update booking record status to Confirmed or Cancelled
-    try {
-      if (decision === 'accept') {
-        await updateBooking(reference, { status: 'confirmed' });
-      } else if (decision === 'decline') {
-        await updateBooking(reference, { status: 'cancelled' });
-      }
-      broadcastBookingsChanged('updated', { reference });
-    } catch (bookingSyncErr) {
-      console.error(`[custom-requests] Could not update booking status for ${reference}:`, bookingSyncErr.message);
-    }
+    await decideRequest(reference, decision, reason);
+    broadcastBookingsChanged('updated', { reference });
 
     let emailSent = false;
     let emailError = null;
@@ -1340,7 +1247,7 @@ app.post('/api/custom-requests/:reference/decision', async (req, res) => {
       emailErrorMessage,
       emailProvider,
       message,
-      request: withReferenceUrls(req, {
+      request: await withReferenceUrls(req, {
         ...existing,
         status: requestStatus,
         reviewedAt: existing.reviewedAt || decidedAt,
@@ -1352,9 +1259,9 @@ app.post('/api/custom-requests/:reference/decision', async (req, res) => {
     });
   } catch (error) {
     console.error(`[custom-requests] Could not decide ${reference}:`, error.message);
-    return res.status(500).json({
+    return res.status(error.code === 'P0001' ? 409 : 500).json({
       success: false,
-      error: 'The decision could not be saved. Please try again.'
+      error: error.code === 'P0001' ? 'This request was already reviewed. Refresh the queue.' : 'The decision could not be saved. Please try again.'
     });
   }
 });
@@ -1371,19 +1278,8 @@ app.delete('/api/custom-requests/:reference', async (req, res) => {
 
   try {
     const existing = await getCustomRequest(reference);
-    let removed = false;
-
-    try {
-      removed = await deleteBooking(reference);
-    } catch (error) {
-      console.warn(`[custom-requests] Booking row for ${reference} was not removed:`, error.message);
-    }
-
-    const statusRemoved = await deleteRequestStatus(reference);
-
-    if (!removed && !statusRemoved) {
-      return res.status(404).json({ success: false, error: 'Booking not found.' });
-    }
+    const removed = await deleteBooking(reference);
+    if (!removed) return res.status(404).json({ success: false, error: 'Booking not found.' });
 
     // Best effort: the record is already gone, so a missing file is not an error.
     const files = [
@@ -1440,6 +1336,7 @@ registerChangeListener((action, data) => {
 });
 
 app.get('/api/gallery/stream', (req, res) => {
+  if (process.env.VERCEL) return res.status(204).end();
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache, no-transform');
   res.setHeader('Connection', 'keep-alive');
@@ -1678,6 +1575,7 @@ registerCatalogueChangeListener((action, data) => {
 });
 
 app.get('/api/catalogue/stream', (req, res) => {
+  if (process.env.VERCEL) return res.status(204).end();
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache, no-transform');
   res.setHeader('Connection', 'keep-alive');
@@ -2190,6 +2088,4 @@ if (require.main === module) {
 
 // Vercel imports this file from the project root entrypoint and expects the
 // Express app itself; `npm start` keeps using the listen block above.
-module.exports = app;
-
 module.exports = app;

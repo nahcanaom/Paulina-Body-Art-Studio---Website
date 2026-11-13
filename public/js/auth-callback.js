@@ -11,6 +11,7 @@
 import { supabase } from "./supabase-config.js";
 import {
   getCurrentUser,
+  isStudioAdmin,
   isAuthConfigured,
   saveUserProfile,
   signOut
@@ -26,7 +27,6 @@ const NEW_ACCOUNT_WINDOW_MS = 60 * 1000;
 const SIGNUP_INTENT_TTL_MS = 10 * 60 * 1000;
 const ADMIN_URL = "../admin-side/dashboard.html";
 const SIGN_IN_URL = "sign-in.html";
-const ADMIN_EMAILS = new Set(["paulinabodyartstudio@gmail.com"]);
 
 const SESSION_WAIT_MS = 10000;
 const POLL_MS = 200;
@@ -50,13 +50,7 @@ async function waitForUser(timeoutMs = SESSION_WAIT_MS) {
 }
 
 function redirectFor(user) {
-  const role = String(
-    user?.raw?.app_metadata?.role || ""
-  ).toLowerCase();
-  const email = String(user?.email || "").toLowerCase();
-  const isAdmin = role === "admin" || ADMIN_EMAILS.has(email);
-
-  window.location.replace(isAdmin ? ADMIN_URL : HOME_URL);
+  window.location.replace(isStudioAdmin(user) ? ADMIN_URL : HOME_URL);
 }
 
 function readSignupIntent() {

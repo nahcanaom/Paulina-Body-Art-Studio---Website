@@ -24,6 +24,12 @@ export { isAuthConfigured };
 
 const metadataOf = (user) => user?.user_metadata || {};
 
+export function isStudioAdmin(user) {
+  const raw = user?.raw || user;
+  return raw?.app_metadata?.role === 'admin' ||
+    ['paulinabodyartstudio@gmail.com', 'faye08022005@gmail.com'].includes(String(raw?.email || '').toLowerCase());
+}
+
 /**
  * Converts a raw Supabase user into the compatibility shape used across the
  * site. Returns null for a missing user.
@@ -344,8 +350,8 @@ export async function saveUserProfile(user, fullName = "") {
     (userEmail ? userEmail.split("@")[0] : "Client User");
 
   const roleToSave =
-    user.userMetadata?.role ||
-    user.user_metadata?.role ||
+    user.raw?.app_metadata?.role ||
+    user.app_metadata?.role ||
     "Client";
 
   try {

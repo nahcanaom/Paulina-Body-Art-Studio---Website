@@ -50,13 +50,7 @@ async function loadProducts() {
     // An empty published catalogue is a valid response: render it instead of
     // falling back to demo products that do not exist on the live site.
     if (data.success && Array.isArray(data.items)) {
-      if (data.demo && !document.getElementById('demoNotice')) {
-        const notice = document.createElement('p');
-        notice.id = 'demoNotice';
-        notice.style.cssText = 'color:#faf6f0;padding:12px 0;grid-column:1/-1';
-        notice.textContent = 'Images, prices, sizes and placements are examples; please confirm details with the studio.';
-        document.getElementById('productGrid')?.before(notice);
-      }
+
       products = data.items.map(normalizeCatalogProduct).filter(Boolean);
       liveMode = true;
       window.__PAULINA_CATALOGUE_LIVE = true;
@@ -113,6 +107,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   initRealtimeSync();
   await loadProducts();
   applySearchDeepLink();
+  window.setInterval(() => { if (!document.hidden && !currentModalProductId) loadProducts(); }, 5000);
 });
 
 // -------------------------------------------------------------------------

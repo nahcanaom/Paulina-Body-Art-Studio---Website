@@ -154,7 +154,7 @@ async function getPublishedImages(category = 'all') {
   const { data, error } = await query;
   if (error) {
     console.warn('[galleryStore] Published gallery fetch error:', error.message);
-    return [];
+    throw error;
   }
 
   return (data || []).map(normalizeImage);

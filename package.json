@@ -9,7 +9,7 @@
     "dev": "node --watch server.js",
     "email:test": "node scripts/send-test-email.js",
     "email:authorize": "node scripts/authorize-gmail.js",
-    "check:local": "node scripts/check-local-demo.js && node scripts/check-gmail-provider.js && node scripts/check-public-content.js"
+    "check:local": "node scripts/check-local-demo.js && node scripts/check-gmail-provider.js && node scripts/check-public-content.js && node scripts/check-booking-flow.js"
   },
   "engines": {
     "node": ">=22"

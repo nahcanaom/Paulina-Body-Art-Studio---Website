@@ -15,8 +15,8 @@
 
 import { supabase, isSupabaseConfigured } from './supabase-config.js';
 import { escapeHtml } from './services/reviewService.js';
+import { isStudioAdmin } from './services/authService.js';
 
-const ADMIN_EMAILS = ['paulinabodyartstudio@gmail.com'];
 const REVIEWS_TABLE = 'reviews';
 
 const state = {
@@ -37,15 +37,6 @@ function setStatus(message, tone = '') {
   status.dataset.tone = tone;
 }
 
-function isAdminEmail(email) {
-  const value = String(email || '').trim().toLowerCase();
-  if (!value) return false;
-  if (ADMIN_EMAILS.includes(value)) return true;
-
-  // Any account the studio promoted to admin through its role claim.
-  return false;
-}
-
 async function getAdminSession() {
   if (!isSupabaseConfigured()) return null;
 
@@ -54,8 +45,7 @@ async function getAdminSession() {
     const user = data?.session?.user;
     if (!user) return null;
 
-    const role = String(user.app_metadata?.role || '').toLowerCase();
-    if (role === 'admin' || isAdminEmail(user.email)) return user;
+    if (isStudioAdmin(user)) return user;
     return null;
   } catch (error) {
     console.warn('[admin-reviews] Could not read the admin session:', error?.message || error);

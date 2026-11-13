@@ -227,7 +227,7 @@
     render();
 
     try {
-      const response = await fetch(apiUrl('/api/notifications/read'), {
+      const response = await window.paulinaAdminFetch(apiUrl('/api/notifications/read'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ids: affected.map((item) => item.id) })
@@ -250,7 +250,7 @@
     refreshCounts();
 
     try {
-      const response = await fetch(apiUrl('/api/notifications/read'), {
+      const response = await window.paulinaAdminFetch(apiUrl('/api/notifications/read'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ids: unread.map((item) => item.id) })
@@ -417,7 +417,7 @@
     }
 
     try {
-      const response = await fetch(apiUrl(`/api/notifications/${encodeURIComponent(id)}`), {
+      const response = await window.paulinaAdminFetch(apiUrl(`/api/notifications/${encodeURIComponent(id)}`), {
         method: 'DELETE',
         headers: { Accept: 'application/json' }
       });
@@ -464,7 +464,7 @@
 
   async function load() {
     try {
-      const response = await fetch(apiUrl('/api/notifications?limit=50'), {
+      const response = await window.paulinaAdminFetch(apiUrl('/api/notifications?limit=50'), {
         headers: { Accept: 'application/json' },
         cache: 'no-store'
       });
@@ -527,5 +527,6 @@
     }
   }
 
+  window.setInterval(() => { if (!document.hidden && !state.openId && !state.marking && !state.deleting) load(); }, 5000);
   load();
 })();

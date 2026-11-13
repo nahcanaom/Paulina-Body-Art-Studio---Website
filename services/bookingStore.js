@@ -1,6 +1,7 @@
 'use strict';
 
 const { createClient } = require('@supabase/supabase-js');
+const { bookingDate, bookingTime } = require('./bookingSchedule');
 
 const DEFAULT_SUPABASE_URL = 'https://celusvfynfnszmhjgqwj.supabase.co';
 const DEFAULT_SUPABASE_ANON_KEY = 'sb_publishable_NlHs6PG9x_HHfCDUKOlArQ_pM41Bn7g';
@@ -55,18 +56,20 @@ function normalizeBookingRecord(raw) {
     serviceType: recordText(record.service_type || record.serviceType || record.appointmentType),
     service: recordText(record.service || record.service_name || record.serviceName),
     artist: recordText(record.artist || record.artist_name || record.artistName) || 'Paulina Vampire',
-    date: recordText(record.date || record.scheduledDate || record.scheduled_date || record.bookingDate),
-    time: recordText(record.time || record.scheduledTime || record.scheduled_time || record.slot),
+    date: bookingDate(record.date || record.scheduledDate || record.scheduled_date || record.bookingDate),
+    time: bookingTime(record.time || record.time_slot || record.scheduledTime || record.scheduled_time || record.slot),
     duration: recordText(record.duration) || '1 hour',
     endTime: recordText(record.end_time || record.endTime),
     status: recordText(record.status || 'pending_confirmation').toLowerCase(),
     attendanceStatus: recordText(record.attendance_status || record.attendanceStatus),
     depositAmount: typeof record.deposit_amount === 'number' ? record.deposit_amount : (typeof record.depositAmount === 'number' ? record.depositAmount : 500),
     deposit: recordText(record.deposit) || '₱500',
-    depositStatus: recordText(record.deposit_status || record.depositStatus || 'paid'),
+    depositStatus: recordText(record.deposit_status || record.depositStatus || 'pending_verification'),
     paymentMethod: recordText(record.payment_method || record.paymentMethod || 'Gcash'),
     receiptFileName: recordText(record.receipt_file_name || record.receiptFileName),
     receiptUrl: recordText(record.receipt_url || record.receiptUrl),
+    referenceImageUrl: recordText(record.reference_image_url || record.referenceImageUrl),
+    referenceFileName: recordText(record.reference_file_name || record.referenceFileName),
     notes: recordText(record.notes || record.customerNotes || record.specialRequests),
     placement: recordText(record.placement || record.body_placement || record.bodyPlacement),
     tattooSize: recordText(record.tattoo_size || record.tattooSize || record.targetSize),
@@ -97,12 +100,14 @@ function toDbBooking(normalized) {
     end_time: normalized.endTime || '',
     status: normalized.status || 'pending_confirmation',
     attendance_status: normalized.attendanceStatus || '',
-    deposit_amount: normalized.depositAmount || 500,
+    deposit_amount: normalized.depositAmount ?? 500,
     deposit: normalized.deposit || '₱500',
-    deposit_status: normalized.depositStatus || 'paid',
+    deposit_status: normalized.depositStatus || 'pending_verification',
     payment_method: normalized.paymentMethod || 'Gcash',
     receipt_file_name: normalized.receiptFileName || '',
     receipt_url: normalized.receiptUrl || '',
+    reference_image_url: normalized.referenceImageUrl || '',
+    reference_file_name: normalized.referenceFileName || '',
     notes: normalized.notes || '',
     placement: normalized.placement || '',
     tattoo_size: normalized.tattooSize || '',
@@ -127,8 +132,8 @@ function toDbBookingPatch(patch = {}) {
   if (patch.serviceType !== undefined || patch.service_type !== undefined) dbPatch.service_type = patch.serviceType ?? patch.service_type;
   if (patch.service !== undefined) dbPatch.service = patch.service;
   if (patch.artist !== undefined) dbPatch.artist = patch.artist;
-  if (patch.date !== undefined) dbPatch.date = patch.date;
-  if (patch.time !== undefined) dbPatch.time = patch.time;
+  if (patch.date !== undefined) dbPatch.date = bookingDate(patch.date);
+  if (patch.time !== undefined) dbPatch.time = bookingTime(patch.time);
   if (patch.duration !== undefined) dbPatch.duration = patch.duration;
   if (patch.endTime !== undefined || patch.end_time !== undefined) dbPatch.end_time = patch.endTime ?? patch.end_time;
   if (patch.status !== undefined) dbPatch.status = String(patch.status).toLowerCase();
@@ -158,12 +163,12 @@ async function saveBooking(booking) {
 
   const { data, error } = await client
     .from(BOOKINGS_TABLE)
-    .upsert(dbRecord, { onConflict: 'reference' })
+    .insert(dbRecord)
     .select();
 
   if (error) {
     console.error('[bookingStore] Supabase saveBooking error:', error.message);
-    throw new Error(`Failed to save booking to Supabase: ${error.message}`);
+    throw Object.assign(new Error('The booking could not be saved.'), { code: error.code });
   }
 
   return {
@@ -188,7 +193,8 @@ async function findBookingByClientRequestId(clientRequestId) {
     .limit(1)
     .maybeSingle();
 
-  if (error || !data) return null;
+  if (error) throw error;
+  if (!data) return null;
   return normalizeBookingRecord(data);
 }
 
@@ -230,7 +236,7 @@ async function readAllBookings() {
 
   if (error) {
     console.error('[bookingStore] Failed to read bookings from Supabase:', error.message);
-    return [];
+    throw error;
   }
 
   return Array.isArray(data) ? data.map(normalizeBookingRecord) : [];
@@ -244,16 +250,16 @@ async function updateBooking(reference, patch) {
   const client = getSupabase();
   const dbPatch = toDbBookingPatch(patch);
 
-  const { error } = await client
+  const { data, error } = await client
     .from(BOOKINGS_TABLE)
     .update(dbPatch)
-    .eq('reference', reference);
+    .eq('reference', reference).select('reference');
 
   if (error) {
     console.error(`[bookingStore] Failed to update booking ${reference}:`, error.message);
-    return false;
+    throw error;
   }
-  return true;
+  return data?.length === 1;
 }
 
 /**
@@ -263,23 +269,23 @@ async function deleteBooking(reference) {
   if (!reference) return false;
   const client = getSupabase();
 
-  const { error } = await client
+  const { data, error } = await client
     .from(BOOKINGS_TABLE)
     .delete()
-    .eq('reference', reference);
+    .eq('reference', reference).select('reference');
 
   if (error) {
     console.error(`[bookingStore] Failed to delete booking ${reference}:`, error.message);
     return false;
   }
-  return true;
+  return data?.length === 1;
 }
 
 /**
  * Returns locked time slots for a specific date and artist directly from Supabase.
  */
 async function getLockedSlots(date, artist = '') {
-  const normalizedDate = String(date || '').trim();
+  const normalizedDate = bookingDate(date);
   if (!normalizedDate) return [];
 
   const client = getSupabase();
@@ -292,7 +298,7 @@ async function getLockedSlots(date, artist = '') {
   const { data, error } = await query;
   if (error) {
     console.warn('[bookingStore] Could not fetch locked slots from Supabase:', error.message);
-    return [];
+    throw error;
   }
 
   return (data || [])
@@ -302,8 +308,13 @@ async function getLockedSlots(date, artist = '') {
       }
       return true;
     })
-    .map((b) => String(b.time || '').trim())
+    .map((b) => bookingTime(b.time))
     .filter(Boolean);
+}
+
+async function bookingReady() {
+  const { data, error } = await getSupabase().rpc('booking_flow_ready');
+  return !error && data === true;
 }
 
 module.exports = {
@@ -315,5 +326,6 @@ module.exports = {
   readAllBookings,
   updateBooking,
   deleteBooking,
-  getLockedSlots
+  getLockedSlots,
+  bookingReady
 };

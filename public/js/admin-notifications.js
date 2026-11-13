@@ -8,7 +8,7 @@
 (function () {
   'use strict';
 
-  const POLL_INTERVAL_MS = 60 * 1000;
+  const POLL_INTERVAL_MS = 5000;
   const DISMISS_KEY = 'paulina:notificationBarDismissedAt';
 
   const apiUrl =
@@ -34,7 +34,7 @@
   }
 
   async function loadNotifications(limit = 5) {
-    const response = await fetch(apiUrl(`/api/notifications?limit=${limit}`), {
+    const response = await window.paulinaAdminFetch(apiUrl(`/api/notifications?limit=${limit}`), {
       headers: { Accept: 'application/json' },
       cache: 'no-store'
     });

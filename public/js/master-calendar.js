@@ -27,7 +27,7 @@ if (supabase) {
     supabase
       .channel('master-calendar-realtime')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, () => {
-        loadBookings();
+        loadBookings({ background: true });
       })
       .subscribe();
   } catch (err) {
@@ -358,9 +358,12 @@ function bookingsOnDate(list, date) {
  * Loads every booking from the backend. There is no seed fallback: a failed
  * request leaves the calendar empty and surfaces a notice instead.
  */
-async function loadBookings() {
+let calendarRefreshActive = false;
+async function loadBookings({ background = false } = {}) {
+  if (calendarRefreshActive) return;
+  calendarRefreshActive = true;
   try {
-    const response = await fetch(
+    const response = await window.paulinaAdminFetch(
       apiUrl(`/api/bookings?status=${encodeURIComponent(CALENDAR_STATUS_QUERY)}`),
       {
         headers: { Accept: 'application/json' },
@@ -380,15 +383,15 @@ async function loadBookings() {
     state.loadError = null;
   } catch (error) {
     console.error('[calendar] Could not load bookings from the server:', error);
-    state.bookings = [];
+    if (!background) state.bookings = [];
     state.loadError = error;
   }
 
+  calendarRefreshActive = false;
   state.lastSyncedDayKey = dayKey(currentDate());
   populateFilterOptions();
   updateNotice();
-  selectInitialDate();
-  applyDeepLink();
+  if (!background) { selectInitialDate(); applyDeepLink(); }
   renderCurrentView();
   renderDetailPanel();
 }
@@ -1078,14 +1081,15 @@ async function saveBookingChanges() {
   };
 
   try {
-    const response = await fetch(apiUrl(`/api/bookings/${encodeURIComponent(booking.reference)}`), {
+    const response = await window.paulinaAdminFetch(apiUrl(`/api/bookings/${encodeURIComponent(booking.reference)}`), {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(patch)
     });
-    if (!response.ok) console.warn('[calendar] Server update returned an error, applying locally');
+    if (!response.ok) throw new Error('The change was not saved.');
   } catch (error) {
-    console.warn('[calendar] Server patch failed, applying locally:', error);
+    window.alert('This appointment could not be saved. Please retry.');
+    return;
   }
 
   replaceBooking(booking, { ...booking, ...patch });
@@ -1107,13 +1111,15 @@ async function markBookingCancelled() {
   if (!booking) return;
 
   try {
-    await fetch(apiUrl(`/api/bookings/${encodeURIComponent(booking.reference)}`), {
+    const response = await window.paulinaAdminFetch(apiUrl(`/api/bookings/${encodeURIComponent(booking.reference)}`), {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: 'cancelled' })
     });
+    if (!response.ok) throw new Error('Cancellation was not saved.');
   } catch (error) {
-    console.warn('[calendar] Cancel request failed:', error);
+    window.alert('This appointment could not be cancelled. Please retry.');
+    return;
   }
 
   replaceBooking(booking, { ...booking, status: 'cancelled' });
@@ -1130,9 +1136,11 @@ async function deleteBookingPermanently() {
   if (!booking) return;
 
   try {
-    await fetch(apiUrl(`/api/bookings/${encodeURIComponent(booking.reference)}`), { method: 'DELETE' });
+    const response = await window.paulinaAdminFetch(apiUrl(`/api/bookings/${encodeURIComponent(booking.reference)}`), { method: 'DELETE' });
+    if (!response.ok) throw new Error('Deletion was not saved.');
   } catch (error) {
-    console.warn('[calendar] Delete request failed:', error);
+    window.alert('This appointment could not be deleted. Please retry.');
+    return;
   }
 
   state.bookings = state.bookings.filter((item) => item.reference !== booking.reference);
@@ -1380,3 +1388,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initCustomFilterDropdowns();
   loadBookings();
 });
+
+window.setInterval(() => {
+  if (!document.hidden && !Array.from(document.querySelectorAll('[role="dialog"], .dialog-overlay')).some(node => node.getClientRects().length > 0)) loadBookings({ background: true });
+}, 5000);

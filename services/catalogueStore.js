@@ -165,7 +165,7 @@ async function getPublishedCatalogue(category = 'all') {
   const { data, error } = await query;
   if (error) {
     console.warn('[catalogueStore] Published items error:', error.message);
-    return [];
+    throw error;
   }
 
   return (data || []).map(normalizeItem);

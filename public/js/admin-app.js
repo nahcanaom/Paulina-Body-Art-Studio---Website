@@ -16,96 +16,6 @@
 
 
 
-// admin-app.js – Front‑end logic for the admin dashboard
-// ----------------------------------------------------
-// This module imports the Supabase client that you configured in
-// `supabase-config.js` and populates the KPI cards, bookings feed,
-// upcoming‑appointments list, etc.
-//
-// NOTE: The HTML expects elements with IDs like `kpiBookings`, `kpiRevenue`,
-// `bookingsFeedBody`, `appointmentsList`, etc. – those already exist in
-// `dashboard.html`.
-import { supabase } from "./supabase-config.js";
-async function loadKPIs() {
-  // Example: count bookings, sum revenue, count deposits
-  const [{ count: bookings }, { sum: revenue }, { count: deposits }] = await Promise.all([
-    supabase.from("bookings").select("id", { count: "exact", head: true }),
-    supabase
-      .from("bookings")
-      .select("total_price")
-      .then(r => ({ sum: r.data?.reduce((a, b) => a + Number(b.total_price || 0), 0) || 0 })),
-    supabase.from("payments").select("id", { count: "exact", head: true })
-  ]);
-  document.getElementById("kpiBookings").textContent = bookings ?? "0";
-  document.getElementById("kpiRevenue").value = `P${revenue ?? 0}`;
-  document.getElementById("kpiDeposits").textContent = `P${revenue ?? 0}`;
-}
-async function loadBookingsFeed(filter = "All") {
-  const query = supabase
-    .from("bookings")
-    .select("client_name, service_type, appointment_dt, status")
-    .order("appointment_dt", { ascending: false });
-  if (filter !== "All") query.eq("service_type", filter);
-  const { data, error } = await query;
-  const tbody = document.getElementById("bookingsFeedBody");
-  tbody.innerHTML = "";
-  if (error) {
-    console.error("Failed to load bookings feed:", error);
-    tbody.innerHTML = `<tr><td colspan="4">Error loading bookings.</td></tr>`;
-    return;
-  }
-  data.forEach(row => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${row.client_name}</td>
-      <td>${row.service_type}</td>
-      <td>${new Date(row.appointment_dt).toLocaleString()}</td>
-      <td>${row.status}</td>`;
-    tbody.appendChild(tr);
-  });
-}
-async function loadUpcomingAppointments() {
-  const { data, error } = await supabase
-    .from("bookings")
-    .select("client_name, appointment_dt")
-    .gt("appointment_dt", new Date().toISOString())
-    .order("appointment_dt", { ascending: true })
-    .limit(5);
-  const list = document.getElementById("appointmentsList");
-  list.innerHTML = "";
-  if (error) {
-    console.error("Failed to load upcoming appointments:", error);
-    list.innerHTML = `<li>Error loading appointments.</li>`;
-    return;
-  }
-  data.forEach(row => {
-    const li = document.createElement("li");
-    li.textContent = `${row.client_name} – ${new Date(row.appointment_dt).toLocaleString()}`;
-    list.appendChild(li);
-  });
-}
-/* ------------------------------------------------------------------ */
-/* Initialize dashboard when the page loads                               */
-document.addEventListener("DOMContentLoaded", async () => {
-  try {
-    await loadKPIs();
-    await loadBookingsFeed();
-    await loadUpcomingAppointments();
-    // Hook up filter dropdown
-    const filterSelect = document.getElementById("feedFilterSelect");
-    filterSelect?.addEventListener("change", e => loadBookingsFeed(e.target.value));
-  } catch (e) {
-    console.error("Dashboard init error:", e);
-  }
-});       
-
-
-
-
-
-
-
-
 'use strict';
 
 const MONTH_NAMES = [
@@ -143,7 +53,7 @@ const STATUS_CLASSES = {
 };
 
 const REVENUE_STORAGE_PREFIX = 'paulina.dashboard.revenue';
-const REFRESH_INTERVAL_MS = 30000;
+const REFRESH_INTERVAL_MS = 5000;
 const SERIF_FONT = "'FootlightMTPro', 'TAN-Pearl', 'Times New Roman', serif";
 
 const numberFormatter = new Intl.NumberFormat('en-PH');
@@ -212,7 +122,7 @@ async function refreshBookings() {
   dashboardState.isLoading = true;
 
   try {
-    const response = await fetch(apiUrl('/api/bookings'), {
+    const response = await window.paulinaAdminFetch(apiUrl('/api/bookings'), {
       headers: { Accept: 'application/json' },
       cache: 'no-store'
     });
@@ -301,7 +211,7 @@ function initBookingsRealtime() {
     }
   }
 
-  if (typeof EventSource !== 'function') return;
+  if (typeof EventSource !== 'function' || !/^(localhost|127\.0\.0\.1)$/.test(window.location.hostname)) return;
 
   try {
     const source = new EventSource(apiUrl('/api/bookings/stream'));
@@ -1056,7 +966,7 @@ async function updateAppointmentStatus(booking, status) {
   }
 
   try {
-    const response = await fetch(apiUrl(`/api/bookings/${encodeURIComponent(booking.reference)}`), {
+    const response = await window.paulinaAdminFetch(apiUrl(`/api/bookings/${encodeURIComponent(booking.reference)}`), {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',

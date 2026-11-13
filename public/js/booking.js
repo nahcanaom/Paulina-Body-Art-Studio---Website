@@ -53,7 +53,7 @@ let deliveryPollActive = false;
 
 function createClientRequestId() {
   if (window.crypto?.randomUUID) return window.crypto.randomUUID();
-  return `bk-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+  return Array.from(window.crypto.getRandomValues(new Uint8Array(24)), value => value.toString(16).padStart(2, '0')).join('');
 }
 
 // Month names for calendar formatting
@@ -419,6 +419,8 @@ async function validateAndNavigate(stepId) {
   }
   
   if (stepId === 'payment') {
+    await syncLockedTimeSlots();
+    if (!slotAvailabilityReady) return;
     // Validate datetime first
     isValid = validateDatetime();
     if (isValid) {
@@ -806,6 +808,10 @@ function setEmailStatusNote(email, emailSent, emailError = '', deferred = false)
 
   // Every booking waits for the studio's decision, so no email is sent at
   // submission time and the note must not promise or report one.
+  if (bookingState.status === 'cancelled') {
+    note.textContent = ' Your booking request was declined or cancelled. Please contact the studio for details.';
+    return;
+  }
   if (deferred) {
     note.textContent =
       ' Your booking request is with the studio for review. ' +
@@ -844,6 +850,8 @@ function persistConfirmedBooking() {
         selectedTime: bookingState.selectedTime,
         selectedDate: bookingState.selectedDate,
         reference: bookingState.reference,
+        clientRequestId: bookingState.clientRequestId,
+        status: bookingState.status || 'pending_confirmation',
         emailSent: bookingState.emailSent,
         emailError: bookingState.emailError || '',
         emailDeferred: bookingState.emailDeferred,
@@ -889,6 +897,8 @@ function restoreConfirmedBooking() {
   bookingState.selectedTime = saved.selectedTime || '';
   bookingState.selectedDate = saved.selectedDate || '';
   bookingState.reference = saved.reference;
+  bookingState.clientRequestId = saved.clientRequestId || '';
+  bookingState.status = saved.status || 'pending_confirmation';
   bookingState.emailSent = Boolean(saved.emailSent);
   bookingState.emailError = saved.emailError || '';
   bookingState.emailDeferred = Boolean(saved.emailDeferred);
@@ -989,6 +999,7 @@ function applyRecoveredBooking(booking) {
   bookingState.selectedDate = booking.date || '';
   bookingState.paymentMethod = booking.paymentMethod || bookingState.paymentMethod;
   bookingState.reference = booking.reference;
+  bookingState.status = booking.status || 'pending_confirmation';
   bookingState.emailDeferred = Boolean(booking.confirmationDeferred);
   bookingState.emailSent = Boolean(booking.emailSent);
   bookingState.emailError = booking.emailError || '';
@@ -1182,48 +1193,25 @@ function selectCalendarDay(element, dayNum) {
  * Programmatically disables/locks time slots that have already reached 'Confirmed' status
  * to prevent double-booking and concurrency conflicts.
  */
+let slotRequestId = 0;
+let slotAvailabilityReady = false;
+
 async function syncLockedTimeSlots() {
   const dateStr = bookingState.selectedDate;
   if (!dateStr) return;
+  const requestId = ++slotRequestId;
+  slotAvailabilityReady = false;
 
   const artist = bookingState.artist || '';
   try {
-    let lockedTimes = null;
+    const url = window.paulinaApiUrl(`/api/bookings/locked-slots?date=${encodeURIComponent(dateStr)}&artist=${encodeURIComponent(artist)}`);
+    const res = await fetch(url, { cache: 'no-store' });
+    const data = await res.json();
+    if (!res.ok || !data.success || !Array.isArray(data.lockedSlots)) throw new Error('Availability is unavailable.');
+    const lockedTimes = data.lockedSlots.map(value => value.trim().toLowerCase());
 
-    if (window.paulinaSupabase) {
-      try {
-        const { data, error } = await window.paulinaSupabase
-          .from('bookings')
-          .select('time, date, artist, status')
-          .eq('date', dateStr)
-          .in('status', ['confirmed', 'pending_confirmation', 'late', 'completed']);
-
-        if (!error && Array.isArray(data)) {
-          lockedTimes = data
-            .filter((b) => {
-              if (artist && b.artist) {
-                return String(b.artist).trim().toLowerCase() === String(artist).trim().toLowerCase();
-              }
-              return true;
-            })
-            .map((b) => String(b.time || '').trim().toLowerCase())
-            .filter(Boolean);
-        }
-      } catch (err) {
-        console.warn('[booking] Supabase direct slot lock check error:', err);
-      }
-    }
-
-    if (!lockedTimes) {
-      const url = `/api/bookings/locked-slots?date=${encodeURIComponent(dateStr)}&artist=${encodeURIComponent(artist)}`;
-      const res = await fetch(url);
-      if (!res.ok) return;
-      const data = await res.json();
-      lockedTimes = Array.isArray(data.lockedSlots)
-        ? data.lockedSlots.map((t) => t.trim().toLowerCase())
-        : [];
-    }
-
+    if (requestId !== slotRequestId) return;
+    slotAvailabilityReady = true;
     const timeButtons = Array.from(document.querySelectorAll('.time-btn'));
     let currentActiveIsLocked = false;
 
@@ -1262,6 +1250,9 @@ async function syncLockedTimeSlots() {
       }
     }
   } catch (error) {
+    if (requestId !== slotRequestId) return;
+    const statusEl = document.getElementById('selectedDateText');
+    if (statusEl) { statusEl.innerText = 'Availability could not be checked. Please retry shortly.'; statusEl.classList.add('error'); }
     console.warn('[booking] Could not synchronize locked slots:', error);
   }
 }
@@ -1515,6 +1506,7 @@ async function submitBookingRequest() {
       if (error.httpStatus >= 400 && error.httpStatus < 500) {
         clearPendingBooking();
         bookingState.clientRequestId = '';
+  bookingState.status = 'pending_confirmation';
       }
 
       if (referenceEl) referenceEl.innerText = 'Not confirmed';
@@ -1975,3 +1967,31 @@ window.addEventListener('pageshow', function(event) {
   restoreConfirmedBooking();
   recoverPendingBooking();
 });
+
+// Follow the reviewed booking across separate serverless instances.
+let statusRefreshActive = false;
+window.setInterval(async () => {
+  if (document.hidden || !bookingState.confirmed || !bookingState.clientRequestId || statusRefreshActive) return;
+  statusRefreshActive = true;
+  try {
+    const result = await fetchBookingStatus(bookingState.clientRequestId);
+    if (result?.found && result.booking?.reference === bookingState.reference) {
+      bookingState.status = result.booking.status;
+      bookingState.selectedTime = result.booking.time || bookingState.selectedTime;
+      bookingState.selectedDate = result.booking.date || bookingState.selectedDate;
+      bookingState.specificService = result.booking.service || bookingState.specificService;
+      const revisedDate = new Date(result.booking.date + 'T12:00:00');
+      if (!Number.isNaN(revisedDate.getTime())) {
+        bookingState.selectedYear = revisedDate.getFullYear();
+        bookingState.selectedMonth = revisedDate.getMonth();
+        bookingState.selectedDayNum = revisedDate.getDate();
+      }
+      populateReviewSummary();
+      bookingState.emailDeferred = Boolean(result.booking.confirmationDeferred);
+      bookingState.emailSent = Boolean(result.booking.emailSent);
+      bookingState.emailError = result.booking.emailError || '';
+      setEmailStatusNote(bookingState.confirmedEmail, bookingState.emailSent, bookingState.emailError, bookingState.emailDeferred);
+      persistConfirmedBooking();
+    }
+  } finally { statusRefreshActive = false; }
+}, 5000);

@@ -83,7 +83,7 @@ async function callRequestsApi(path, options = {}) {
     const timeout = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
 
     try {
-      response = await fetch(endpoint, {
+      response = await window.paulinaAdminFetch(endpoint, {
         headers: { Accept: 'application/json', ...(options.body ? { 'Content-Type': 'application/json' } : {}), ...(options.headers || {}) },
         method: options.method || 'GET',
         body: options.body,
@@ -800,13 +800,14 @@ function scheduleRetry() {
   return true;
 }
 
-async function loadRequests({ resetRetries = false } = {}) {
+async function loadRequests({ resetRetries = false, quiet = false } = {}) {
+  if (quiet && (requestState.loading || requestState.pendingDecision || requestState.deleting || Array.from(document.querySelectorAll('[role="dialog"]')).some(node => node.getClientRects().length > 0))) return;
   clearScheduledRetry();
   if (resetRetries) retryAttempt = 0;
 
   requestState.loading = true;
   requestState.loadError = '';
-  renderList();
+  if (!quiet) renderList();
 
   const result = await callRequestsApi(REQUESTS_PATH);
   requestState.loading = false;
@@ -831,7 +832,7 @@ async function loadRequests({ resetRetries = false } = {}) {
   renderDetail();
 
   // Arriving from a notification opens that booking straight away.
-  const requestedReference = new URLSearchParams(window.location.search).get('reference');
+  const requestedReference = !quiet && new URLSearchParams(window.location.search).get('reference');
   if (requestedReference && findRequest(requestedReference)) {
     selectRequest(requestedReference);
   }
@@ -863,3 +864,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
   loadRequests();
 });
+
+window.setInterval(() => { if (!document.hidden) loadRequests({ quiet: true }); }, 5000);

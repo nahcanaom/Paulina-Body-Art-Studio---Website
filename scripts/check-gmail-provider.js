@@ -17,6 +17,13 @@ const gmail = require('../services/gmailProvider');
     assert.equal(gmail.configured(), false);
     fs.writeFileSync(process.env.GMAIL_TOKEN_FILE, JSON.stringify({ refresh_token: 'fake', sender: 'sender@example.com' }));
     assert.equal(gmail.configured(), true);
+    process.env.GMAIL_CLIENT_ID = 'test';
+    process.env.GMAIL_CLIENT_SECRET = 'fake';
+    process.env.GMAIL_REFRESH_TOKEN = 'fake';
+    process.env.GMAIL_TOKEN_SENDER = 'sender@example.com';
+    fs.unlinkSync(process.env.GMAIL_CLIENT_FILE);
+    fs.unlinkSync(process.env.GMAIL_TOKEN_FILE);
+    assert.equal(gmail.configured(), true);
     let sends = 0;
     global.fetch = async (url, options) => {
       if (url.endsWith('/token')) return { ok: true, json: async () => ({ access_token: 'fake' }) };

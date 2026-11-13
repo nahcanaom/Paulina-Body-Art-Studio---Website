@@ -1,5 +1,6 @@
 import {
   checkEmailExists,
+  isStudioAdmin,
   isAuthConfigured,
   resolveAuthError,
   sendPasswordResetEmail,
@@ -127,12 +128,6 @@ function validateForm(form) {
   return true;
 }
 
-const ADMIN_EMAILS = new Set(['paulinabodyartstudio@gmail.com']);
-
-function getUserRole(email) {
-  return ADMIN_EMAILS.has(String(email || '').toLowerCase()) ? 'admin' : 'Client';
-}
-
 function redirectByRole(role) {
   const isAdmin = String(role || '').toLowerCase() === 'admin';
   window.location.assign(
@@ -229,7 +224,7 @@ if (authForm) {
         }
 
         cacheSignedInUser(result.user);
-        redirectByRole(getUserRole(result.user?.email || email));
+        redirectByRole(isStudioAdmin(result.user) ? 'admin' : 'Client');
         return;
       }
 
@@ -243,7 +238,7 @@ if (authForm) {
 
       const result = await signInWithEmail(email, password);
       cacheSignedInUser(result.user);
-      redirectByRole(getUserRole(result.user?.email || email));
+      redirectByRole(isStudioAdmin(result.user) ? 'admin' : 'Client');
     } catch (error) {
       if (error?.code === 'account_exists') {
         showExistingAccount(email);
