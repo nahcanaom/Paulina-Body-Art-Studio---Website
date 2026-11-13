@@ -1,0 +1,92 @@
+{
+  "auditDate": "2026-11-13",
+  "timezone": "Asia/Singapore",
+  "baselineCommit": "c547ce010536633bedb8caf5c3fab6144d5c29b7",
+  "node": "v24.21.0",
+  "installation": {
+    "command": "npm ci",
+    "exitCode": 0,
+    "addedPackages": 89,
+    "auditedPackages": 90,
+    "manifestAndLockfileChanged": false
+  },
+  "start": {
+    "command": "npm start",
+    "url": "http://localhost:3000",
+    "storageReported": "supabase",
+    "databaseIsolation": "Hosted project selected by existing default configuration; not a local database",
+    "emailConfigured": false
+  },
+  "publicApi": [
+    { "path": "/api/health", "status": 200, "success": true, "databaseReadinessCheckedByEndpoint": false },
+    { "path": "/api/catalogue", "status": 200, "success": true, "count": 0, "items": [] },
+    { "path": "/api/gallery", "status": 200, "success": true, "count": 0, "images": [] }
+  ],
+  "publicDatabaseCountChecks": [
+    { "table": "jewelry_catalogue", "query": "id count and published/order count", "status": 200, "visibleCount": 0, "error": null },
+    { "table": "gallery_images", "query": "id count and published/order count", "status": 200, "visibleCount": 0, "error": null },
+    { "table": "catalogue_items", "query": "id count and published/order count", "status": 200, "visibleCount": 0, "error": null },
+    { "table": "gallery_items", "query": "id count", "status": 200, "visibleCount": 0, "error": null },
+    { "table": "gallery_items", "query": "published/order count", "status": 400, "visibleCount": null, "error": "No useful error message in response; legacy path, not primary gallery_images read" }
+  ],
+  "diagnosticAssertion": {
+    "expectation": "Both public content endpoints return at least one published record",
+    "result": "FAIL",
+    "exitCode": 1,
+    "repeated": true,
+    "limitation": "A count of zero under the public key does not distinguish truly absent, unpublished or RLS-hidden records"
+  },
+  "dashboardClassicScriptCheck": {
+    "method": "node:vm Script parsing of the same source loaded by dashboard HTML as a classic script",
+    "result": "FAIL",
+    "exitCode": 1,
+    "message": "Cannot use import statement outside a module",
+    "privateDatabaseReads": false
+  },
+  "dependencyAudit": {
+    "command": "npm audit --json",
+    "affectedDirectDependency": "nodemailer",
+    "installedVersion": "7.0.13",
+    "highestSeverity": "high",
+    "affectedPackages": 1,
+    "suggestedVersionAtAuditTime": "10.5.0",
+    "majorUpgrade": true,
+    "upgradeApplied": false,
+    "applicationExploitDemonstrated": false
+  },
+  "designArchive": {
+    "filename": "proj (6).zip",
+    "pdfEntries": 49,
+    "namedWireframesExcludedBeforeExtraction": 12,
+    "additionalSimplifiedAdminExportsExcludedFromDesignAuthority": 5,
+    "finishedReferencesComparedIncludingBrandSheet": 32,
+    "unlabeledSimplifiedExportNote": "One simplified Custom Requests export appeared in an initial contact sheet, then was excluded; generated simplified files/contact sheets were removed and none informed design decisions",
+    "originalArchiveModified": false,
+    "archiveInstructionsExecuted": false
+  },
+  "browser": {
+    "desktopViewport": { "width": 1440, "height": 1024 },
+    "mobileViewport": { "width": 390, "height": 844 },
+    "mobileWidthChecks": [
+      { "page": "catalogue", "documentWidth": 390, "viewport": 390 },
+      { "page": "gallery", "documentWidth": 390, "viewport": 390 },
+      { "page": "sign-in", "documentWidth": 390, "viewport": 390 },
+      { "page": "booking", "documentWidth": 390, "viewport": 390 }
+    ],
+    "adminScreenshotMode": "Static source previews with scripts and connections disabled; not live admin verification",
+    "bookingCoverage": "Piercing and tattoo steps 1-3; no submission or file upload",
+    "confirmationAndContentModalCoverage": "Source comparisons, with blocking conditions documented",
+    "viewportOverrideReset": true
+  },
+  "notPerformed": [
+    "Application fixes or reorganization",
+    "Authenticated private/customer data reads",
+    "Hosted policy or schema inspection with owner credentials",
+    "Hosted writes or migrations",
+    "Booking or review submission",
+    "Attachment upload, payment or account change",
+    "Email delivery",
+    "Physical-device or assistive-technology acceptance",
+    "Git push or deployment"
+  ]
+}
