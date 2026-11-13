@@ -34,6 +34,13 @@ result=await sb.auth.signInWithPassword({email:emailAddress,password});if(result
 assert.equal((await call('/api/bookings','GET',null,true)).status,403);
 result=await sb.auth.admin.updateUserById(userId,{app_metadata:{role:'admin'}});if(result.error)throw result.error;
 result=await sb.auth.signInWithPassword({email:emailAddress,password});token=result.data.session.access_token;
+const production='https://paulina-studio.vercel.app';
+if(process.argv.includes('--deployed')) {
+  assert.equal((await fetch(production+'/api/bookings')).status,401);
+  assert.equal((await fetch(production+'/api/bookings',{headers:{Authorization:'Bearer '+token}})).status,200);
+  assert.equal((await fetch(production+'/api/send-booking-email',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'})).status,400);
+  console.log('Production API passed: authenticated admin access, anonymous denial, booking validation.');
+}
 const date=new Date(Date.now()+86400000+28800000).toISOString().slice(0,10);
 const payload={fullName:marker,email:emailAddress,age:25,serviceType:'Piercing',service:'Lobe',artist:marker,date,time:'9:00 AM',clientRequestId:crypto.randomBytes(24).toString('hex'),receiptFileName:'check.png',receiptImage:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jRZkAAAAASUVORK5CYII='};
 let r=await call('/api/send-booking-email','POST',payload);assert.equal(r.status,201,JSON.stringify(r));const ref=r.data.reference;refs.push(ref);
@@ -50,6 +57,9 @@ assert.equal((await call('/api/bookings/'+ref,'PATCH',{status:'cancelled'},true)
 r=await call('/api/custom-requests','GET',null,true);assert.equal(r.data.requests.find(x=>x.reference===ref).status,'declined');
 assert.equal((await call('/api/bookings/'+ref,'DELETE',null,true)).status,200);
 assert.equal((await call('/api/bookings/'+ref,'DELETE',null,true)).status,404);
+const race=await Promise.all([0,1].map(()=>call('/api/send-booking-email','POST',{...payload,time:'11:00 AM',clientRequestId:crypto.randomBytes(24).toString('hex')})));
+for(const result of race)if(result.data.reference)refs.push(result.data.reference);
+assert.deepEqual(race.map(x=>x.status).sort(),[201,409]);
 assert.equal(delivered.filter(x=>x==='sendBookingConfirmation').length,1);
 console.log('Hosted integration passed: auth boundaries, submit, private receipt, atomic queue, retry, slot conflict, accept, duplicate decision, calendar edits, cancellation and deletion. Email mocked.');
 }finally{
