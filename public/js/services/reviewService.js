@@ -22,10 +22,6 @@ export const MIN_REVIEW_LENGTH = 10;
 export const MAX_REVIEW_LENGTH = 2000;
 export const MAX_REVIEW_PHOTO_BYTES = 4 * 1024 * 1024;
 
-// A showcase of reviews is only shown once this many published reviews exist,
-// so a brand-new studio never displays a thin (or single) testimonial list.
-export const MIN_PUBLISHED_REVIEWS = 5;
-
 export class ReviewServiceError extends Error {
   constructor(message, code = 'review_error', cause = null) {
     super(message);

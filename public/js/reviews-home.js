@@ -13,7 +13,6 @@ import {
   getCurrentReviewer,
   initialsAvatar,
   isOwnReview,
-  MIN_PUBLISHED_REVIEWS,
   pickHomeReviews,
   starString
 } from './services/reviewService.js';
@@ -104,12 +103,8 @@ function renderHomeReviews(reviews) {
   const grid = byId('homeReviewsGrid');
   if (!grid) return;
 
-  // Testimonials stay off the page until the studio has a real body of
-  // reviews; one or two cards read as thin proof rather than social proof.
-  if (reviews.length < MIN_PUBLISHED_REVIEWS) {
-    const message = reviews.length
-      ? `Testimonials appear once ${MIN_PUBLISHED_REVIEWS} reviews have been published. ${reviews.length} so far.`
-      : 'No reviews have been published yet. Be the first to share your studio experience.';
+  if (!reviews.length) {
+    const message = 'No reviews have been published yet. Be the first to share your studio experience.';
     grid.innerHTML = emptyStateMarkup(message);
     grid.dataset.count = '0';
     carousel?.refresh();
