@@ -25,6 +25,8 @@ const fs = require('node:fs');
     const gallery = await readPublicContent('gallery');
     assert(gallery.demo);
     assert.equal(normalizeGalleryImage(gallery.images[0]).imageUrl, 'https://example.com/ear.jpg');
+    assert.equal(normalizeGalleryImage({ title: '[Demo] Ear', alt_text: 'Ear — demo portfolio record' }).title, 'Ear');
+    assert.equal(normalizeGalleryImage({ title: '[Demo] Ear', alt_text: 'Ear — demo portfolio record' }).altText, 'Ear');
     assert.equal((await readPublicContent('catalogue')).items.length, 1);
     global.fetch = async () => ({ ok: false, status: 500 });
     await assert.rejects(readPublicContent('gallery'), /HTTP 500/);

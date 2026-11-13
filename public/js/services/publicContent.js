@@ -22,10 +22,11 @@ export async function readPublicContent(kind) {
 
 export function normalizeGalleryImage(item) {
   return { ...item,
+    title: String(item.title || '').replace(/^\[Demo\]\s*/i, ''),
     imageUrl: item.imageUrl || item.image_url || '',
     thumbnailUrl: item.thumbnailUrl || item.thumbnail_url || item.imageUrl || item.image_url || '',
     bodyPart: item.bodyPart || item.body_part || '',
-    altText: item.altText || item.alt_text || item.title || '',
+    altText: String(item.altText || item.alt_text || item.title || '').replace(/^\[Demo\]\s*/i, '').replace(/\s*— demo portfolio record$/i, ''),
     displayOrder: item.displayOrder ?? item.display_order ?? 0,
     createdAt: item.createdAt || item.created_at,
     updatedAt: item.updatedAt || item.updated_at

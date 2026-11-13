@@ -31,7 +31,7 @@ function normalizeCatalogProduct(item) {
 
   return {
     id: item.id,
-    name: item.name || item.title || 'Untitled Piercing',
+    name: String(item.name || item.title || 'Untitled Piercing').replace(/^\[Demo\]\s*/i, ''),
     material: item.material || 'ASTM F136 Titanium',
     price: Number(item.price ?? 600),
     category: categories.length > 0 ? categories : ['Ear', 'Helix'],
@@ -54,7 +54,7 @@ async function loadProducts() {
         const notice = document.createElement('p');
         notice.id = 'demoNotice';
         notice.style.cssText = 'color:#faf6f0;padding:12px 0;grid-column:1/-1';
-        notice.textContent = 'Demo catalogue — bundled jewellery photos; prices, sizes and placement are samples.';
+        notice.textContent = 'Images, prices, sizes and placements are examples; please confirm details with the studio.';
         document.getElementById('productGrid')?.before(notice);
       }
       products = data.items.map(normalizeCatalogProduct).filter(Boolean);
