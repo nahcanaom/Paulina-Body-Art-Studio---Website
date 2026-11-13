@@ -12,7 +12,99 @@
      - Populate the bookings feed and the full upcoming-appointments list.
      - Draw the six-month booking insights chart with hover tooltips along the
        line and deep links into the Master Calendar.
-   ========================================================================== */
+       ========================================================================== */
+
+
+
+// admin-app.js – Front‑end logic for the admin dashboard
+// ----------------------------------------------------
+// This module imports the Supabase client that you configured in
+// `supabase-config.js` and populates the KPI cards, bookings feed,
+// upcoming‑appointments list, etc.
+//
+// NOTE: The HTML expects elements with IDs like `kpiBookings`, `kpiRevenue`,
+// `bookingsFeedBody`, `appointmentsList`, etc. – those already exist in
+// `dashboard.html`.
+import { supabase } from "./supabase-config.js";
+async function loadKPIs() {
+  // Example: count bookings, sum revenue, count deposits
+  const [{ count: bookings }, { sum: revenue }, { count: deposits }] = await Promise.all([
+    supabase.from("bookings").select("id", { count: "exact", head: true }),
+    supabase
+      .from("bookings")
+      .select("total_price")
+      .then(r => ({ sum: r.data?.reduce((a, b) => a + Number(b.total_price || 0), 0) || 0 })),
+    supabase.from("payments").select("id", { count: "exact", head: true })
+  ]);
+  document.getElementById("kpiBookings").textContent = bookings ?? "0";
+  document.getElementById("kpiRevenue").value = `P${revenue ?? 0}`;
+  document.getElementById("kpiDeposits").textContent = `P${revenue ?? 0}`;
+}
+async function loadBookingsFeed(filter = "All") {
+  const query = supabase
+    .from("bookings")
+    .select("client_name, service_type, appointment_dt, status")
+    .order("appointment_dt", { ascending: false });
+  if (filter !== "All") query.eq("service_type", filter);
+  const { data, error } = await query;
+  const tbody = document.getElementById("bookingsFeedBody");
+  tbody.innerHTML = "";
+  if (error) {
+    console.error("Failed to load bookings feed:", error);
+    tbody.innerHTML = `<tr><td colspan="4">Error loading bookings.</td></tr>`;
+    return;
+  }
+  data.forEach(row => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${row.client_name}</td>
+      <td>${row.service_type}</td>
+      <td>${new Date(row.appointment_dt).toLocaleString()}</td>
+      <td>${row.status}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+async function loadUpcomingAppointments() {
+  const { data, error } = await supabase
+    .from("bookings")
+    .select("client_name, appointment_dt")
+    .gt("appointment_dt", new Date().toISOString())
+    .order("appointment_dt", { ascending: true })
+    .limit(5);
+  const list = document.getElementById("appointmentsList");
+  list.innerHTML = "";
+  if (error) {
+    console.error("Failed to load upcoming appointments:", error);
+    list.innerHTML = `<li>Error loading appointments.</li>`;
+    return;
+  }
+  data.forEach(row => {
+    const li = document.createElement("li");
+    li.textContent = `${row.client_name} – ${new Date(row.appointment_dt).toLocaleString()}`;
+    list.appendChild(li);
+  });
+}
+/* ------------------------------------------------------------------ */
+/* Initialize dashboard when the page loads                               */
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    await loadKPIs();
+    await loadBookingsFeed();
+    await loadUpcomingAppointments();
+    // Hook up filter dropdown
+    const filterSelect = document.getElementById("feedFilterSelect");
+    filterSelect?.addEventListener("change", e => loadBookingsFeed(e.target.value));
+  } catch (e) {
+    console.error("Dashboard init error:", e);
+  }
+});       
+
+
+
+
+
+
+
 
 'use strict';
 

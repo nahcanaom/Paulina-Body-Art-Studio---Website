@@ -397,7 +397,8 @@ CREATE TABLE IF NOT EXISTS public.catalogue_items (
 ALTER TABLE public.catalogue_items ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Catalogue items alias public read" ON public.catalogue_items;
 CREATE POLICY "Catalogue items alias public read" ON public.catalogue_items FOR SELECT TO anon, authenticated USING (true);
-DROP POLICY IF EXISTS "Catalogue items alias write" ON public.catalogue_items FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
+DROP POLICY IF EXISTS "Catalogue items alias write" ON public.catalogue_items;
+CREATE POLICY "Catalogue items alias write" ON public.catalogue_items FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
 
 -- -----------------------------------------------------------------------------
 -- 5. GALLERY ITEMS (and gallery_images compatibility)
@@ -468,7 +469,8 @@ CREATE TABLE IF NOT EXISTS public.gallery_items (
 ALTER TABLE public.gallery_items ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Gallery items alias public read" ON public.gallery_items;
 CREATE POLICY "Gallery items alias public read" ON public.gallery_items FOR SELECT TO anon, authenticated USING (true);
-DROP POLICY IF EXISTS "Gallery items alias write" ON public.gallery_items FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
+DROP POLICY IF EXISTS "Gallery items alias write" ON public.gallery_items;
+CREATE POLICY "Gallery items alias write" ON public.gallery_items FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
 
 -- -----------------------------------------------------------------------------
 -- 6. SITE CONTENT & SITE SETTINGS
@@ -510,7 +512,8 @@ CREATE TABLE IF NOT EXISTS public.site_content (
 ALTER TABLE public.site_content ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Site content public read" ON public.site_content;
 CREATE POLICY "Site content public read" ON public.site_content FOR SELECT TO anon, authenticated USING (true);
-DROP POLICY IF EXISTS "Site content write" ON public.site_content FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
+DROP POLICY IF EXISTS "Site content write" ON public.site_content;
+CREATE POLICY "Site content write" ON public.site_content FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
 
 -- -----------------------------------------------------------------------------
 -- 7. ARTIST PROFILES & FAQS
